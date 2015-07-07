@@ -1,0 +1,134 @@
+@charset "utf-8";
+
+div,p,h1,h2,h3,h4,h5,h6,body,ul,form,pre { margin:0; padding:0;}
+
+li { list-style:none outside;}
+
+body { font-size:14px; color:#333; line-height:120%; background-color:#fff; text-align:center; font-family: "ＭＳ Ｐゴシック", "Osaka", verdana, arial, sans-serif,palatino, georgia, "ヒラギノ角ゴ Pro W3"; }
+
+#top { background:url(../img/seo/head-bar.gif) repeat-x; height:30px; text-align:right; padding:2px 15px 0 0; color:#fff; font-size:12px; }
+#container { width:870px; text-align:left; margin:0 auto; background-color:#FFF; }
+#header { padding:5px 20px 10px 0px; float:left; width:200px;}
+#header-r { padding-top:5px; text-align:right; float:left; width:650px; }
+#header-top { text-align:center; margin-top:15px;}
+#main { clear:both; }
+#main-top { text-align:center; width:700px; margin:0 auto;}
+#footer { text-align:center; font-size:13px ;margin-top:20px;padding:20px 20px 15px; background-color:#f3f3f3; border-top:1px solid #bbb;}
+
+h1 { font-size:16px; margin-top:5px; color:#333;} 
+h2 { font-size:15px;  color:#fff; padding:4px 8px; text-align:left; }
+h2.h2-o { background:url(../img/seo/bar1.gif) repeat-x; }
+h2.h2-c { background-color:#ff3300; }
+h2.h2-m { background-color:#dc143c; }
+
+h2.h2-p1 { color:#d2691e; font-size:18px; border-bottom:1px dashed #d2691e; }
+
+h3.h3-g { margin:10px; font-size:14px; border-left:8px solid #458800; padding-left:12px; } 
+h3.h3-r { font-size:15px;padding:3px 7px; margin-bottom:3px; border-bottom:1px solid #f30; }
+h3.h3-dl { font-size:15px;padding:3px 7px; margin-bottom:10px; border-bottom:1px solid #f30; border-left:5px solid #f30;}
+
+div.left-box  { height:362px;width:380px;float:left;margin-right:10px; padding:15px 28px 15px 20px ; background:url(../img/seo/box1.gif) no-repeat; }
+div.right-box { height:362px;width:380px;float:left; padding:15px 28px 15px 20px ; background:url(../img/seo/box1.gif) no-repeat; }
+
+ul.list1 { margin:5px 0 0 4px; }
+ul.list1 li { padding-left:15px; background:url(../img/seo/list1.gif) no-repeat left 1px; margin-bottom:3px; }
+ul.list2 { margin:5px 0 0 4px; }
+ul.list2 li { padding-left:15px; background:url(../img/seo/list1g.gif) no-repeat left 1px; margin-bottom:3px; }
+
+table.res-table { background-color:#aaa; }
+table.res-table td { background-color:#fff; padding:3px; text-align:center; }
+table.res-table th { color:#fff; padding:3px; text-align:center; word-break:break-all;}
+
+#td-gi,#td-gl { font-size:30px;padding:15px 0; }
+
+#dir-table {  width:416px;background-color:#aaa; font-size:12px;}
+#dir-table td { background-color:#fff;padding:2px; }
+#dir-table td.dir-t { padding-left:5px; width:110px; }
+#dir-table th { color:#fff; background-color:#ff8c00; text-align:center; }
+
+#bm-table { background-color:#aaa;  }
+#bm-table th.bm-hd { text-align:left; color:#333; padding:3px; background-color:#eee; }
+#bm-table td { background-color:#fff; padding:3px; text-align:center; width:113px;height:35px; overflow:hidden }
+
+#sdata-table { background-color:#ccc; width:640px; }
+#sdata-table th { text-align:center; padding:3px; }
+#sdata-table th.pelem { width:150px;background-color:#eee; }
+#sdata-table th.phead { background-color:#ff5555; color:#fff;}
+#sdata-table td { background-color:#fff;  padding:3px 6px; word-break:break-all; }
+
+
+td.gmo-res { font-size:12px; }
+
+div.box1 { margin:10px 10px 20px 10px ; }
+
+img.dir-icon-s { width:14px;height:14px; vertical-align:middle; margin-right:1px; }
+
+#contents { width:640px;margin-top:10px; float:left; }
+
+#side { width:200px;float:left;margin:10px 20px 0 0; }
+#side ul { line-height:200%;  }
+#side ul li { padding-left:20px; background:url(../img/seo/list2.gif) no-repeat left;  }
+
+
+#other-tool { text-align:center; background-color:#f5f5f5 ;padding:5px 0; margin:20px 0 20px;border-top:1px solid #ccc;border-bottom:1px solid #ccc; }
+#other-tool a { background:url(../img/seo/list3.gif) no-repeat left; padding-left:16px;} 
+
+
+/* タブ */
+#tab { color:#fff; font-weight:bold; font-size:13px; }
+#tab li { display:block; float:left;  height:30px; margin-right:5px; cursor:pointer;}
+
+#tab0 { background:url(../img/seo/tabs.gif) no-repeat 0px 0px; width:130px; }
+#tab1 { background:url(../img/seo/tabs.gif) no-repeat -130px 0px; width:124px; }
+#tab2 { background:url(../img/seo/tabs.gif) no-repeat -254px 0px; width:136px; }
+#tab3 { background:url(../img/seo/tabs.gif) no-repeat -390px 0px; width:72px; }
+#tab4 { background:url(../img/seo/tabs.gif) no-repeat -462px 0px; width:90px; }
+#tab5 { background:url(../img/seo/tabs.gif) no-repeat -552px 0px; width:114px; }
+
+#panel0,#panel1,#panel2,#panel3,#panel4,#panel5 { background:url(../img/seo/panel-top.gif) repeat-x top;  border:1px solid #ff4500; border-top:1px solid #ff4500; clear:both; }
+h2.h2-top { font-size:18px; color:#333; margin:25px 0 10px 20px; background:url(../img/seo/lupe.gif) no-repeat left top; padding-left:28px; text-align:left;}
+
+div.form { font-size:20px; font-weight:bold; background-color:#eee; border-top:1px solid #bbb; border-bottom:1px solid #bbb; }
+div.form2 { background-color:#eee; padding:15px 20px; font-size:18px; font-weight:bold; border-bottom:1px solid #bbb; }
+
+div.tool-info { border-left:5px solid #f90;padding:5px 10px; width:350px;margin:10px auto ;text-align:left; }
+
+/* バックリンクリスト */
+#list-table { background-color:#777;}
+#list-table td { background-color:#fff; }
+#list-table td div { width:415px; word-wrap:break-word; word-break:break-all; }
+
+/* メールフォーム*/
+table.mf-table { font-size:13px; margin:8px; border:1px solid #EEE; width:600px; background-color:#FFF;}
+table.mf-table th { background-color:#eee; width:130px; }
+table.mf-table td { background-color:#eee; word-break:break-all; }
+
+/* サイトレポート */
+table.report { text-align:center;background-color:#666;font-size:11px;margin:0 auto; }
+table.report td { background-color:#fff; width:15px;}
+table.report tr.report-hd td { background-color:#aaa; }
+
+#hd-table td { word-break:break-all;  }
+
+/*　アンカー　*/
+a:link { color:#00B; }
+a:visited { color:#008; }
+a:active { color:#00B; }
+a:hover { color:#F33; }
+
+#top a { color:#fff; }
+.nav{margin-bottom:0}
+#tab li a{background: #FF9933;border-radius: 10px 10px 0 0;border: none;color:#fff}
+#tab li.active a, #tab li a:hover{background: #FE4703;border: none;border-radius: 10px 10px 0 0;}
+.tab-pane{
+    background: url(../img/seo/panel-top.gif) repeat-x top;
+    border: 1px solid #ff4500;
+    border-top: 1px solid #ff4500;
+    clear: both;    
+}
+.tab-pane table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: gray;
+}

@@ -1,0 +1,304 @@
+.clear{height:0; clear:both; border:1px none; padding:0; margin:0; line-height:0;}
+/*@group Schedule*/
+
+/* @group ID Selectors */
+[id*="fleft"] { float: left; margin-right: 0.563em;}
+/*2012-10-16 HL 候補日程コメント*/
+[id*="fleft01"] { float: left; margin: 0em 0em 1em 0em;}
+
+[id*="fright"] { float: right;}
+[id*="733px"]  /*  3/4 of #main width minus 5 pixels  */ {width: 45.813em;}
+/*[id*="656px"] { width: 41em; }*/
+[id*="656px"] { width: 28em; }
+
+[id*="476px"] {width: 29em;}
+
+[id*="466px"] { width: 29.125em; }
+[id*="544px"] { width: 34em; }
+
+[id*="59percent"] {width: 59%;}
+
+[id*="49percent"] {width: 49%;}
+
+[id*="39percent"] {width: 39%;}
+/*[id*="276px"] { width: 17.25em; }*/
+[id*="276px"] { width: 28em; }
+
+[id*="241px"]  /* 1/4 of #main width minus 5px */ { width: 15.063em; }
+[id*="227px"] { width: 14.188em; }
+
+[id*="224px"] { width: 14em; }
+[id*="144px"] { width: 9em; }
+
+/*2012-08-06 HL page 2 - schedule ichiran link share*/
+[id*="688px"] { width: 43em; }
+[id*="771px"] { width: 48.188em; }
+
+/*2012-10-30 HL page 2 show step 1 */
+[id*="50percent"] { width: 25em; }
+/* @end */
+
+#mtgscheduleyline table,.mtgschedulef-font {
+	font-family: Verdana,'ヒラギノ角ゴ Pro W4','Hiragino Kaku Gothic Pro',osaka,'ＭＳ Ｐゴシック','MS PGothic',sans-serif;
+	font-size: 12px;
+	/*2012-11-02 HL timeline page 1 height*/
+	line-height: 12px;
+	color: #666;
+	}
+#mtgscheduleyline option {
+	background-color: #fff;
+	border-top: 2px solid #dcdcdc;
+	margin: 0;
+	padding: 0;
+}
+#mtgscheduleyline .table_container > table[class*="schedule"]{ 
+	border-bottom-color: #aaa !important;
+	border-bottom-width: 0;
+	border-bottom-style: solid !important;
+	outline: 0px;
+}
+
+.table_container .select_timeline td.chrome{width:22px!important;}
+.row_wrap { width: 720px; margin-right: auto; margin-left: auto; padding-top:0.2em; }
+.row_wrap > .table_container {width: 58.25em; border: solid 0.13em #dcdcdc;}	
+
+/*2012-11-05 HL*/
+.top_tab { 
+background-color: #e5e5e5; 
+vertical-align: middle; width: 10em; height: 1.2em; 
+float: left; clear: both; margin-top: 0.6em; padding-top: 0.1em;
+border-top: 0.125em solid #DCDCDC;
+border-left: 0.125em solid #DCDCDC;
+border-right: 0.125em solid #DCDCDC;
+/*border-bottom: 0.125em solid #ccc;*/
+}
+.top_tab_right { 
+vertical-align: middle; width: 48em; height: 2.5em; 
+float: right; margin: 0; 
+}
+.top_tab_right a.close_button {
+	margin:0.875em 0 0 0; float:right;
+}
+.top_tab_date { 
+vertical-align: middle; width: 8em; height: 2.5em; 
+float: left; margin-left: 1.25em; 
+}
+
+.top_tab_date p {
+	vertical-align: middle; margin: 1.125em 0;
+}
+/*2012-10-31 HL page 1: timeline show date font*/
+.top_tab p { color: #676767; font-size: 12px; text-align: center; margin: auto;vertical-align:middle;}
+
+img.timeline { width: 48em; height: 1.688em; }
+td.timeline_field { width: 48em; }
+img.timeline { width: 48em; height: 1.688em}
+
+
+
+tr.select_timeline td{
+	width: 22px; height: 22px;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #eeeeee;
+	border-top: 1px solid #eeeeee;
+}
+
+tr.select_timeline > td:last-child {
+	width: 21px;
+	border-right: none;
+}
+tr.select_timeline > td:first-child{
+	width: 21px;
+}
+.timeline td{font-size:11px;color:#808080;height:35px;background:#F9F9F9;vertical-align: bottom;border-bottom: 2px solid #EFEFEF;}
+.timeline td.td2{border-right:2px solid #EFEFEF}
+.timeline td.tdlast{color:#DCDCDC}
+.timeline td.tdlast span{border-right:none}
+.timeline td.td1 span{border-right:1px solid #EFEFEF;height: 12px;vertical-align: bottom;width:22px;display:inline-block}
+td.time{
+	 height: 27px;
+	border-right: 1px solid #fff;
+}
+
+tr.select_timeline > td.time:nth-child(odd){
+	min-width:26px;
+}
+
+tr.select_timeline > td.time:nth-child(even){
+	min-width:25px;
+}
+
+
+tr.select_timeline > td.time:last-child {
+	width: auto;
+	border-right: none;
+}
+tr.select_timeline > td:first-child{
+	width: 21px;
+}
+/*************************************************************************************************************************************/
+/*2012-11-05 HL timeline page 1*/
+.timeline td{font-size:11px;color:#808080;height:33px;background:#F9F9F9;vertical-align: bottom;border-bottom: 2px solid #EFEFEF;}
+.timeline td.td2{border-right:2px solid #EFEFEF;display: inline-block;width: 20px !important;}
+.timeline td.tdlast{color:#DCDCDC}
+/*timeline page*/
+
+
+/*2012-11-02 HL page 2 timeline height*/
+/*2012-11-02 HL page 2 timeline height*/
+/*2012-11-05 HL page 2 timeline time align*/
+/*
+.timeline_page2{height: 21px!important;line-height:normal!important;}
+.timeline_page2 td{font-size:12px;color:#808080;height:0.7em;background:#F9F9F9;vertical-align: bottom;border-bottom:none;}
+.timeline_page2 td div{width: 25px; height: 27px; position: absolute; margin-top: -23px; opacity: 0.6; display: block;}
+.timeline_page2 td.date{vertical-align:middle}
+.timeline_page2 td.tdlast{color:#DCDCDC}
+.timeline_page2 td.td1.percent_pink {
+	background-color: #d96fa1;
+	color: #f9f9f9;
+	
+}
+
+.timeline_page2 td.td2.percent_pink {
+	background-color: #d96fa1;
+	color: #c41367;
+	
+}
+*/
+
+.timeline_page2 td.td1{
+border-left: 2px solid #EFEFEF;
+border-right: 2px solid #EFEFEF;
+font-size: 10px;
+text-align: center;
+}
+
+
+.timeline_page2 td.td1.percent_yellow {
+	background-color: #fca9d0;
+	color: #f9f9f9;
+	
+}
+.timeline_page2 td.td2.percent_yellow {
+	background-color: #fca9d0;
+	color: #c41367;
+	
+}
+
+span.num_p {
+	display: none;
+}
+span.num_pe {
+	display: none;
+}
+
+/* @group Percentage on Ruler */
+/*
+.percent_pink {
+	background: #c41367!important;
+}
+*/
+img.percent_pink {
+	display:none;
+}
+
+.percent_yellow {
+	background: #fac5de!important;
+}
+img.percent_yellow {
+	display:none;
+}
+.table_container .select_timeline td.chrome{width:22px!important;}
+/* @end */
+
+/* @group Page 3: Company View & Add timeline */
+.inside_container_bottom {
+	width: inherit; height: auto; padding: 1em 1.25em 1em 1.25em; background-color: white;
+	border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; border-right: 1px solid #ccc; border-top: 1px solid #ccc;
+	border-radius: 0px 0px 0.0.438em 0.438em;
+	-moz-border-radius: 0px 0px 0.438em 0.438em;
+	-webkit-border-radius: 0px 0px 0.438em 0.438em;
+	}
+
+div.tmark_holder {
+    height: 1.625em;
+    margin-bottom: 15px;
+}
+input[type="radio"].sel_t {
+	margin-top: 0.438em; display: block;
+	float: left;
+}
+/*.tmark { width: 6em; height: 1.125em;  text-align: center; border-width:0.125em; border-style: solid;padding-top: 0.125em; border-radius: 0.313em; -moz-border-radius: 0.313em; -webkit-border-radius: 0.313em; }*/
+.tmark { width: 6em; height: 1.525em;  text-align: center; border-width:0.125em; border-style: solid;padding-top: 0.125em; border-radius: 0.313em; -moz-border-radius: 0.313em; -webkit-border-radius: 0.313em; }
+.tmark p { 
+	/*color: inherit; */
+	color: #000000;
+	font-size: 0.875em; margin-right: auto; margin-bottom: auto; }
+	
+.kanou {
+	/*background-color: #3880c3; 
+	color: white; 
+	border-color: #2b328e;
+background-image: linear-gradient(bottom, #8FACDA 9%, #307EC2 62%);
+background-image: -o-linear-gradient(bottom, #8FACDA 9%, #307EC2 62%);
+background-image: -moz-linear-gradient(bottom, #8FACDA 9%, #307EC2 62%);
+background-image: -webkit-linear-gradient(bottom, #8FACDA 9%, #307EC2 62%);
+background-image: -ms-linear-gradient(bottom, #8FACDA 9%, #307EC2 62%);*/
+
+background-color: #ffd0d5; 
+	color: white; 
+	border-color: #ffcecf;
+background-image: linear-gradient(bottom, #ffd0d5 9%, #ffcecf 62%);
+background-image: -o-linear-gradient(bottom, #ffd0d5 9%, #ffcecf 62%);
+background-image: -moz-linear-gradient(bottom, #ffd0d5 9%, #ffcecf 62%);
+background-image: -webkit-linear-gradient(bottom, #ffd0d5 9%, #ffcecf 62%);
+background-image: -ms-linear-gradient(bottom, #ffd0d5 9%, #ffcecf 62%);
+
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0.09, #8FACDA),
+	color-stop(0.62, #307EC2)
+)
+}
+
+.fuka { color: #000; background-color: #9a9a9a; border-color: #313333; 
+
+}
+
+.noselect {
+	color: #fff;
+}
+/* @end */
+
+.lower_line td{
+	font-size:11px;
+	color:#808080;
+	height:12px;
+	background:#F9F9F9;
+	vertical-align: bottom;
+	border-bottom: 2px solid #EFEFEF;
+	border-left:1px solid #EFEFEF;
+	}
+.lower_line td:nth-child(odd) {
+	border-left:2px solid #EFEFEF;
+	}
+.lower_line td.td1.percent_pink {
+	background-color: #d96fa1;
+	color: #c41367;
+	border-bottom-color: #f9f9f9;
+	
+}
+.lower_line td.td2.percent_pink {
+	background-color: #d96fa1;
+	color: #c41367;
+	border-left-color: #f9f9f9;
+	border-bottom-color: #f9f9f9;
+}
+
+#admin_top table{
+	margin-bottom: 30px;
+}
+
+/*end @group Schedule*/

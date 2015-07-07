@@ -1,0 +1,98 @@
+.jquery-msgbox
+{
+  background:url(../img/jmsgbox/background.png) repeat-x left bottom;
+  padding-bottom:55px;
+  width: 50%;
+}
+
+.jquery-msgbox-wrapper
+{
+  /*padding:20px 20px 20px 20px;*/
+  
+}
+
+.jquery-msgbox-buttons
+{
+  padding:15px;
+  text-align:right;
+  position:absolute;
+  bottom:0;
+  right:0;
+}
+
+.jquery-msgbox-buttons button,
+.jquery-msgbox-buttons input
+{
+  margin-left:10px;
+  min-width:85px;
+  cursor:pointer;
+}
+
+.jquery-msgbox-inputs
+{
+  margin-top:4px;
+}
+
+.jquery-msgbox-inputs input
+{
+  display:block;
+  padding:3px 2px;
+  border:1px solid #dddddd;
+  margin:3px 0 6px 0;
+  width:95%;
+}
+
+.jquery-msgbox-label
+{
+  font-weight:bold;
+  font-size:11px;
+}
+
+.jquery-msgbox-alert
+{
+  background: url(../img/jmsgbox/alert.png) no-repeat 20px 20px;
+}
+
+.jquery-msgbox-info
+{
+  background: url(../img/jmsgbox/info.png) no-repeat 20px 20px;
+}
+
+.jquery-msgbox-error
+{
+  background: url(../img/jmsgbox/error.png) no-repeat 20px 20px;
+}
+
+.jquery-msgbox-prompt
+{
+  background: url(../img/jmsgbox/question.png) no-repeat 20px 20px;
+}
+
+/*.jquery-msgbox-confirm
+{
+  background: url(../img/jmsgbox/confirm.png) no-repeat 20px 20px;
+}*/
+.popup_top {
+    background-color: #CCCCCC;
+    background-image: url("../img/jmsgbox/background.png");
+    border-color: #CCCCCC;
+    border-left: 0.063em solid #CCCCCC;
+    border-radius: 0.4em 0.4em 0 0;
+    border-right: 0.063em solid #CCCCCC;
+    border-top: 0.063em solid #CCCCCC;
+    font-weight: bold;
+    height: 1em;
+    padding: 0.63em 2em;
+    width: inherit;
+	color:#000;
+}
+.pop-cont {
+    float: left;
+    padding: 10px 10px 10px 10px;
+    width: 530px;
+}
+.pop-cont p {
+    color: black;
+    font-size: 0.8em;
+    line-height: 1.5em;
+}
