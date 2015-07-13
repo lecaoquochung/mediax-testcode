@@ -1,4 +1,12 @@
 <?php
+/*------------------------------------------------------------------------------------------------------------
+ * Load Server Time
+ *
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created
+ *-----------------------------------------------------------------------------------------------------------*/	
+
 App::uses('AppShell', 'Console/Command');
 App::uses('ComponentCollection', 'Controller');
 App::uses('RankComponent', 'Controller/Component');
