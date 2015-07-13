@@ -11,6 +11,7 @@ App::uses('AppShell', 'Console/Command');
 App::uses('ComponentCollection', 'Controller');
 App::uses('RankComponent', 'Controller/Component');
 App::uses('RankMobileComponent', 'Controller/Component');
+App::uses('CakeEmail', 'Network/Email');
 
 class LoadServerTimeShell extends Shell {
 
@@ -179,6 +180,12 @@ class LoadServerTimeShell extends Shell {
 		$this -> out('Start time:	' .$start_time);
 		$this -> out('End time:	' .$end_time);
 		$this -> out('-------------------------------------');
+		
+		$Email = new CakeEmail();
+		$Email->from(array('admin@ddnb.info' => 'ADMIN SEMCHECK'));
+		$Email->to('lecaoquochung.com@gmail.com');
+		$Email->subject('Load Server Time');
+		$Email->send("Start time: ".$start_time."\n End time: ".$end_time);		
 	}
 
 }
