@@ -9,10 +9,29 @@ class LoadServerTimeShell extends Shell {
 	public $uses = array('Keyword', 'Rankhistory');
 
 	public function main() {
-		$offset = $this->args[0];
-		$limit =  $this->args[1];
-		$interval_time = $this->args[2]*60;
-
+		@$offset = $this->args[0];
+		@$limit =  $this->args[1];
+		@$interval_time = $this->args[2]*60;
+		$c_logic = 0;
+		if(@$this->args[3] == 1) {
+			$c_logic = 1;
+		}
+		
+		$rand01 = 10;
+		if(isset($this->args[4])) {
+			$rand01 = $this->args[4];
+		}
+		
+		$rand02 = 30;
+		if(isset($this->args[5])) {
+			$rand02 = $this->args[5];
+		}
+		
+		$interval_keyword = 50;
+		if(isset($this->args[6])) {
+			$interval_keyword = $this->args[6];
+		}
+		
 		$start_time = date('Ymd h:i:s');
 		//load component
 		$component = new ComponentCollection();
@@ -29,6 +48,7 @@ class LoadServerTimeShell extends Shell {
 		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.c_logic'] = $c_logic;
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
 			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
@@ -40,12 +60,12 @@ class LoadServerTimeShell extends Shell {
 		foreach ($keywords as $keyword) {
 			$time_start = microtime(true);
 			$count++;
-			if(($count%50)==0) {
+			if(($count%$interval_keyword)==0) {
 				$sleep = $interval_time;
 				$this -> out('---------------' .$start_time .' ' .date('Ymd h:i:s') .' ' .$sleep .'s ------------------');
 				sleep($sleep);
 			} else {
-				sleep(rand(3,5));
+				sleep(rand($rand01,$rand02));
 			}
 			if ($keyword != false) {
 				if ($keyword['Keyword']['Strict'] == 1) {
@@ -116,13 +136,12 @@ class LoadServerTimeShell extends Shell {
 			}
 
 			//color
-			$color_code = Configure::read('Color.code');
 			if ($rank_new[0] >= 1 && $rank_new[0] <= 10 || $rank_new[1] >= 1 && $rank_new[1] <= 10) {
-				$check_params['color'] = $color_code['green'];
+				$check_params['color'] = '#E4EDF9';
 			} else if ($rank_old[0] >= 1 && $rank_old[0] <= 10 && $rank_new[0] > 10 || $rank_old[1] >= 1 && $rank_old[1] <= 10 && $rank_new[1] > 10) {
-				$check_params['color'] = $color_code['red'];
+				$check_params['color'] = '#FFBFBF';
 			} else if ($rank_new[0] > 10 && $rank_new[0] <= 20 || $rank_new[1] > 10 && $rank_new[1] <= 20) {
-				$check_params['color'] = $color_code['yellow'];
+				$check_params['color'] = '#FAFAD2';
 			} else {
 				$check_params['color'] = '';
 			}

@@ -32,7 +32,6 @@
 					 <?php 
 						if (!empty($this->request->data['Keyword']['rankend']) && $this->request->data['Keyword']['rankend'] != 0) {
 							echo '<div class="cancel_contract">';
-							#The Keyword contract has been cancel
 							echo (!empty($this->request->data['Keyword']['rankend'])) ? $this->Form->button(__('Cancel Reset'), array('type' => 'button', 'class' => 'btn btn-danger cancel_keyword', 'value' => $this->request->data['Keyword']['ID'])) : '';
 							echo '<br />';
 							echo (!empty($this->request->data['Keyword']['rankend'])) ?
@@ -109,7 +108,6 @@
 					<?php echo $this->Html->tag('span', __('Limit Price Group')); ?>
 				</th>
 				<td>
-					<?php #echo $this->Form->input('limit_price_group', array('label' => false, 'div' => FALSE)); ?>
 					<?php echo $this->Form->input('limit_price_group', array('label' => false, 'div' => false, 'type' => 'select', 'options' => Configure::read('MULTI_PRICE_GROUP'))); ?>
 					<span class="text"><strong><?php echo __('Set group price limit') ?></strong></span>
 				</td>
@@ -132,17 +130,24 @@
 					<?php echo $this->Form->input('g_local', array('label' => false, 'type' => 'select', 'options' => Configure::read('G_LOCAL'))); ?>
 				</td>
 			</tr>
-<!-- option -->
+<!-- penalty mark -->
 			<tr>
 				<th>
-					<?php echo $this->Html->tag('span', __('Option')); ?>
+					<?php echo $this->Html->tag('span', __('Penalty')); ?>
 				</th>
 				<td>
-					<?php echo $this->Form->input('service', array('type' => 'checkbox', 'label' => false, 'div' => FALSE)); ?>
-					<span class="alert alert-warning"><strong><?php echo __('Check this box if keyword is Free Service') ?></strong></span>
-					<br />
 					<?php echo $this->Form->input('penalty', array('label' => false, 'div' => FALSE)); ?>
 					<span class="alert-danger"><strong><?php echo __('Check this box if keyword is marking as penalty in Search Engine') ?></strong></span>
+				</td>
+			</tr>
+<!-- c_logic -->
+			<tr>
+				<th>
+					<?php echo $this->Html->tag('span', __('Raking by company')); ?>
+				</th>
+				<td>
+					<?php echo $this->Form->input('c_logic', array('label' => false, 'div' => FALSE)); ?>
+					<span class="alert-warning"><strong><?php echo __('Keyword Ranking will be checked by company logic Server') ?></strong></span>
 				</td>
 			</tr>
 		</table>

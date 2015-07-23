@@ -145,6 +145,7 @@ class AppSchema extends CakeSchema {
 		'penalty' => array('type' => 'boolean', 'null' => false, 'default' => null),
 		'service' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 5),
 		'mobile' => array('type' => 'boolean', 'null' => false, 'default' => null),
+		'c_logic' => array('type' => 'boolean', 'null' => false, 'default' => null, 'comment' => 'Ranking by company logic'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'updated' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'sitename' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'CSV', 'charset' => 'utf8'),

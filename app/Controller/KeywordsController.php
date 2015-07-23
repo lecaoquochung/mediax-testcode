@@ -16,42 +16,44 @@ class KeywordsController extends AppController {
 	 */
 	public function index() {
 		set_time_limit(0);
+		$conds = array();
+		$fields = array();
+		$offset = 0;
+		$c_logic = 0;
+
+		if ($this -> request -> is('post') && !empty($this -> request -> data['Keyword']['keyword'])) {
+			$conds['OR']['Keyword.keyword LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Keyword']['keyword']), 'UTF-8') . '%';
+			$conds['OR']['Keyword.url LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Keyword']['keyword']), 'UTF-8') . '%';
+		}
 		$this -> Keyword -> recursive = 0;
 		
 		// filter keyword
 		$conds = array();
-		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
-		$conds['Keyword.service'] = 0;
+		$conds['Keyword.c_logic'] = $c_logic;
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
 			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
 		);
-		
-		$fields = array();
-		$fields = array(
-			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.nocontract', 'Keyword.Penalty', 
-			'User.id', 'User.company'
-		);
-		
-		$order = array();
-		$order['Keyword.ID'] = 'ASC';
-		
-		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order));
-		
-		// $now = time();	
-		// $two_weeks = 7 * 24 * 60 * 60;
-		// $loop = 0;
-		// foreach ($keywords as $keyword) {
-			// $created_date = strtotime($keyword['Keyword']['created']);
-			// if ($now - $created_date > $two_weeks) {
-				// $keywords[$loop]['Keyword']['NewKeyword'] = 0;
-			// } else {
-				// $keywords[$loop]['Keyword']['NewKeyword'] = 1;
-			// }
-			// $loop++;
-		// }
+
+		$fields = array('Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime');
+
+		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID ASC', 'offset' => $offset));
+		$now = time();
+		$two_weeks = 7 * 24 * 60 * 60;
+
+		$loop = 0;
+		foreach ($keywords as $keyword) {
+			$created_date = strtotime($keyword['Keyword']['created']);
+			if ($now - $created_date > $two_weeks) {
+				$keywords[$loop]['Keyword']['NewKeyword'] = 0;
+			} else {
+				$keywords[$loop]['Keyword']['NewKeyword'] = 1;
+			}
+			$loop++;
+		}
+
 		$this -> set('keywords', $keywords);
 	}
 
@@ -119,7 +121,7 @@ class KeywordsController extends AppController {
 		$conds = array();
 		$conds['Rankhistory.KeyID'] = $id;
 
-		# data this month only
+		# show only data of this month
 		$month_start_day = date('Ym') . '01';
 		$month_end_day = date('Ym') . '31';
 		$conds1 = array();
@@ -129,18 +131,20 @@ class KeywordsController extends AppController {
 			$conds1['Rankhistory.Rank REGEXP'] = '^([1-9]|10)/([1-9]|10)';
 			$conds1['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m")'] = date('Y-m');
 			$this -> Paginator -> settings = array('limit' => 1000, 'conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC');
-		} else if ($show_all != 'false') { // show all condition
+		} else if ($show_all != 'false') {
+			 // show all condition
 			$conds1['DATE_FORMAT(Rankhistory.RankDate,"%Y")'] = date('Y'); // show year
 			$this -> Paginator -> settings = array('limit' => 1000, 'conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC');
-		} else { // show all month
+		} else {
+			 // show all month
 			$conds1['Rankhistory.RankDate BETWEEN ? AND ?'] = array($month_start_day, $month_end_day);
 			$this -> Paginator -> settings = array('limit' => 31, 'conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC');
 		}
 		$data_rankhistories = $this -> paginate('Rankhistory');
 
-		# post
 		if ($this -> request -> is('post')) {
-			if (!isset($this -> request -> data['Rankhistory']['data_rank_history'])) { # graph data　ajax
+			if (!isset($this -> request -> data['Rankhistory']['data_rank_history'])) {
+				 # graph data　with Ajax
 				$beginDate = implode('-', $this -> request -> data['Rankhistory']['RankDate1']);
 				$endDate = implode('-', $this -> request -> data['Rankhistory']['RankDate2']);
 				$days = $this -> dateDiff($beginDate, $endDate);
@@ -167,7 +171,8 @@ class KeywordsController extends AppController {
 				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m-%d")'] = $this -> forDate($beginDate, $endDate, $this->dayToStep($days));
 				$conds['Rankhistory.RankDate BETWEEN ? AND ?'] = array($beginDate_db, $endDate_db);
 				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
-			} else { # History Rank Date: Choose month data Form select Year Month
+			} else {
+				 # history rank date: choose month data from select month
 				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('limit' => 1000, 'conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
 				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m")'] = date('Y-m', strtotime($this -> request -> data['Rankhistory']['RankDate_list']['year'] . '-' . $this -> request -> data['Rankhistory']['RankDate_list']['month']));
 				$data_rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
@@ -183,7 +188,8 @@ class KeywordsController extends AppController {
 				$conds['Rankhistory.RankDate BETWEEN ? AND ?'] = array($beginDate_db, $endDate_db);
 				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
 			}
-		} else { // page first load
+		} else {
+			 // page first load
 			if (count($data_rankhistories) > 0) {
 				$rankhistories = array_slice($data_rankhistories, 0, 31);
 			} else {
@@ -191,7 +197,7 @@ class KeywordsController extends AppController {
 			}
 		}
 
-		# tooday rank set ?
+		# tooday rank set boolean
 		$today_rank = 1;
 		$this -> set('today_rank', $today_rank);
 
@@ -216,11 +222,10 @@ class KeywordsController extends AppController {
 			$this -> request -> data['Keyword']['Enabled'] = 1;
 			$this -> Keyword -> create();
 			if ($this -> Keyword -> save($this -> request -> data)) {
-				//
 				$this -> request -> data['Rankhistory']['KeyID'] = $this -> Keyword -> id;
 				$this -> request -> data['Rankhistory']['Url'] = $this -> request -> data['Keyword']['Url'];
 				$this -> request -> data['Rankhistory']['RankDate'] = date('Ymd');
-				//
+
 				$this -> request -> data['Duration']['KeyID'] = $this -> Keyword -> id;
 				$this -> request -> data['Duration']['StartDate'] = $this -> request -> data['Keyword']['rankstart'];
 				$this -> request -> data['Duration']['EndDate'] = $EndDate;
@@ -257,7 +262,6 @@ class KeywordsController extends AppController {
 		if ($this -> request -> is('post') || $this -> request -> is('put')) {
 			if ($this -> Keyword -> save($this -> request -> data)) {
 				$this -> Session -> setFlash(__('The keyword has been saved'));
-				// Redirect to Rankhistory
 				$this -> redirect(array('controller' => 'rankhistories', 'action' => 'index'));
 			} else {
 				$this -> Session -> setFlash(__('The keyword could not be saved. Please, try again.'));
@@ -302,8 +306,8 @@ class KeywordsController extends AppController {
 					}
 				} else {
 					$this -> Session -> setFlash(__('The keyword has been saved'), 'default', array('class' => 'success'));
-					$this -> redirect(array('controller' => 'keywords', 'action' => 'view', $id));
-					// $this->redirect($this->referer());
+					// $this -> redirect(array('controller' => 'rankhistories', 'action' => 'index'));
+					$this->redirect($this->referer());
 				}
 			} else {
 				$this -> Session -> setFlash(__('The keyword could not be saved. Please, try again.'), 'default', array('class' => 'error'));
@@ -334,7 +338,6 @@ class KeywordsController extends AppController {
 			$this -> request -> data['Keyword']['nocontract'] = 1;
 			if ($this -> Keyword -> save($this -> request -> data)) {
 				$this -> Session -> setFlash(__('The keyword has been cancelled'));
-				// Redirect to Rankhistory
 				$this -> redirect(array('controller' => 'rankhistories', 'action' => 'index'));
 			} else {
 				$this -> Session -> setFlash(__('The keyword could not be cancelled. Please, try again.'));
@@ -399,34 +402,12 @@ class KeywordsController extends AppController {
 	 */
 	public function set_all_keyword_enddate() {
 		if ($this -> request -> is('post') || $this -> request -> is('put')) {
-			if(!empty($this -> request -> data['Keyword']['id'])){
-				if(empty($this -> request -> data['Keyword']['rankend'])){
-					$rankend = '';
-					$kaiyaku_reason = '';
-				}else{
-					$rankend = implode('', $this -> request -> data['Keyword']['rankend']);
-					$kaiyaku_reason = implode('', $this -> request -> data['Keyword']['kaiyaku_reason']);
-				}
-				
-				if ($this -> Keyword -> updateAll(array(
-						'Keyword.rankend' => $rankend, 
-						'Keyword.kaiyaku_reason' => $kaiyaku_reason, 
-						'Keyword.updated' => "'" . date('Y-m-d H:i:s') . "'"), 
-						array(
-							'Keyword.UserID' => $this -> request -> data['Keyword']['UserID'], 
-							'Keyword.nocontract' => $this -> request -> data['Keyword']['nocontract'], 
-							'Keyword.rankend' => 0, 
-							'Keyword.ID' => $this -> request -> data['Keyword']['id']
-						)
-					)) {
-					$this -> Session -> setFlash(__('The keyword has been set'), 'default', array('class' => 'alert alert-success'));
-				} else {
-					$this -> Session -> setFlash(__('The keyword could not be set. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
-				}								
-			}else{
-				$this -> Session -> setFlash(__('I/O error.'), 'default', array('class' => 'alert alert-danger'));
+			if ($this -> Keyword -> updateAll(array('Keyword.rankend' => implode('', $this -> request -> data['Keyword']['rankend']), 'Keyword.kaiyaku_reason' => implode('', $this -> request -> data['Keyword']['kaiyaku_reason']), 'Keyword.updated' => "'" . date('Y-m-d H:i:s') . "'"), array('Keyword.UserID' => $this -> request -> data['Keyword']['UserID'], 'Keyword.nocontract' => $this -> request -> data['Keyword']['nocontract'], 'Keyword.rankend' => 0, 'Keyword.ID' => $this -> request -> data['Keyword']['id'], ))) {
+				$this -> Session -> setFlash(__('The keyword has been kaiyaku'), 'default', array('class' => 'success'));
+				$this -> redirect($this -> referer());
+			} else {
+				$this -> Session -> setFlash(__('The keyword could not be kaiyaku. Please, try again.'), 'default', array('class' => 'error'));
 			}
-			$this -> redirect($this -> referer());
 		}
 	}
 
@@ -652,13 +633,12 @@ class KeywordsController extends AppController {
 		}
 
 		//color
-		$color_code = Configure::read('Color.code');
 		if ($rank_new[0] >= 1 && $rank_new[0] <= 10 || $rank_new[1] >= 1 && $rank_new[1] <= 10) {
-			$check_params['color'] = $color_code['green'];
+			$check_params['color'] = '#E4EDF9';
 		} else if ($rank_old[0] >= 1 && $rank_old[0] <= 10 && $rank_new[0] > 10 || $rank_old[1] >= 1 && $rank_old[1] <= 10 && $rank_new[1] > 10) {
-			$check_params['color'] = $color_code['red'];
+			$check_params['color'] = '#FFBFBF';
 		} else if ($rank_new[0] > 10 && $rank_new[0] <= 20 || $rank_new[1] > 10 && $rank_new[1] <= 20) {
-			$check_params['color'] = $color_code['yellow'];
+			$check_params['color'] = '#FAFAD2';
 		} else {
 			$check_params['color'] = '';
 		}
@@ -693,9 +673,8 @@ class KeywordsController extends AppController {
 				$this -> Keyword -> Duration -> create();
 				$this -> Keyword -> Duration -> save($durations);
 			}
-			// sleep(1);
+			sleep(1);
 		}
-		$this->Security->SystemLog(array('Load Rank One', $data_rankhistory['Rankhistory']['Rank'], $rankhistory['Rankhistory']['Rank'], $this->Session->read('Auth.User.user.email'), $this->here));
 	}
 
 	/**
@@ -720,11 +699,14 @@ class KeywordsController extends AppController {
 			$engine = 3;
 			
 			$rank = array();
+			$rank['google_jp'] = $this -> Rank -> keyWordRank('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
+			$rank['yahoo_jp'] = $this -> Rank -> keyWordRank('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
+			
 			// $rank['google_jp'] = $this -> Rank -> GoogleJP('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
 			// $rank['yahoo_jp'] = $this -> Rank -> YahooJP('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
 			
-			$rank['google_jp_mobile'] = $this -> RankMobile -> GoogleJPPro('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
-			$rank['yahoo_jp_mobile'] = $this -> RankMobile -> YahooJPPro('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
+			// $rank['google_jp_mobile'] = $this -> RankMobile -> GoogleJPPro('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
+			// $rank['yahoo_jp_mobile'] = $this -> RankMobile -> YahooJPPro('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
 			
 			$rank = json_encode($rank);
 			
@@ -958,25 +940,21 @@ class KeywordsController extends AppController {
 	}
 	
 	/**
-	 * set inline rank method
+	 * set limit price method
 	 *
 	 * @return void
 	 */
-	public function set_inline_rank() {
-		Configure::write('debug', 2);
-		$pks = explode(',', $this -> request -> data['pk']);
+	public function set_all_c_logic() {
+		Configure::write('debug', 0);
 		$this -> autoRender = false;
-		// save db
-		$this -> Keyword -> Rankhistory -> recursive = -1;
-		$this -> Keyword -> Rankhistory -> updateAll(array('Rankhistory.' . $this -> request -> data['name'] => "'" . $this -> request -> data['value'] . "'"), array('Rankhistory.KeyID' => trim($pks[0]), 'Rankhistory.RankDate' => trim($pks[1])));
-		// log
-		$this->Security->SystemLog($this -> request -> data);
-		// return
+		$this -> Keyword -> updateAll(
+			array('Keyword.c_logic' => $this -> request -> data['value']), 
+			array('Keyword.UserID' => $this -> request -> data['company'])
+		);
+
 		$message = array();
-		$message['name'] = $this -> request -> data['name'];
-		$message['value'] = $this -> request -> data['value'];
-		
+		$message['status'] = 'ok';
 		return json_encode($message);
-	}
+	}	
 
 }
