@@ -72,6 +72,11 @@
 <!--hl start contract -->
 		<?php $keywords = Hash::extract($user['Keyword'], '{n}[nocontract=0]');?>
 		<span class="label label-success"><?php echo __('Contract Keyword'); ?></span>
+		<span class=""><?php echo count($keywords); ?></span>
+		<div class="fright">
+			<span class="btn btn-default set_c_logic" company_id="<?php echo $this->request->params['pass'][0]; ?>">✔</span>
+			<span class="btn btn-default unset_c_logic" company_id="<?php echo $this->request->params['pass'][0]; ?>">×</span>
+		</div>
 		<table class="table tableX">
 			<tr>
 				<th class="tbl1"><?php echo __('ID'); ?></th>
@@ -93,6 +98,7 @@
 					<!-- group -->
 					<?php echo ($keyword['limit_price_group'] != 0) ? '<span class="label label-warning">'.$keyword['limit_price_group'] .'</span>' : '' ?>
 					<?php echo $this->Html->link($keyword['keyword'], array('controller' => 'keywords', 'action' => 'view', $keyword['ID'])); ?>
+					<?php echo ($keyword['c_logic'] != 0) ? '<span class="label label-default">✔</span>' : '' ?>
 					<br />
 					<span class="kaiyaku"><?php echo ($keyword['rankend'] != 0 && $keyword['rankend'] <= date('Ymd')) ? __('Keyword Cancel Date') .$keyword['rankend'] : ''; ?></span>
 				</td>
@@ -256,9 +262,9 @@
 							$google_rank = 0;
 							$yahoo_rank = $rankhistory[$keyword['ID']];
 						}else {
-							$ranks = explode('/', $rankhistory[$keyword['ID']]);
-							$google_rank = $ranks[0];
-							$yahoo_rank = $ranks[1];
+							$ranks = explode('/', @$rankhistory[$keyword['ID']]);
+							$google_rank = @$ranks[0];
+							$yahoo_rank = @$ranks[1];
 						}
 						
 						if($google_rank==0 && $yahoo_rank!=0){
@@ -712,6 +718,24 @@
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
+	//set_c_logic or unset_c_logic
+	$('.set_c_logic, .unset_c_logic').click(function(){
+		var company = $(this).attr('company_id');
+		var value = 0;
+		if($(this).hasClass('set_c_logic')){
+			value = 1;
+		}
+		$.ajax({
+			url:'<?php echo $this->webroot ?>keywords/set_all_c_logic',
+			data:{value:value, company:company},
+			type:'POST',
+			sync: true,
+			dataType: 'json',
+			success:function(data){			
+				window.location.reload(true);
+			}
+		})		
+	});
 	// limit or not group 1
 	$.ajax({
 		url:'<?php echo $this->webroot ?>users/limit_or_not',
