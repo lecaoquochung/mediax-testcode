@@ -70,6 +70,11 @@
 						<label for="InputSeika"><?php echo $this -> Html -> tag('span', __('Nocontract')); ?></label>
 						<?php echo $this -> Form -> input('nocontract', array('label' => false, 'type' => 'select', 'options' => Configure::read('NOCONTRACT'), 'class' => 'form-control')); ?>
 					</div>
+		<!-- cost -->
+					<div class="form-group">
+						<label for="InputPrice"><?php echo $this -> Html -> tag('span', __('Cost')); ?></label>
+						<?php echo $this -> Form -> input('cost', array('type' => 'cost', 'label' => FALSE, 'placeholder' => __('Enter Cost'), 'class' => 'form-control')); ?>
+					</div>
 		<!-- price -->
 					<div class="form-group">
 						<label for="InputPrice"><?php echo $this -> Html -> tag('span', __('Price')); ?></label>
@@ -105,6 +110,10 @@
 					</div>
 		<!-- option -->
 					<div class="form-group">
+						<div class="checkbox">
+							<?php echo $this -> Form -> input('sales', array('class' => 'form-control', 'label' => False, 'div' => False)); ?>
+							<span class="alert-default"><strong><?php echo __('Sales Lists') ?></strong></span>
+						</div>
 						<div class="checkbox">
 							<?php echo $this -> Form -> input('mobile', array('class' => 'form-control', 'label' => False, 'div' => False)); ?>
 							<span class="alert-success"><strong><?php echo __('Check Rank Mobile') ?></strong></span>
