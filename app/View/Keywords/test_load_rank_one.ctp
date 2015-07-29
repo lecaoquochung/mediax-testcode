@@ -1,3 +1,4 @@
+AAA
 <?php echo $this -> Form -> create('Keyword', array('class' => 'KeywordAddForm')); ?>
 <!-- keyword -->
 	<div class="form-group">

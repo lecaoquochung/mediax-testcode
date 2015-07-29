@@ -192,7 +192,7 @@ class LoadServerTimeShell extends Shell {
 			//done keyword
 			$time_end = microtime(true); 
 			$execution_time = $time_end - $time_start;
-			$this -> out($count .' ' .date('H:i:s') .' ' . $keyword['Keyword']['ID'] . ' ' . $keyword['Keyword']['Keyword'] . ' ' . $keyword['Keyword']['Url'] .' ' .$rank .' ' .$execution_time .'s');
+			$this -> out($count .' ' .date('H:i:s') .' ' . $keyword['Keyword']['ID'] .' ' .$rank . ' ' . $keyword['Keyword']['Keyword'] . ' ' . $keyword['Keyword']['Url'] .' ' .$execution_time .'s');
 		}
 		
 		//　load rank successfully

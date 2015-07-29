@@ -113,7 +113,8 @@ class RankComponent extends Component {
 		$engines['yahoo_jp'] = array(
 			// 'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2',
 			'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2&n=20',
-			'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=100&fl=0&pstart=1&fr=top_v2&b=_START_', 
+			'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=40&fl=0&pstart=1&fr=top_v2&b=_START_', 
+			'url2' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=40&fl=0&pstart=1&fr=top_v2&b=_START_', 
 			'pattern' => '/<li><a href="([^<>]*)">/'
 		);
 		
@@ -124,14 +125,29 @@ class RankComponent extends Component {
 		$start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
 
 		$page_start++;
-		$pagemax = 1;
+		$pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 2 : 1;
+		
 		//only check rank within top10
 		if ($onlytop10) {
 			$pagemax = 0;
 		}
 
 		for ($page = $page_start; $page <= $pagemax; $page++) {
+			
 			$start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
+			
+			// 20150729 tracking yahoo jp
+			if($page == 1 && $engine == 'yahoo_jp') {
+				$start_base = 21;
+				$rank = 20;
+			}
+			
+			if($page == 2 && $engine == 'yahoo_jp') {
+				$start_base = 61;
+				$rank = 60;
+				$start = $start_base;
+			}
+			
 			$search_url = $engines[$engine]['url' . $page];
 			$search_url = str_replace('_QUERY_', $keystring, $search_url);
 			$search_url = str_replace('_START_', $start, $search_url);
@@ -152,6 +168,11 @@ class RankComponent extends Component {
 			
 			preg_match_all($engines[$engine]['pattern'], $html, $matches);
 			if (isset($matches[1])) {
+					
+				// 20150729 tracking yahoo jp
+				// pr($start);
+				// pr($matches[1]);
+				
 				$matches[1] = array_map("Text2Domain", $matches[1]);
 				$rank_arr['pages'][$page] = $matches[1];
 				$rank_arr['pagecount'] = $page;
@@ -161,7 +182,13 @@ class RankComponent extends Component {
 				}
 				$key = $this -> rootDomainSearch($url, $matches[1], $strict);
 				if ($key !== false) {
-					$rank = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $key + 1;
+					$rank += (($page - 1 < 0) ? 0 : $page - 1) * 100 + $key + 1;
+					
+					// 20150729 tracking yahoo jp
+					if($page == 2 && $engine == 'yahoo_jp') {
+						pr($key);
+						$rank = 61 + $key;
+					}
 					break;
 				}
 			}
@@ -169,7 +196,7 @@ class RankComponent extends Component {
 				sleep(1);
 			} else {
 				if ($rank > 0 && $rank <= 10) {// if top 100's rank <= 10, set it to 11
-					$rank = 11;
+					$rank += 11;
 				}
 			}
 		}

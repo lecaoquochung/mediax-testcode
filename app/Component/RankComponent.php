@@ -80,7 +80,10 @@ class RankComponent extends Component {
 		if ($onlytop10) {
 			$pagemax = 0;
 		}
-
+		
+		print_r($engines);
+		// exit;
+		
 		for ($page = $page_start; $page <= $pagemax; $page++) {
 			$start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
 			$search_url = $engines[$engine]['url' . $page];
@@ -99,14 +102,15 @@ class RankComponent extends Component {
 				$html = mb_convert_encoding($html, "UTF-8", "JIS, eucjp-win, sjis-win");
 			} else {
 				$html = mb_convert_encoding($html, 'UTF-8', "auto");
-			}
+			} 
 			
-			// $html = str_replace(array("\r", "\r\n", "\n", " ", "　", "\t"), '',$html);
-			// pr($html);
+			$html = str_replace(array("\r", "\r\n", "\n", " ", "　", "\t"), '',$html);		
+			exit;
 		
 			preg_match_all($engines[$engine]['pattern'], $html, $matches);
+			
 			if (isset($matches[1])) {
-				// pr($matches[1]);
+				// pr($matches[1]); 
 				// pr($url);
 				// exit;
 				$matches[1] = array_map("Text2Domain", $matches[1]);
