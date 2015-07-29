@@ -41,7 +41,9 @@ class LoadServerTimeShell extends Shell {
 			$interval_keyword = $this->args[6];
 		}
 		
-		$start_time = date('Ymd h:i:s');
+		$start_time = date('Ymd H:i:s');
+		$this -> out($start_time);
+		
 		//load component
 		$component = new ComponentCollection();
 		App::import('Component', 'Rank');
@@ -71,7 +73,7 @@ class LoadServerTimeShell extends Shell {
 			$count++;
 			if(($count%$interval_keyword)==0) {
 				$sleep = $interval_time;
-				$this -> out('---------------' .$start_time .' ' .date('Ymd h:i:s') .' ' .$sleep .'s ------------------');
+				$this -> out('---------------' .$start_time .' ' .date('Ymd H:i:s') .' ' .$sleep .'s ------------------');
 				sleep($sleep);
 			} else {
 				sleep(rand($rand01,$rand02));
@@ -157,9 +159,9 @@ class LoadServerTimeShell extends Shell {
 
 			//arrow
 			if (($rank_new[0] > $rank_old[0] && $rank_old[0] !=0) || ($rank_new[1] > $rank_old[1] && $rank_old[1] !=0) || ($rank_new[0] == 0 && $rank_old[0] != 0) || ($rank_new[1] == 0 && $rank_old[1] != 0)) {
-				$check_params['arrow'] = '<span class="red-arrow">↓</span>';
+				$check_params['arrow'] = '<span class="red-arrow">?</span>';
 			} else if (($rank_new[0] < $rank_old[0]) || ($rank_new[1] < $rank_old[1]) || ($rank_old[0] == 0 && $rank_new[0] != 0)) {
-				$check_params['arrow'] = '<span class="blue-arrow">↑</span>';
+				$check_params['arrow'] = '<span class="blue-arrow">?</span>';
 			} else {
 				$check_params['arrow'] = '';
 			}
@@ -190,18 +192,18 @@ class LoadServerTimeShell extends Shell {
 			//done keyword
 			$time_end = microtime(true); 
 			$execution_time = $time_end - $time_start;
-			$this -> out($count .' ' . $keyword['Keyword']['ID'] . ' ' . $keyword['Keyword']['Keyword'] . ' ' . $keyword['Keyword']['Url'] .' ' .$rank .' ' .$execution_time .'s');
+			$this -> out($count .' ' .date('H:i:s') .' ' . $keyword['Keyword']['ID'] .' ' .$rank . ' ' . $keyword['Keyword']['Keyword'] . ' ' . $keyword['Keyword']['Url'] .' ' .$execution_time .'s');
 		}
 		
-		//　load rank successfully
+		// load rank successfully
 		$this -> out('---------------DONE------------------');
-		$end_time = date('Ymd h:i:s');
+		$end_time = date('Ymd H:i:s');
 		$this -> out('Start time:	' .$start_time);
 		$this -> out('End time:	' .$end_time);
 		$this -> out('-------------------------------------');
 		
 		$Email = new CakeEmail();
-		$Email->from(array('admin@ddnb.info' => 'ADMIN SEMCHECK'));
+		$Email->from(array('server-admin@'.$_SERVER['HOSTNAME'] => 'MEDIAX ADMIN'));
 		$Email->to('lecaoquochung.com@gmail.com');
 		$Email->subject('Load Server Time');
 		$Email->send("Start time: ".$start_time."\n End time: ".$end_time);		
