@@ -241,17 +241,19 @@
 							if(count($data_extra)>0){
 								ksort($data_extra);
 								$key_extra = array_keys($data_extra);
-									echo $total_price[] = $data_extra[$key_extra[0]];
+									$sales = $data_extra[$key_extra[0]] - $keyword['Keyword']['cost'];
+									echo $total_price[] = $sales;
 									$group_extra[$key_extra[0]][] = $data_extra[$key_extra[0]];
 									$group_rank[$rankhistory['Rankhistory']['Rank']][] = $data_extra[$key_extra[0]];
 							}else{
 								foreach($extra as $key => $value) {
 									if(($google_rank <= $key && $google_rank != 0) || ($yahoo_rank <= $key && $yahoo_rank != 0)){
-										echo $total_price[] = isset($value) ? $value : 0;
+										$sales = isset($value) ? $value - $keyword['Keyword']['cost'] : 0;
+										echo $total_price[] = $sales;
 										$group_rank[$rankhistory['Rankhistory']['Rank']][] = isset($value) ? $value : 0;
 										$group_extra[$key][] = $value;
 									}
-								} 
+								}
 							}
 						?>
 					</td>
@@ -267,7 +269,7 @@
 				 ?>
 				<tr>
 					<td colspan="3" class="price-left no-boder"><?php echo $key_group_extra.'位保証 : ' .count($value_group_extra).'日'.' x '.money_format('%.0n', $value_group_extra[0]) ?></td>
-					<td colspan="1" class="price-bold no-boder"><?php echo money_format('%.0n',array_sum($value_group_extra)); ?></td>
+					<td colspan="1" class="price-bold no-boder"><?php echo money_format('%.0n',array_sum($value_group_extra) - count($value_group_extra)*$keyword['Keyword']['cost']); ?></td>
 				</tr>	 
 				 <?php
 						endforeach;

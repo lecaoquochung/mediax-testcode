@@ -79,6 +79,76 @@ class RankhistoriesController extends AppController {
 	}
 
 /*------------------------------------------------------------------------------------------------------------
+ * sales method
+ * 
+ * author lecaoquochung@gmail.com
+ * created 2015-07
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function sales($status = 0, $rankrange = FALSE) {
+		set_time_limit(0);
+		$rankDate = date('Ymd');
+		$conds = array();
+		$conds['Rankhistory.rankDate'] = date('Ymd');
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.service'] = 0;
+		$conds['Keyword.sales'] = 1;
+		$conds['OR'] = array( array('Keyword.rankend' => 0), array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))));
+
+		if ($rankrange == 10) {
+			$conds['Rankhistory.Rank REGEXP'] = '^([{1-9}][^0-9])|10 | ([1-9])|10$';
+		}
+
+		if ($rankrange == 20) {
+			$conds['Rankhistory.Rank REGEXP'] = '^([1][1-9])|20 | ([1][1-9])|20$';
+		}
+
+		if ($rankrange == 100) {
+			$conds['Rankhistory.Rank REGEXP'] = '^([2-9][1-9])|100 | ([2-9][1-9])|100$';
+		}
+
+		if ($rankrange == 1000) {
+			$conds['Rankhistory.Rank REGEXP'] = '^([0-0])/([0-0])';
+		}
+
+		if ($this -> request -> is('post')) {
+			$rankDate = $this -> request -> data['Rankhistory']['rankDate']['year'] . $this -> request -> data['Rankhistory']['rankDate']['month'] . $this -> request -> data['Rankhistory']['rankDate']['day'];
+			if (!empty($this -> request -> data['Rankhistory']['keyword'])) {
+				$users = $this -> Rankhistory -> Keyword -> User -> find('list', array('fields' => array('User.id', 'User.id'), 'conditions' => array('User.company LIKE' => '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%')));
+				$conds['OR']['Rankhistory.url LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%';
+				$conds['OR']['Keyword.Keyword LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%';
+				$conds['OR']['Keyword.url LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%';
+				$conds['OR']['Keyword.UserID'] = $users;
+			}
+			$conds['Rankhistory.rankDate'] = $this -> request -> data['Rankhistory']['rankDate']['year'] . $this -> request -> data['Rankhistory']['rankDate']['month'] . $this -> request -> data['Rankhistory']['rankDate']['day'];
+		}
+
+		$this -> Rankhistory -> recursive = 0;
+
+		$order = array();
+		$order['Keyword.UserID'] = 'DESC';
+		$order['Rankhistory.updated'] = 'DESC';
+
+		$fields = array(
+			'Rankhistory.ID', 'Rankhistory.Url', 'Rankhistory.Rank', 'Rankhistory.RankDate', 'Rankhistory.params', 
+			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Engine', 'Keyword.rankend', 'Keyword.Enabled', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.Url', 'Keyword.Strict', 'Keyword.limit_price', 'Keyword.limit_price_group', 'Keyword.cost');
+
+		$rankhistories = $this -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order, 'limit' => Configure::read('Page.max')));
+		$keyword_id = Hash::extract($rankhistories, '{n}.Keyword.ID');
+
+		#Extra
+		$this -> loadModel('Extra');
+		$this -> Extra -> recursive = -1;
+		$extras = $this -> Extra -> find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_id)));
+
+		$this -> set('rankhistories', $rankhistories);
+		$this -> set('extras', $extras);
+		$this -> set('user', $this -> Rankhistory -> Keyword -> User -> find('list', array('fields' => array('User.id', 'User.company'))));
+		$this -> set('rankDate', $rankDate);
+	}
+
+
+/*------------------------------------------------------------------------------------------------------------
  * rankmobile method
  * 
  * author lecaoquochung@gmail.com
