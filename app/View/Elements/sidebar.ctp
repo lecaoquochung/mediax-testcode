@@ -45,6 +45,10 @@
 					<li class="<?php echo $this->here==$this->webroot.'rankhistories/service'?'active':''?>">
 						<a href="<?php echo $this->webroot?>rankhistories/service"> <i class="fa fa-leaf"></i> <span><?php echo __('Free Service'); ?></span> <!-- <small class="badge pull-right bg-green" id="contract">#</small> --></a>
 					</li>
+					<!-- sales -->
+					<li class="<?php echo ($this->here==$this->webroot.'rankhistories/sales' || $this->here==$this->webroot)?'active':''?>">
+						<a href="<?php echo $this->webroot?>rankhistories/sales"> <i class="fa fa-check-square-o"></i> <span><?php echo __('Sales'); ?></span> <small class="badge pull-right bg-yellow" id="contract"></small></a>
+					</li>
 				</ul>
 			</li>
 <!-- mobile -->
