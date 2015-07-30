@@ -195,7 +195,7 @@ class LoadServerTimeShell extends Shell {
 			$this -> out($count .' ' .date('H:i:s') .' ' . $keyword['Keyword']['ID'] .' ' .$rank . ' ' . $keyword['Keyword']['Keyword'] . ' ' . $keyword['Keyword']['Url'] .' ' .$execution_time .'s');
 		}
 		
-		//　load rank successfully
+		// load rank successfully
 		$this -> out('---------------DONE------------------');
 		$end_time = date('Ymd H:i:s');
 		$this -> out('Start time:	' .$start_time);
