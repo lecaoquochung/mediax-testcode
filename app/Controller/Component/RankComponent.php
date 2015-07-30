@@ -7,7 +7,7 @@ App::uses('Component', 'Controller');
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -20,7 +20,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -43,7 +43,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -70,7 +70,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -139,12 +139,10 @@ class RankComponent extends Component {
                         // 20150729 tracking yahoo jp
                         if($page == 1 && $engine == 'yahoo_jp') {
                                 $start_base = 21;
-                                $rank = 20;
                         }
 
                         if($page == 2 && $engine == 'yahoo_jp') {
                                 $start_base = 61;
-                                $rank = 60;
                                 $start = $start_base;
                         }
 
@@ -186,7 +184,9 @@ class RankComponent extends Component {
 
                                         // 20150729 tracking yahoo jp
                                         if($page == 2 && $engine == 'yahoo_jp') {
-                                                pr($key);
+                                                $rank = 21 + $key;
+                                        }
+                                        if($page == 2 && $engine == 'yahoo_jp') {
                                                 $rank = 61 + $key;
                                         }
                                         break;
@@ -250,7 +250,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -372,7 +372,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -508,7 +508,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -537,7 +537,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -565,7 +565,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
@@ -589,7 +589,7 @@ class RankComponent extends Component {
  * @input
  * @output
  *
- * @author              ddnb_admin <lecaoquochung@gmail.com>
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/

@@ -159,9 +159,9 @@ class LoadServerTimeShell extends Shell {
 
 			//arrow
 			if (($rank_new[0] > $rank_old[0] && $rank_old[0] !=0) || ($rank_new[1] > $rank_old[1] && $rank_old[1] !=0) || ($rank_new[0] == 0 && $rank_old[0] != 0) || ($rank_new[1] == 0 && $rank_old[1] != 0)) {
-				$check_params['arrow'] = '<span class="red-arrow">?</span>';
+				$check_params['arrow'] = '<span class="red-arrow">↓</span>';
 			} else if (($rank_new[0] < $rank_old[0]) || ($rank_new[1] < $rank_old[1]) || ($rank_old[0] == 0 && $rank_new[0] != 0)) {
-				$check_params['arrow'] = '<span class="blue-arrow">?</span>';
+				$check_params['arrow'] = '<span class="blue-arrow">↑</span>';
 			} else {
 				$check_params['arrow'] = '';
 			}
