@@ -1,6 +1,13 @@
 <?php
 /*------------------------------------------------------------------------------------------------------------
  * Sales
+ * param01: offset
+ * param02: limit
+ * param03: interval time
+ * param04: c_logic boolean
+ * param05: random time 01
+ * param06: random time 02
+ * param07: interval keyword
  *
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
