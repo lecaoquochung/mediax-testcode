@@ -281,7 +281,7 @@ class KeywordsController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null, $layout = null) {
+	public function edit($id = null) {
 		$this -> Keyword -> id = $id;
 		$this -> Keyword -> Rankhistory -> id = $this -> Keyword -> Rankhistory -> find('first', array('conditions' => array('KeyID' => $this -> Keyword -> id, 'RankDate' => date('Ymd'))));
 		if (!$this -> Keyword -> exists()) {
@@ -317,9 +317,7 @@ class KeywordsController extends AppController {
 		}
 		$users = $this -> Keyword -> User -> find('list', array('fields' => array('User.id', 'User.company')));
 		$this -> set(compact('users'));
-		if(!empty($layout)){
-			$this->layout = 'popup';
-		}
+
 	}
 
 	/**
