@@ -37,7 +37,11 @@ class KeywordsController extends AppController {
 			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
 		);
 
-		$fields = array('Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime');
+		$fields = array(
+			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 
+			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost',
+			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime'
+		);
 
 		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID ASC', 'offset' => $offset));
 		$now = time();
