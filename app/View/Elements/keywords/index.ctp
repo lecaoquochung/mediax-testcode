@@ -1,3 +1,4 @@
+AAA
 <table id="example" class="display nowrap dataTable dtr-inline" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
 	<thead>
 		<tr>
@@ -6,6 +7,8 @@
 			<th class=""><?php echo __('Keyword'); ?></th>
 			<th class=""><?php echo __('Url'); ?></th>
 			<th class=""><?php echo __('Company'); ?></th>
+			<th class=""><?php echo __('Cost'); ?></th>
+			<th class=""><?php echo __('Price'); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -19,6 +22,8 @@
 			</td>
 			<td><?php echo $this->Text->truncate($keyword['Keyword']['Url'], 30); ?></td>
 			<td><?php echo $keyword['User']['company']; ?></td>
+			<td><?php echo $keyword['Keyword']['cost']; ?></td>
+			<td><?php echo $keyword['Keyword']['Price']; ?></td>
 		</tr>
 	<?php endforeach; ?>
 	</tbody>
