@@ -66,7 +66,7 @@ class SalesShell extends Shell {
 		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
-		$conds['Keyword.c_logic'] = $c_logic;
+//		$conds['Keyword.c_logic'] = $c_logic; // nocheck
 		$conds['Keyword.sales'] = 1;
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
@@ -74,6 +74,7 @@ class SalesShell extends Shell {
 		);
 
 		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'limit' => $limit, 'offset' => $offset));
+		$this -> out('Keyword: ' .count($keywords));
 		
 		$count = 0;
 		foreach ($keywords as $keyword) {

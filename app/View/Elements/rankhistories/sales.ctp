@@ -157,7 +157,7 @@
 						@$rankup_percentage = (count(@$total_price)) / count($rankhistories) * 100;
 					?>
 					<tr>
-						<td colspan="4" style="text-align:right;font-weight:bold">合計</td>
+						<td colspan="4" style="text-align:right;font-weight:bold">合計(<?php echo count(@$total_price) .'/' .count($rankhistories); ?>)</td>
 						<td class="total">
 							<h2><span class="label label-info">
 								<?php echo $total; ?>
@@ -165,11 +165,13 @@
 						</td>
 						<td class="">
 							<h2>
-								<!-- <span class="label <?php #echo $rankup_percentage<100?'label-danger':'label-success'; ?>">
-									<?php #echo round($rankup_percentage, 2) .'%';?>
-								</span> -->
+								<span class="label <?php echo $rankup_percentage<100?'label-danger':'label-success'; ?>">
+									<?php echo round($rankup_percentage, 2) .'%';?>
+								</span>
 							</h2>
 						</td>
+					</tr>
+					<tr>
 					</tr>
 				</table>
 			</div>
