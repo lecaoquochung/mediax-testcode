@@ -51,6 +51,10 @@
 					</li>
 				</ul>
 			</li>
+<!-- keyword -->
+			<li class="<?php echo $this->here==$this->webroot.'keywords'?'active':'' ?>">
+				<a href="<?php echo $this->webroot?>keywords"> <i class="fa fa-mobile"></i> <span><?php echo __('Keywords'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>
+			</li>
 <!-- mobile -->
 			<li class="<?php echo $this->here==$this->webroot.'rankhistories/rankmobile'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>rankhistories/rankmobile"> <i class="fa fa-mobile"></i> <span><?php echo __('Rank Mobile'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>

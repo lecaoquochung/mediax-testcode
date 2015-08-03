@@ -292,6 +292,8 @@ class KeywordsController extends AppController {
 			throw new NotFoundException(__('Invalid keyword'));
 		}
 		if ($this -> request -> is('post') || $this -> request -> is('put')) {
+			
+//			debug($this->request->data);exit;
 
 			if (isset($this -> request -> data['Keyword']['rankend'])) {
 				$this -> request -> data['Keyword']['rankend'] = implode('', $this -> request -> data['Keyword']['rankend']);
