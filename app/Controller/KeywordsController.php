@@ -31,7 +31,7 @@ class KeywordsController extends AppController {
 		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
-		$conds['Keyword.c_logic'] = $c_logic;
+//		$conds['Keyword.c_logic'] = $c_logic;
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
 			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
@@ -292,6 +292,8 @@ class KeywordsController extends AppController {
 			throw new NotFoundException(__('Invalid keyword'));
 		}
 		if ($this -> request -> is('post') || $this -> request -> is('put')) {
+			
+//			debug($this->request->data);exit;
 
 			if (isset($this -> request -> data['Keyword']['rankend'])) {
 				$this -> request -> data['Keyword']['rankend'] = implode('', $this -> request -> data['Keyword']['rankend']);
