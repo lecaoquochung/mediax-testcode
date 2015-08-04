@@ -963,5 +963,71 @@ class KeywordsController extends AppController {
 		$message['status'] = 'ok';
 		return json_encode($message);
 	}	
+		
+	/**
+	 * set limit price method
+	 *
+	 * @return void
+	 */
+	public function edit_inline() {
+		Configure::write('debug', 0);
+		$this -> autoRender = false;
 
+		$this -> Keyword -> updateAll(
+			array('Keyword.'.$this -> request -> data['name'] => $this -> request -> data['value']), 
+			array('Keyword.id' => $this -> request -> data['pk'])
+		);
+
+		$message = array();
+		$message['name'] = $this -> request -> data['name'];
+		$message['value'] = $this -> request -> data['value'];
+		return json_encode($message);
+	}	
+
+	public function exportCsv() {
+		$conds = array();
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['OR'] = array( 
+			array('Keyword.rankend' => 0), 
+			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
+		);
+		
+		$fields = array();
+		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'User.company', 'Keyword.cost', 'Keyword.Price');
+		$this -> export(array(
+			//'recursive'=>1,
+			'conditions' => $conds,
+			'fields' => $fields, 
+			'order' => 'Keyword.ID ASC', 
+			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD'
+		));
+	}	
+	
+/**
+ * upload csv method
+ *
+ * @throws NotFoundException
+ * @throws MethodNotAllowedException
+ * @param string $id
+ * @return void
+ */	
+	public function uploadCsv() {
+		if($this->request->is('post') && !empty($this->request->data['Upload']['csv'])){
+			$result = $this->Upload->uploadFile(Configure::read('FOLDER_UPLOAD_CSV'),$this->request->data['Upload']['filename']);
+			if(array_key_exists('name', $result)){
+				try {
+					$company['Company']['user_id'] = $this->Auth->user('id');
+					$this->Keyword->importCSV(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name']);
+				} catch (Exception $e) {
+					$import_errors = $this->Keyword->getImportErrors();
+					//pr($import_errors);exit();
+					$this->set( 'import_errors', $import_errors );
+					$this->Session->setFlash( __('Error Importing') . ' ' . $result['name'] . ', ' . __('column name mismatch.')  );
+				}
+				//$csv = $this->Csv->import(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name'],Configure::read('HEADER_CSV'));
+			}
+		}
+	}	
+	
 }
