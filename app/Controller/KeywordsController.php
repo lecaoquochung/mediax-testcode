@@ -1013,15 +1013,14 @@ class KeywordsController extends AppController {
  * @return void
  */	
 	public function uploadCsv() {
-		if($this->request->is('post') && !empty($this->request->data['Upload']['csv'])){
-			$result = $this->Upload->uploadFile(Configure::read('FOLDER_UPLOAD_CSV'),$this->request->data['Upload']['filename']);
+		if($this->request->is('post') && !empty($this->request->data['Keyword']['csv'])){
+			$result = $this->Upload->uploadFile(Configure::read('FOLDER_UPLOAD_CSV'),$this->request->data['Keyword']['csv']);
 			if(array_key_exists('name', $result)){
 				try {
-					$company['Company']['user_id'] = $this->Auth->user('id');
 					$this->Keyword->importCSV(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name']);
 				} catch (Exception $e) {
 					$import_errors = $this->Keyword->getImportErrors();
-					//pr($import_errors);exit();
+					pr($import_errors);exit();
 					$this->set( 'import_errors', $import_errors );
 					$this->Session->setFlash( __('Error Importing') . ' ' . $result['name'] . ', ' . __('column name mismatch.')  );
 				}

@@ -11,6 +11,7 @@
 			<th class=""><?php echo __('Company'); ?></th>
 			<th class=""><?php echo __('Cost'); ?></th>
 			<th class=""><?php echo __('Price'); ?></th>
+			<th class=""><?php echo __('Sales'); ?></th>
 			<th class=""><?php echo __('Actions'); ?></th>
 		</tr>
 	</thead>
@@ -36,6 +37,13 @@
 					<?php echo $keyword['Keyword']['Price']; ?>
 				</div>
 			</td>
+			<td>
+				<?php if(empty($keyword['Keyword']['sales'])): ?>
+					<i class="fa fa-square-o"></i>
+				<?php else: ?>
+					<i class="fa fa-check-square-o"></i>
+				<?php endif; ?>
+			</td>			
 			<td class="edit_keword_extra">
 				<a href="<?php echo $this->webroot; ?>extras/add/<?php echo $keyword['Keyword']['ID']; ?>/popup" title="Edit keyowrd <?php echo $keyword['Keyword']['Keyword']; ?>"><i class="fa fa-edit"></i></a>
 			</td>

@@ -5,7 +5,7 @@
 				<h3 class="box-title"><?php  echo __('Upload Keyword csv'); ?></h3>
 			</div>
 			<?php echo $this -> Session -> flash(); ?>
-			<?php echo $this -> Form -> create('Upload', array('class' => 'KeywordAddForm','type' => 'file')); ?>
+			<?php echo $this -> Form -> create('Keyword', array('class' => 'KeywordAddForm','type' => 'file')); ?>
 			<div class="box-body">
 <!-- keyword -->
 			<div class="form-group">
