@@ -39,7 +39,7 @@ class KeywordsController extends AppController {
 
 		$fields = array(
 			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 
-			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost',
+			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost','Keyword.sales',
 			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime'
 		);
 
@@ -972,10 +972,13 @@ class KeywordsController extends AppController {
 	public function edit_inline() {
 		Configure::write('debug', 0);
 		$this -> autoRender = false;
-
+		$this -> Keyword -> recursive = -1;
+		$this->Keyword->unbindModel(
+			array('belongsTo' => array('User'))
+		);
 		$this -> Keyword -> updateAll(
 			array('Keyword.'.$this -> request -> data['name'] => $this -> request -> data['value']), 
-			array('Keyword.id' => $this -> request -> data['pk'])
+			array('Keyword.ID' => $this -> request -> data['pk'])
 		);
 
 		$message = array();

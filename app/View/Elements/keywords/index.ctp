@@ -39,12 +39,12 @@
 			</td>
 			<td>
 				<?php if(empty($keyword['Keyword']['sales'])): ?>
-					<i class="fa fa-square-o"></i>
+					<a href="javascript:void(0)" class="edit_ajax" data-value="1" data-name="sales" data-pk="<?php echo $keyword['Keyword']['ID']; ?>"><i class="fa fa-times"></i></a>
 				<?php else: ?>
-					<i class="fa fa-check-square-o"></i>
+					<a href="javascript:void(0)" class="edit_ajax" data-value="0" data-name="sales" data-pk="<?php echo $keyword['Keyword']['ID']; ?>"><i class="fa fa-check"></i></a>
 				<?php endif; ?>
 			</td>			
-			<td class="edit_keword_extra">
+			<td class="edit_keyword_extra">
 				<a href="<?php echo $this->webroot; ?>extras/add/<?php echo $keyword['Keyword']['ID']; ?>/popup" title="Edit keyowrd <?php echo $keyword['Keyword']['Keyword']; ?>"><i class="fa fa-edit"></i></a>
 			</td>
 		</tr>
@@ -55,13 +55,7 @@
 <?php echo $this->Html->css(array('fancybox/jquery.fancybox','bootstrap-editable'));?>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('.edit_keyword_popup a').fancybox({
-			type : 'iframe',
-			width		: '70%',
-			height		: '100%'		
-		});
-		
-		$('.edit_keyword_extra a').fancybox({
+		$('.edit_keyword_popup a, .edit_keyword_extra a').fancybox({
 			type : 'iframe',
 			width		: '70%',
 			height		: '100%'		
@@ -75,5 +69,27 @@
 			   name: $(this).attr('name'),
 			   title: 'Edit '+$(this).attr('name')
 		});		
+		
+		$('.edit_ajax').click(function(){
+			var obj = $(this);
+			var name = $(this).attr('data-name');
+			var value = $(this).attr('data-value');
+			var pk = $(this).attr('data-pk');
+			$.ajax({
+				url: '<?php echo $this->webroot.'keywords/edit_inline' ?>',
+				data: {name:name, value:value, pk:pk},
+				type: 'post',
+				dataType: 'json',
+				success: function(data){
+					var tmp_value = data.value==0?1:0;
+					obj.attr('data-value',tmp_value);
+					if(tmp_value==1){
+						obj.find('i').attr('class','fa fa-times');
+					}else{
+						obj.find('i').attr('class','fa fa-check');
+					}
+				}
+			});
+		});
 	});
 </script>

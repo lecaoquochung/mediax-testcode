@@ -37,7 +37,7 @@ class ExtrasController extends AppController {
  *
  * @return void
  */
-	public function add($keyID) {
+	public function add($keyID, $layout = null) {
 		if ($this->request->is('post')) {			
 			$this->Extra->set($this->request->data);
 			if ($this->Extra->validates()) {
@@ -59,6 +59,9 @@ class ExtrasController extends AppController {
                     )
                 ));
 		$this->set(compact('keyword'));
+		if(!empty($layout)){
+			$this->layout = 'popup';
+		}
 	}
 
 /**
