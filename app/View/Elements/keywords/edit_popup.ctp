@@ -115,6 +115,10 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
+		<?php if(isset($close_window)): ?>
+		parent.location.reload(true);
+		parent.$.fancybox.close();
+		<?php endif; ?>
 		$('.cancel_keyword').click(function() {
 			var keyID = $(this).val();
 			var Url = $('#KeywordUrl').val();

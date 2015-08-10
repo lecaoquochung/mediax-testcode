@@ -52,6 +52,10 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	<?php if(isset($close_window)): ?>
+	parent.location.reload(true);
+	parent.$.fancybox.close();
+	<?php endif; ?>	
     $('.delete_extra').click(function(){
         var obj = $(this);
         var extraID = $(this).attr('extra_id');

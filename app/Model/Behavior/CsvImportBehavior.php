@@ -76,6 +76,11 @@ class CsvImportBehavior extends ModelBehavior {
 		);
 	}
 
+protected function remove_utf8_bom($text){
+	$text = preg_replace('/\x{FEFF}/u', '', $text);
+    return $text;
+}	
+	
 /**
  * Returns a list of keys representing the columns of the CSV file
  *
@@ -88,9 +93,10 @@ class CsvImportBehavior extends ModelBehavior {
 			$header = $this->_getCSVLine($Model, $handle);
 		} else {
 			if(!empty($this->settings[$Model->alias]['mapHeader']) && Configure::read($this->settings[$Model->alias]['mapHeader'])){
-				$headers = $this->_getCSVLine($Model, $handle);				
+				$headers = $this->_getCSVLine($Model, $handle);								
 				$mapHeader = Configure::read($this->settings[$Model->alias]['mapHeader']);
 				foreach($headers as $key=>$value){
+					$value = $this->remove_utf8_bom($value);
 					$value = mb_convert_encoding($value,'UTF-8',"SJIS");
 					if(isset($mapHeader[$value]) && !empty($mapHeader[$value])){
 						$header[$key] = $mapHeader[$value];
@@ -158,7 +164,7 @@ class CsvImportBehavior extends ModelBehavior {
 			// save the row
 			if (!$error && !$Model->saveAll($data, array('validate' => false,'atomic' => false))) {
 				$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.'), $Model->alias, $i);
-				$error = true;
+				$error = true;				
 				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
 			}
 
