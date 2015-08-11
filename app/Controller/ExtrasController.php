@@ -37,13 +37,17 @@ class ExtrasController extends AppController {
  *
  * @return void
  */
-	public function add($keyID) {
+	public function add($keyID, $layout = null) {
 		if ($this->request->is('post')) {			
 			$this->Extra->set($this->request->data);
 			if ($this->Extra->validates()) {
 				$this->Extra->create();
 				if ($this->Extra->save($this->request->data)) {
-					$this->Session->setFlash(__('The extra has been saved'));
+					if(empty($layout)){
+						$this->Session->setFlash(__('The extra has been saved'));
+					}else{
+						$this -> set('close_window','close_window');
+					}										
 				} else {
 					$this->Session->setFlash(__('The extra could not be saved. Please, try again.'));
 				}			
@@ -59,6 +63,9 @@ class ExtrasController extends AppController {
                     )
                 ));
 		$this->set(compact('keyword'));
+		if(!empty($layout)){
+			$this->layout = 'popup';
+		}
 	}
 
 /**

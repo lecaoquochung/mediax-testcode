@@ -99,6 +99,11 @@ class CsvExportBehavior extends ModelBehavior {
 			$Model -> recursive = -1;
 		}
 		
+		if (isset($options['recursive'])) {
+			$Model -> recursive = $options['recursive'];
+			unset($options['recursive']);
+		}			
+		
 		$records = $Model -> find('all', $options);
 		
 		if (!empty($records)) {

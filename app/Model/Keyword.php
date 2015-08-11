@@ -231,6 +231,11 @@ class Keyword extends AppModel {
 	        'enclosure' => '"', //The enclosure, default is "
 	        'max_execution_time' => 360, //Increase for Models with lots of data, has no effect is php safemode is enabled.
 	        'encoding' => 'utf8' //Prefixes the return file with a BOM and attempts to utf_encode() data
-	    )
+	    ),
+		'CsvImport' => array(
+			'delimiter'  => ',',
+			'hasHeader'=>false,
+			'mapHeader'=> 'HEADER_CSV_KEYWORD'//Configure::read('HEADER_CSV_COMPANY')
+		)		
     );
 }

@@ -39,11 +39,11 @@ class KeywordsController extends AppController {
 
 		$fields = array(
 			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 
-			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost',
+			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost','Keyword.sales',
 			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime'
 		);
 
-		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID ASC', 'offset' => $offset));
+		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID DESC', 'offset' => $offset));
 		$now = time();
 		$two_weeks = 7 * 24 * 60 * 60;
 
@@ -305,15 +305,27 @@ class KeywordsController extends AppController {
 				if (isset($this -> request -> data['Keyword']['kaiyaku_reason'])) {
 					$this -> Session -> setFlash(__('The keyword has been cancelled.'), 'default', array('class' => 'error'));
 					if ($this -> request -> data['Keyword']['rankend'] < date('Ymd', strtotime('-1 month' . date('Ymd')))) {
-						$this -> redirect(array('controller' => 'keywords', 'action' => 'kaiyakulist'));
+						if(empty($layout)){
+							$this -> redirect(array('controller' => 'keywords', 'action' => 'kaiyakulist'));
+						}else{
+							$this -> set('close_window','close_window');
+						}												
 					} else {
 						// $this->redirect(array('controller'=>'rankhistories','action'=>'index'));
-						$this -> redirect($this -> referer());
+						if(empty($layout)){
+							$this -> redirect($this -> referer());
+						}else{
+							$this -> set('close_window','close_window');
+						}
 					}
 				} else {
 					$this -> Session -> setFlash(__('The keyword has been saved'), 'default', array('class' => 'success'));
 					// $this -> redirect(array('controller' => 'rankhistories', 'action' => 'index'));
-					$this->redirect($this->referer());
+					if(empty($layout)){
+						$this -> redirect($this -> referer());
+					}else{
+						$this -> set('close_window','close_window');
+					}
 				}
 			} else {
 				$this -> Session -> setFlash(__('The keyword could not be saved. Please, try again.'), 'default', array('class' => 'error'));
@@ -963,5 +975,77 @@ class KeywordsController extends AppController {
 		$message['status'] = 'ok';
 		return json_encode($message);
 	}	
+		
+	/**
+	 * set limit price method
+	 *
+	 * @return void
+	 */
+	public function edit_inline() {
+		Configure::write('debug', 0);
+		$this -> autoRender = false;
+		$this -> Keyword -> recursive = -1;
+		$this->Keyword->unbindModel(
+			array('belongsTo' => array('User'))
+		);
+		$this -> Keyword -> updateAll(
+			array('Keyword.'.$this -> request -> data['name'] => $this -> request -> data['value']), 
+			array('Keyword.ID' => $this -> request -> data['pk'])
+		);
 
+		$message = array();
+		$message['name'] = $this -> request -> data['name'];
+		$message['value'] = $this -> request -> data['value'];
+		return json_encode($message);
+	}	
+
+	public function exportCsv() {
+		$conds = array();
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['OR'] = array( 
+			array('Keyword.rankend' => 0), 
+			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
+		);
+		
+		$fields = array();
+		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'User.company', 'Keyword.cost', 'Keyword.Price');
+		$this -> export(array(
+			//'recursive'=>1,
+			'conditions' => $conds,
+			'fields' => $fields, 
+			'order' => 'Keyword.ID DESC', 
+			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD'
+		));
+	}	
+	
+/**
+ * upload csv method
+ *
+ * @throws NotFoundException
+ * @throws MethodNotAllowedException
+ * @param string $id
+ * @return void
+ */	
+	public function uploadCsv() {
+		if($this->request->is('post') && !empty($this->request->data['Keyword']['csv'])){
+			$result = $this->Upload->uploadFile(Configure::read('FOLDER_UPLOAD_CSV'),$this->request->data['Keyword']['csv']);
+			if(array_key_exists('name', $result)){
+				$keyword['Keyword']['Engine'] = 3;
+				$keyword['Keyword']['Strict'] = 0;				
+				$keyword['Keyword']['seika'] = 0;								
+				$keyword['Keyword']['nocontract'] = 0;												
+				try {
+					$this->Keyword->importCSV(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name'],$keyword);
+					$this->Session->setFlash( __('Upload csv successfull.'));
+				} catch (Exception $e) {
+					$import_errors = $this->Keyword->getImportErrors();
+					$this->set( 'import_errors', $import_errors );
+					$this->Session->setFlash( __('Error Importing') . ' ' . $result['name'] . ', ' . __('column name mismatch.')  );
+				}
+				//$csv = $this->Csv->import(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name'],Configure::read('HEADER_CSV'));
+			}
+		}
+	}	
+	
 }
