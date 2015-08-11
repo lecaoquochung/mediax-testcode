@@ -124,12 +124,14 @@ class AppSchema extends CakeSchema {
 		'Url' => array('type' => 'string', 'null' => false, 'length' => 200, 'collate' => 'utf8_unicode_ci', 'charset' => 'utf8'),
 		'Engine' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 4, 'key' => 'index'),
 		'g_local' => array('type' => 'string', 'null' => false, 'default' => '1', 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'cost' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10),
 		'Price' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10, 'key' => 'index'),
 		'limit_price' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 10),
 		'limit_price_group' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 1, 'comment' => 'set limit price group: 1,2,3'),
 		'upday' => array('type' => 'string', 'null' => false, 'default' => '0', 'length' => 100, 'collate' => 'utf8_unicode_ci', 'charset' => 'utf8'),
 		'goukeifee' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'sengoukeifee' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'$sensengoukeifee' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'Enabled' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'Strict' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'Extra' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
@@ -145,7 +147,8 @@ class AppSchema extends CakeSchema {
 		'penalty' => array('type' => 'boolean', 'null' => false, 'default' => null),
 		'service' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 5),
 		'mobile' => array('type' => 'boolean', 'null' => false, 'default' => null),
-		'c_logic' => array('type' => 'boolean', 'null' => false, 'default' => null, 'comment' => 'Ranking by company logic'),
+		'c_logic' => array('type' => 'boolean', 'null' => false, 'default' => null, 'comment' => 'Ranking restricted to company logic'),
+		'sales' => array('type' => 'boolean', 'null' => true, 'default' => null),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'updated' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'sitename' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'CSV', 'charset' => 'utf8'),
@@ -274,6 +277,18 @@ class AppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 
+	public $rankhistoryss = array(
+		'ID' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'KeyID' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 8),
+		'Url' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'Rank' => array('type' => 'string', 'null' => false, 'length' => 8, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'RankDate' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'ID', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
 	public $rankkeywords = array(
 		'ID' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'Keyword' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -343,11 +358,26 @@ class AppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_unicode_ci', 'engine' => 'MyISAM')
 	);
 
-	public $tmp_rankhistory = array(
+	public $tmp = array(
 		'ID' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'KeyID' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 8),
 		'Url' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'Rank' => array('type' => 'string', 'null' => false, 'length' => 8, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'RankDate' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'params' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'updated' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'indexes' => array(
+			
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
+	public $tmp_rankhistory = array(
+		'ID' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'KeyID' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 8),
+		'Url' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'Rank' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 8, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'RankDate' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'params' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),

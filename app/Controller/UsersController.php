@@ -62,6 +62,7 @@ class UsersController extends AppController {
  */
 	public function view($id = null) {               
         set_time_limit(0);
+		ini_set('memory_limit', '512M');
 		$this->User->recursive = 2;
 		$this->User->id = $id;
 		if (!$this->User->exists()) {

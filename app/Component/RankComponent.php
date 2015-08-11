@@ -2,8 +2,22 @@
 
 App::uses('Component', 'Controller');
 
+/*------------------------------------------------------------------------------------------------------------
+ * Rank Component
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 class RankComponent extends Component {
 
+/*------------------------------------------------------------------------------------------------------------
+ * remainUrl
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	public function remainUrl($string) {
 		$string = trim($string);
 		$string = str_replace(' ', '', $string);
@@ -17,6 +31,13 @@ class RankComponent extends Component {
 		return $string;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * remainDomain
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	public function remainDomain($string) {
 		$string = trim($string);
 		$string = str_replace(' ', '', $string);
@@ -34,6 +55,13 @@ class RankComponent extends Component {
 		return $string;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * keyWordRank
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	public function keyWordRank($engine, $url, $keyword, $strict = 0, $savecache = false, $onlytop10 = false) {
 		$status = 0;
 		// 0 - new keyword, 1 - keyword need update, 2 - keyword is effective
@@ -81,8 +109,8 @@ class RankComponent extends Component {
 			$pagemax = 0;
 		}
 		
-		print_r($engines);
-		// exit;
+//		print_r($engines);
+//		 exit;
 		
 		for ($page = $page_start; $page <= $pagemax; $page++) {
 			$start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
@@ -105,14 +133,16 @@ class RankComponent extends Component {
 			} 
 			
 			$html = str_replace(array("\r", "\r\n", "\n", " ", "　", "\t"), '',$html);		
-			exit;
+//			exit;
 		
 			preg_match_all($engines[$engine]['pattern'], $html, $matches);
 			
 			if (isset($matches[1])) {
-				// pr($matches[1]); 
-				// pr($url);
-				// exit;
+				
+//				 pr($matches[1]); 
+//				 pr($url);
+//				 exit;
+
 				$matches[1] = array_map("Text2Domain", $matches[1]);
 				$rank_arr['pages'][$page] = $matches[1];
 				$rank_arr['pagecount'] = $page;
@@ -177,14 +207,21 @@ class RankComponent extends Component {
 			}
 		}
 		
-		// pr($url);
-		// pr($strict);
-		// pr($this->remainUrl($url));
-		// pr($this->remainDomain($url));
-		// pr($rank);
+//		 pr($url);
+//		 pr($strict);
+//		 pr($this->remainUrl($url));
+//		 pr($this->remainDomain($url));
+//		 pr($rank);
 		return $rank;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * getWebContent
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	public function getWebContent($url) {
 		sleep(rand(3,5));
 		if (function_exists('curl_init')) {
@@ -204,6 +241,13 @@ class RankComponent extends Component {
 		return $contents;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * rootDomainSearch
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	public function rootDomainSearch($url, $domainArr, $strict) {
 		foreach ($domainArr as $key => $domain) {
 			$domain = $this -> remainUrl($domain);
@@ -222,6 +266,13 @@ class RankComponent extends Component {
 		return false;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * getEngineList
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	public function getEngineList() {
 		$this -> Engine = ClassRegistry::init('Engine');
 		$engines = Cache::read('enginelist', 'Engine');
@@ -236,6 +287,13 @@ class RankComponent extends Component {
 		return $enginelist;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * arrayToUtf8
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 	/**
 	 * if array is not UTF-8 then convert keys and values to UTF-8
 	 * method is recursive
@@ -260,11 +318,25 @@ class RankComponent extends Component {
 
 }
 
+/*------------------------------------------------------------------------------------------------------------
+ * Text2Domain
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 function Text2Domain($string) {
 	$string = ReplaceBold($string);
 	return $string;
 }
 
+/*------------------------------------------------------------------------------------------------------------
+ * ReplaceBold
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
 function ReplaceBold($string) {
 	$string = str_replace('<b>', '', $string);
 	$string = str_replace('</b>', '', $string);

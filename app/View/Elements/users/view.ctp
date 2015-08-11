@@ -212,9 +212,9 @@
 									$google_rank = 0;
 									$yahoo_rank = $rankhistory[$keyword['ID']];
 								}else {
-									$ranks = explode('/', $rankhistory[$keyword['ID']]);
-									$google_rank = $ranks[0];
-									$yahoo_rank = $ranks[1];
+									$ranks = explode('/', @$rankhistory[$keyword['ID']]);
+									$google_rank = @$ranks[0];
+									$yahoo_rank = @$ranks[1];
 								}
 								
 								if($google_rank==0 && $yahoo_rank!=0){

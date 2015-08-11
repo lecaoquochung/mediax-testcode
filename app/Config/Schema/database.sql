@@ -14,12 +14,14 @@ DROP TABLE IF EXISTS `semcheck`.`notice`;
 DROP TABLE IF EXISTS `semcheck`.`orders`;
 DROP TABLE IF EXISTS `semcheck`.`quote_supportor`;
 DROP TABLE IF EXISTS `semcheck`.`rankhistory`;
+DROP TABLE IF EXISTS `semcheck`.`rankhistoryss`;
 DROP TABLE IF EXISTS `semcheck`.`rankkeywords`;
 DROP TABLE IF EXISTS `semcheck`.`resell_endcustom`;
 DROP TABLE IF EXISTS `semcheck`.`sendemail`;
 DROP TABLE IF EXISTS `semcheck`.`seohistory`;
 DROP TABLE IF EXISTS `semcheck`.`servicelog`;
 DROP TABLE IF EXISTS `semcheck`.`syslog`;
+DROP TABLE IF EXISTS `semcheck`.`tmp`;
 DROP TABLE IF EXISTS `semcheck`.`tmp_rankhistory`;
 DROP TABLE IF EXISTS `semcheck`.`user`;
 
@@ -122,12 +124,14 @@ CREATE TABLE `semcheck`.`keywords` (
 	`Url` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 	`Engine` int(4) DEFAULT 0 NOT NULL,
 	`g_local` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '1' NOT NULL,
+	`cost` int(10) DEFAULT 0 NOT NULL,
 	`Price` int(10) DEFAULT 0 NOT NULL,
 	`limit_price` int(10) DEFAULT NULL,
 	`limit_price_group` int(1) DEFAULT NULL COMMENT 'set limit price group: 1,2,3',
 	`upday` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT '0' NOT NULL,
 	`goukeifee` int(11) DEFAULT 0 NOT NULL,
 	`sengoukeifee` int(11) DEFAULT 0 NOT NULL,
+	$sensengoukeifee int(11) DEFAULT 0 NOT NULL,
 	`Enabled` tinyint(1) DEFAULT '0' NOT NULL,
 	`Strict` tinyint(1) DEFAULT '0' NOT NULL,
 	`Extra` tinyint(1) DEFAULT '0' NOT NULL,
@@ -143,7 +147,8 @@ CREATE TABLE `semcheck`.`keywords` (
 	`penalty` tinyint(1) NOT NULL,
 	`service` int(5) NOT NULL,
 	`mobile` tinyint(1) NOT NULL,
-	`c_logic` tinyint(1) NOT NULL COMMENT 'Ranking by company logic',
+	`c_logic` tinyint(1) NOT NULL COMMENT 'Ranking restricted to company logic',
+	`sales` tinyint(1) DEFAULT NULL,
 	`created` datetime NOT NULL,
 	`updated` datetime NOT NULL,
 	`sitename` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'CSV',	PRIMARY KEY  (`ID`),
@@ -248,6 +253,15 @@ CREATE TABLE `semcheck`.`rankhistory` (
 	COLLATE=utf8_general_ci,
 	ENGINE=MyISAM;
 
+CREATE TABLE `semcheck`.`rankhistoryss` (
+	`ID` int(11) NOT NULL AUTO_INCREMENT,
+	`KeyID` int(8) DEFAULT 0 NOT NULL,
+	`Url` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`Rank` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`RankDate` int(11) DEFAULT 0 NOT NULL,	PRIMARY KEY  (`ID`)) 	DEFAULT CHARSET=utf8,
+	COLLATE=utf8_general_ci,
+	ENGINE=MyISAM;
+
 CREATE TABLE `semcheck`.`rankkeywords` (
 	`ID` int(11) NOT NULL AUTO_INCREMENT,
 	`Keyword` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -297,6 +311,18 @@ CREATE TABLE `semcheck`.`syslog` (
 	`Content` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 	`ip` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,	PRIMARY KEY  (`ID`)) 	DEFAULT CHARSET=utf8,
 	COLLATE=utf8_unicode_ci,
+	ENGINE=MyISAM;
+
+CREATE TABLE `semcheck`.`tmp` (
+	`ID` int(11) DEFAULT 0 NOT NULL,
+	`KeyID` int(8) DEFAULT 0 NOT NULL,
+	`Url` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`Rank` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`RankDate` int(11) DEFAULT 0 NOT NULL,
+	`params` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`created` datetime NOT NULL,
+	`updated` datetime NOT NULL	) 	DEFAULT CHARSET=utf8,
+	COLLATE=utf8_general_ci,
 	ENGINE=MyISAM;
 
 CREATE TABLE `semcheck`.`tmp_rankhistory` (

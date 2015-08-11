@@ -13,6 +13,10 @@
 		</form> -->
 		<!-- sidebar menu: : style can be found in sidebar.less -->
 		<ul class="sidebar-menu">
+<!-- dashboard -->
+			<li class="<?php echo $this->here==$this->webroot.'rankhistories/dashboard'?'active':'' ?>">
+				<a href="<?php echo $this->webroot?>rankhistories/dashboard"> <i class="fa fa-mobile"></i> <span><?php echo __('Dashboard'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>
+			</li>
 <!-- contract -->
 			<li class="treeview 
 				<?php 
