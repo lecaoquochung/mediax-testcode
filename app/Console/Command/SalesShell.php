@@ -1,19 +1,20 @@
 <?php
 /*------------------------------------------------------------------------------------------------------------
  * Sales
- * param01: offset
- * param02: limit
- * param03: interval time
- * param04: c_logic boolean
- * param05: random time 01
- * param06: random time 02
- * param07: interval keyword
- * param08: speed
- * param09: company (UserID)
+ * param01: offset (start: 0)
+ * param02: limit (default: 300)
+ * param03: interval time (default: 15)
+ * param04: c_logic (boolean: check company) -> deprecated
+ * param05: random time between 2 query 01 (default: 10)
+ * param06: random time between 2 query 02 (default: 30)
+ * param07: interval keyword (default: 40 -> best testing)
+ * param08: speed (boolean: delay or not on crawler)
+ * param09: company (UserID default:0 not set check all)
  *
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created
+ * run: sales 0 300 15 1 10 30 40 1 0
  *-----------------------------------------------------------------------------------------------------------*/	
 
 App::uses('AppShell', 'Console/Command');
@@ -27,34 +28,46 @@ class SalesShell extends Shell {
 	public $uses = array('Keyword', 'Rankhistory');
 
 	public function main() {
+		// offset
 		@$offset = $this->args[0];
+		
+		// limit
 		@$limit =  $this->args[1];
+		
+		// interval time
 		@$interval_time = $this->args[2]*60;
+		
+		// c logic
 		$c_logic = 0;
 		if(@$this->args[3] == 1) {
 			$c_logic = 1;
 		}
 		
+		// random time 01
 		$rand01 = 10;
 		if(isset($this->args[4])) {
 			$rand01 = $this->args[4];
 		}
 		
+		// random time 01
 		$rand02 = 30;
 		if(isset($this->args[5])) {
 			$rand02 = $this->args[5];
 		}
 		
-		$interval_keyword = 50;
+		// interval keyword
+		$interval_keyword = 40;
 		if(isset($this->args[6])) {
 			$interval_keyword = $this->args[6];
 		}
 		
+		// speed query
 		$speed = 0;
 		if(@$this->args[7] == 1) {
 			$speed = $this->args[7];
 		}
 		
+		// company or UserID
 		$user_id = 0;
 		if(isset($this->args[8])) {
 			$user_id = $this->args[8];
@@ -78,7 +91,7 @@ class SalesShell extends Shell {
 		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
-//		$conds['Keyword.c_logic'] = $c_logic; // nocheck
+//		$conds['Keyword.c_logic'] = $c_logic; // deprecated
 		$conds['Keyword.sales'] = 1;
 		$user_id !=0 ? $conds['Keyword.UserID'] = $user_id : '';
 		$conds['OR'] = array( 
@@ -93,7 +106,7 @@ class SalesShell extends Shell {
 		foreach ($keywords as $keyword) {
 			$time_start = microtime(true);
 			$count++;
-			if(($count%$interval_keyword)==0) {
+			if(($count % $interval_keyword) == 0) {
 				$sleep = $interval_time;
 				$this -> out('---------------' .$start_time .' ' .date('Ymd H:i:s') .' ' .$sleep .'s ------------------');
 				sleep($sleep);

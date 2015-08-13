@@ -112,8 +112,8 @@ class RankComponent extends Component {
 
                 $engines['yahoo_jp'] = array(
                         // 'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2',
-                        'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2&n=20',
-                        'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=40&fl=0&pstart=1&fr=top_v2&b=_START_',
+                        'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2&n=10',
+                        'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=10&fl=0&pstart=1&fr=top_v2&b=_START_',
                         'url2' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=40&fl=0&pstart=1&fr=top_v2&b=_START_',
                         'pattern' => '/<li><a href="([^<>]*)">/'
                 );
@@ -138,11 +138,11 @@ class RankComponent extends Component {
 
                         // 20150729 tracking yahoo jp
                         if($page == 1 && $engine == 'yahoo_jp') {
-                                $start_base = 21;
+                                $start_base = 11;
                         }
 
                         if($page == 2 && $engine == 'yahoo_jp') {
-                                $start_base = 61;
+                                $start_base = 21;
                                 $start = $start_base;
                         }
 
@@ -184,10 +184,10 @@ class RankComponent extends Component {
 
                                         // 20150729 tracking yahoo jp
                                         if($page == 2 && $engine == 'yahoo_jp') {
-                                                $rank = 21 + $key;
+                                                $rank = 11 + $key;
                                         }
                                         if($page == 2 && $engine == 'yahoo_jp') {
-                                                $rank = 61 + $key;
+                                                $rank = 21 + $key;
                                         }
                                         break;
                                 }
