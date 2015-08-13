@@ -43,11 +43,15 @@ class ExtrasController extends AppController {
 			if ($this->Extra->validates()) {
 				$this->Extra->create();
 				if ($this->Extra->save($this->request->data)) {
-					if(empty($layout)){
-						$this->Session->setFlash(__('The extra has been saved'));
-					}else{
-						$this -> set('close_window','close_window');
-					}										
+					
+					// close & reload
+//					if(empty($layout)){
+//						$this->Session->setFlash(__('The extra has been saved'));
+//					}else{
+//						$this -> set('close_window','close_window');
+//					}
+					$this->Session->setFlash(__('The extra has been saved'));
+														
 				} else {
 					$this->Session->setFlash(__('The extra could not be saved. Please, try again.'));
 				}			

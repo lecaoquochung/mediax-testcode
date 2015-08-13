@@ -718,7 +718,7 @@ class KeywordsController extends AppController {
 				
 			$engine = 3;
 			$rank = array();
-			$rank['google_jp'] = $this -> Rank -> keyWordRankTest('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
+			// $rank['google_jp'] = $this -> Rank -> keyWordRankTest('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
 			$rank['yahoo_jp'] = $this -> Rank -> keyWordRankTest('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
 			
 			// $rank['google_jp'] = $this -> Rank -> GoogleJP('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);

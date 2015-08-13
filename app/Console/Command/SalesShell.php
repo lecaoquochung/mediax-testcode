@@ -8,6 +8,8 @@
  * param05: random time 01
  * param06: random time 02
  * param07: interval keyword
+ * param08: speed
+ * param09: company (UserID)
  *
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
@@ -48,6 +50,16 @@ class SalesShell extends Shell {
 			$interval_keyword = $this->args[6];
 		}
 		
+		$speed = 0;
+		if(@$this->args[7] == 1) {
+			$speed = $this->args[7];
+		}
+		
+		$user_id = 0;
+		if(isset($this->args[8])) {
+			$user_id = $this->args[8];
+		}
+		
 		$start_time = date('Ymd H:i:s');
 		$this -> out($start_time);
 		
@@ -68,6 +80,7 @@ class SalesShell extends Shell {
 		$conds['Keyword.nocontract'] = 0;
 //		$conds['Keyword.c_logic'] = $c_logic; // nocheck
 		$conds['Keyword.sales'] = 1;
+		$user_id !=0 ? $conds['Keyword.UserID'] = $user_id : '';
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
 			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
@@ -96,10 +109,17 @@ class SalesShell extends Shell {
 			}
 
 			$engine = $keyword['Keyword']['Engine'];
+			
+//			* param01: Engine
+// 			* param02: Url
+// 			* param03: Keyword
+// 			* param04: Strict
+// 			* param05: Google Local
+// 			* param06: Speed
 			if ($engine == 3) {
-				$rank = $this -> Rank -> keyWordRank('google_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local']) 
+				$rank = $this -> Rank -> keyWordRank('google_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local'], $speed) 
 						.'/' 
-						.$this -> Rank -> keyWordRank('yahoo_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local']);
+						.$this -> Rank -> keyWordRank('yahoo_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local'], $speed);
 			} elseif ($engine == 1) {
 				$rank = $this -> Rank -> keyWordRank('google_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local']);
 			} elseif ($engine == 2) {

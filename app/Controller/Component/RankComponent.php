@@ -74,7 +74,7 @@ class RankComponent extends Component {
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
-        public function keyWordRank($engine, $url, $keyword, $strict = 0, $g_local=0, $savecache = false, $onlytop10 = false) {
+        public function keyWordRank($engine, $url, $keyword, $strict = 0, $g_local=0, $speed = 0, $savecache = false, $onlytop10 = false) {
                 $status = 0;
                 // 0 - new keyword, 1 - keyword need update, 2 - keyword is effective
                 $rank = 0;
@@ -150,7 +150,7 @@ class RankComponent extends Component {
                         $search_url = str_replace('_QUERY_', $keystring, $search_url);
                         $search_url = str_replace('_START_', $start, $search_url);
 
-                        $html = $this -> getWebContent($search_url);
+                        $html = ($speed == 1) ? $this -> getWebContentSpeed($search_url) : $this -> getWebContent($search_url);
                         $html = str_replace('<strong>', "", $html);
                         $html = str_replace('</strong>', "", $html);
                         if ($page == 0)
@@ -254,8 +254,8 @@ class RankComponent extends Component {
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             2014
  -------------------------------------------------------------------------------------------------------------*/
-        public function keyWordRankTest($engine, $url, $keyword, $strict = 0, $g_local=0, $savecache = false, $onlytop10 = false) {
-                $status = 0;
+        public function keyWordRankTest($engine, $url, $keyword, $strict = 0, $g_local=0, $speed = 0, $savecache = false, $onlytop10 = false) {
+               $status = 0;
                 // 0 - new keyword, 1 - keyword need update, 2 - keyword is effective
                 $rank = 0;
                 $page_start = -1;
@@ -292,8 +292,9 @@ class RankComponent extends Component {
 
                 $engines['yahoo_jp'] = array(
                         // 'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2',
-                        'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2&n=20',
+                        'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2&n=10',
                         'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=10&fl=0&pstart=1&fr=top_v2&b=_START_',
+                        'url2' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=40&fl=0&pstart=1&fr=top_v2&b=_START_',
                         'pattern' => '/<li><a href="([^<>]*)">/'
                 );
 
@@ -304,10 +305,7 @@ class RankComponent extends Component {
                 $start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
 
                 $page_start++;
-                
-                // 20150729 tracking yahoo jp
-//                $pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 2 : 1;
-                $pagemax = 1;
+                $pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 2 : 1;
 
                 //only check rank within top10
                 if ($onlytop10) {
@@ -319,18 +317,24 @@ class RankComponent extends Component {
                         $start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
 
                         // 20150729 tracking yahoo jp
-//                        if($page == 1 && $engine == 'yahoo_jp') { $start_base = 21;}
-//                        if($page == 2 && $engine == 'yahoo_jp') {$start_base = 61; $start = $start_base;}
+                        if($page == 1 && $engine == 'yahoo_jp') {
+                                $start_base = 11;
+                                $start = $start_base;
+                        }
+
+                        if($page == 2 && $engine == 'yahoo_jp') {
+                                $start_base = 21;
+                                $start = $start_base;
+                        }
 
                         $search_url = $engines[$engine]['url' . $page];
                         $search_url = str_replace('_QUERY_', $keystring, $search_url);
                         $search_url = str_replace('_START_', $start, $search_url);
 
-                        $html = $this -> getWebContent($search_url);
+                        $html = ($speed == 1) ? $this -> getWebContentSpeed($search_url) : $this -> getWebContent($search_url);
                         $html = str_replace('<strong>', "", $html);
                         $html = str_replace('</strong>', "", $html);
-                        if ($page == 0)
-                                $html0 = $html;
+                        if ($page == 0) $html0 = $html;
                         $html = str_replace('<b>', "", $html);
                         $html = str_replace('</b>', "", $html);
 
@@ -344,8 +348,8 @@ class RankComponent extends Component {
                         if (isset($matches[1])) {
 
                                 // 20150729 tracking yahoo jp
-//                                 pr($start);
-                                 pr($matches[1]);
+                                // pr($start);
+                                pr($matches[1]);
 
                                 $matches[1] = array_map("Text2Domain", $matches[1]);
                                 $rank_arr['pages'][$page] = $matches[1];
@@ -359,12 +363,16 @@ class RankComponent extends Component {
                                         $rank += (($page - 1 < 0) ? 0 : $page - 1) * 100 + $key + 1;
 
                                         // 20150729 tracking yahoo jp
-//                                        if($page == 2 && $engine == 'yahoo_jp') { $rank = 21 + $key; }
-//                                        if($page == 2 && $engine == 'yahoo_jp') { $rank = 61 + $key; }
-                                        
+                                        if($page == 1 && $engine == 'yahoo_jp') {
+                                                $rank = 11 + $key;
+                                        }
+                                        if($page == 2 && $engine == 'yahoo_jp') {
+                                                $rank = 21 + $key;
+                                        }
                                         break;
                                 }
                         }
+                        
                         if ($page < $pagemax - 1) {
                                 sleep(1);
                         } else {
@@ -377,6 +385,7 @@ class RankComponent extends Component {
                 $rank_arr['update'] = time();
                 $rank_str = serialize($rank_arr);
                 $this -> Rankkeyword = ClassRegistry::init('Rankkeyword');
+                
                 if ($status == 0) {
                         $rankkeyword['Rankkeyword']['Keyword'] = $keyword;
                         $rankkeyword['Rankkeyword'][$engine] = $rank_str;
@@ -385,6 +394,7 @@ class RankComponent extends Component {
                         $rankkeyword['Rankkeyword'][$engine] = $rank_str;
                         $this -> Rankkeyword -> create();
                 }
+                
                 $this -> Rankkeyword -> save($rankkeyword);
 
                 //save cache
@@ -687,6 +697,35 @@ class RankComponent extends Component {
  -------------------------------------------------------------------------------------------------------------*/
         public function getWebContent($url) {
                 sleep(rand(3,5));
+                if (function_exists('curl_init')) {
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $url);
+                        curl_setopt($ch, CURLOPT_HEADER, 0);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        //
+                        $contents = curl_exec($ch);
+                        curl_close($ch);
+                } else {
+                        $contents = file_get_contents($url);
+                }
+                $contents = str_replace('/url?', 'http://' . $this -> remainDomain($url) . '/url?', $contents);
+                return $contents;
+        }
+
+/*------------------------------------------------------------------------------------------------------------
+ * getWebContentSpeed method
+ *
+ * @input
+ * @output
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             2014
+ -------------------------------------------------------------------------------------------------------------*/
+        public function getWebContentSpeed($url) {
+                sleep(rand(0,1));
                 if (function_exists('curl_init')) {
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $url);

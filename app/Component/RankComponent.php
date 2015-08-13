@@ -57,12 +57,20 @@ class RankComponent extends Component {
 
 /*------------------------------------------------------------------------------------------------------------
  * keyWordRank
+ * param01: Engine
+ * param02: Url
+ * param03: Keyword
+ * param04: Strict
+ * param05: Google Local
+ * param06: Speed
+ * param: Savecache
+ * param: onlytop10
  *
  * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             201408
  -------------------------------------------------------------------------------------------------------------*/
-	public function keyWordRank($engine, $url, $keyword, $strict = 0, $savecache = false, $onlytop10 = false) {
+	public function keyWordRank($engine, $url, $keyword, $strict = 0, $g_local=0, $speed = 0, $savecache = false, $onlytop10 = false) {
 		$status = 0;
 		// 0 - new keyword, 1 - keyword need update, 2 - keyword is effective
 		$rank = 0;
@@ -89,9 +97,11 @@ class RankComponent extends Component {
 		// Euc2Utf8 return mb_convert_encoding($str, 'UTF-8', 'EUC-JP');
 		$keystring = urlencode($this -> arrayToUtf8($keyword));
 		
+		// g code
+		$g_lcode = Configure::read('G_LCODE');
 		$engines['google_jp'] = array(
-			'url0' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=20', 
-			'url1' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=100&start=_START_', 
+			'url0' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=20' .$g_lcode[$g_local], 
+			'url1' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=100&start=_START_' .$g_lcode[$g_local], 
 			'pattern' => '/<div class="s".*?<cite.*?>([^<>].*?)<\/cite><div.*?nBb.*?>/'
 		);
 
@@ -101,10 +111,10 @@ class RankComponent extends Component {
 		$engines['google_cn'] = array('url0' => 'http://www.google.cn/search?hl=zh-CN&q=_QUERY_&btnG=Google+%E6%90%9C%E7%B4%A2&meta=&aq=f&oq=', 'url1' => 'http://www.google.cn/search?hl=zh-CN&q=_QUERY_&btnG=Google+%E6%90%9C%E7%B4%A2&meta=&aq=f&oq=&num=100', 'pattern' => '/=r><a href="([^<>]*)" (target=_blank )?class=l>/');
 
 		$start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
-
 		$page_start++;
 		$pagemax = 1;
-		//only check rank within top10
+		
+		// only check rank within top10
 		if ($onlytop10) {
 			$pagemax = 0;
 		}
@@ -118,7 +128,7 @@ class RankComponent extends Component {
 			$search_url = str_replace('_QUERY_', $keystring, $search_url);
 			$search_url = str_replace('_START_', $start, $search_url);
 			
-			$html = $this -> getWebContent($search_url);
+			$html = ($speed == 1) ? $this -> getWebContentSpeed($search_url) : $this -> getWebContent($search_url);
 			$html = str_replace('<strong>', "", $html);
 			$html = str_replace('</strong>', "", $html);
 			if ($page == 0)
@@ -240,6 +250,32 @@ class RankComponent extends Component {
 		$contents = str_replace('/url?', 'http://' . $this -> remainDomain($url) . '/url?', $contents);
 		return $contents;
 	}
+	
+/*------------------------------------------------------------------------------------------------------------
+ * getWebContent Speed
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201408
+ -------------------------------------------------------------------------------------------------------------*/
+	public function getWebContentSpeed($url) {
+		sleep(rand(0,1));
+		if (function_exists('curl_init')) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			//
+			$contents = curl_exec($ch);
+			curl_close($ch);
+		} else {
+			$contents = file_get_contents($url);
+		}
+		$contents = str_replace('/url?', 'http://' . $this -> remainDomain($url) . '/url?', $contents);
+		return $contents;
+	}	
 
 /*------------------------------------------------------------------------------------------------------------
  * rootDomainSearch

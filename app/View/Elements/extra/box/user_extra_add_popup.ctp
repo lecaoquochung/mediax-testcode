@@ -1,10 +1,5 @@
 <?php global $extra_type;?>
 <div class="box admin_statuses span12">
-	<div class="navbar">
-		<div class="navbar-inner">
-		<h3 class="brand"><?php  echo __('Extras');?></h3>
-		</div>
-	</div>
 	<div class="section extras form">
 		<?php echo $this->Session->flash(); ?>
         <table cellpadding="0" cellspacing="0" class="table tableX">
