@@ -1,4 +1,4 @@
-<?php #echo $this->element($this->params['controller'] .'/header') ?>
+<?php echo $this->element($this->params['controller'] .'/header') ?>
 
 <div class="row">
 	<div class="col-xs-12">

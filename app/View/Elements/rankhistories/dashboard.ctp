@@ -100,11 +100,11 @@ Profit:
 	
 	<br />
 	
-	Cost: <?php echo $sum_cost; ?>
+	Sales: <?php echo $sum_sales; ?>
 	
 	<br />
 	
-	Sales: <?php echo $sum_sales; ?>
+	Cost: <?php echo $sum_cost; ?>
 	
 	<br />
 	
@@ -112,7 +112,16 @@ Profit:
 	
 	<br />
 	
+	前日比利益額：
 	
+	<br />
+	
+	前日比率：
+	
+	<br />
+	
+	累計実績（利益）：
+
 </div>
 
 
