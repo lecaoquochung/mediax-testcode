@@ -1124,4 +1124,24 @@ class RankhistoriesController extends AppController {
 		}
 	}
 
+	
+	/**
+	 * edit_inline method
+	 *
+	 * @return void
+	 */
+	public function edit_inline() {
+		Configure::write('debug', 0);
+		$this -> autoRender = false;
+		$this -> Rankhistory -> recursive = -1;
+		$this -> Rankhistory -> updateAll(
+			array('Rankhistory.'.$this -> request -> data['name'] => $this -> request -> data['value']), 
+			array('Rankhistory.ID' => $this -> request -> data['pk'])
+		);
+
+		$message = array();
+		$message['name'] = $this -> request -> data['name'];
+		$message['value'] = $this -> request -> data['value'];
+		return json_encode($message);
+	}		
 }
