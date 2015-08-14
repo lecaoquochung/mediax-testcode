@@ -91,7 +91,26 @@ Profit:
 //	debug($total_profit);
 ?>
 
-<div class="row">			
+<div class="row">		
+	<div class="col-sm-12">
+		<!-- history data -->
+		<?php echo $this -> Form -> create('Rankhistory', array('class' => 'form-search', 'id' => 'RankhistoryViewForm_list')); ?>
+		<div class="form-group">
+			<div class="controls row">
+				<div class="input-group col-sm-8">
+					<?php
+					echo $this -> Form -> input('rankDate', array('div' => False,
+					'label' => False,
+					'class' => 'input-sm', 'type' => 'date', 'dateFormat' => 'YMD', 'monthNames' => Configure::read('monthNames'), 'maxYear' => date('Y'), 'minYear' => date('Y') - 1));
+					echo '&nbsp';
+					echo $this -> Form -> submit(__('Submit'), array('class' => 'btn btn-info btn-sm  icon-refresh', 'div' => False));
+					?>
+				</div>
+			</div>
+		</div>
+		<?php echo $this->Form->end(); ?>	
+	</div>
+
 	キーワード数：<?php echo count($rankhistories); ?>
 	
 	<br/ >

@@ -143,6 +143,7 @@ class AppController extends Controller {
 	public function export($options = null) {
 		$this -> autoRender = false;
 		$modelClass = $this -> modelClass;
+		
 		$this -> response -> type('Content-Type: text/csv');
 		if (isset($options['filename'])) {
 			$this -> response -> download(date('Y-m-d_H-i-s') . '_' . strtolower($options['filename']) . '.csv');

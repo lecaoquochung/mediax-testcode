@@ -238,4 +238,34 @@ class Keyword extends AppModel {
 			'mapHeader'=> 'HEADER_CSV_KEYWORD'//Configure::read('HEADER_CSV_COMPANY')
 		)		
     );
+	
+	public function header_export_keywork_user($headers, $mapHeader){
+		/*
+		foreach($mapHeader as $k=>$v){
+			if(!in_array($k,$headers)){
+				$headers[] = $k;
+			}
+		}		
+		return $headers;
+		*/
+		return $mapHeader;
+	}
+	
+	public function callback_export_keywork_user($row){
+		$rankhistory = $this->Rankhistory->find('first',array('Rankhistory.KeyID'=>$row['Keyword.ID'],'Rankhistory.RankDate'=>date('Ymd')));
+		if($rankhistory!=false){
+			$row['Rankhistory.Rank'] = $rankhistory['Rankhistory']['Rank'];
+		}else{
+			$row['Rankhistory.Rank'] = '0/0';
+		}
+		
+		$duration = $this->Duration->find('first',array('Duration.KeyID'=>$row['Keyword.ID']));
+		if($duration!=false){
+			$row['Duration.StartDate'] = date('Y-m-d',strtotime($duration['Duration']['StartDate']));
+		}else{
+			$row['Duration.StartDate'] = '';
+		}		
+		//pr($row);die();
+		return $row;
+	}
 }

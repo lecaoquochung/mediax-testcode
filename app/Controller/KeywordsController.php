@@ -1048,4 +1048,25 @@ class KeywordsController extends AppController {
 		}
 	}	
 	
+	public function exportCsvById() {
+		if(!empty($this->request->data)){	
+			$conds = array();
+			$conds['Keyword.ID'] = explode('-',$this->request->data['ids']);
+			
+			$fields = array();
+			$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Price');
+			$this -> export(array(
+				//'recursive'=>2,
+				'conditions' => $conds,
+				'fields' => $fields, 
+				'order' => 'Keyword.ID DESC', 
+				'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD_USER',
+				'callbackHeader' => 'header_export_keywork_user',
+				'callbackRow' => 'callback_export_keywork_user'
+			));			
+		}else{
+			$this->redirect($this->referer());
+		}
+	}	
+	
 }

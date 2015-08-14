@@ -7,7 +7,9 @@ App::uses('AppModel', 'Model');
  */
 class User extends AppModel {
 
-        public $actsAs = array('Containable');
+        public $actsAs = array(
+			'Containable'
+		);
 /**
  * Use table
  *
@@ -88,5 +90,4 @@ class User extends AppModel {
 			'counterQuery' => ''
 		)
 	);
-
 }

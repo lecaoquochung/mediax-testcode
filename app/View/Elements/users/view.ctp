@@ -7,7 +7,17 @@
 			<!--hl start contract -->
 			<?php $keywords = Hash::extract($user['Keyword'], '{n}[nocontract=0]');?>
 			<h3><span class="label label-success"><?php echo __('Contract Keyword'); ?></span></h3>
-			
+			<?php 
+				echo $this->Form->postLink(
+					__('Download CSV'),
+					array('controller' => 'keywords', 'action' => 'exportCsvById'),
+					array(
+						'data'=>array('ids'=>implode('-',Hash::extract($keywords, '{n}.ID'))),
+						'escape'=>false, 
+						'class' => 'label label-success'
+					)
+				);
+			?>			
 			<table class="table table-hover dataTable">
 				<tr>
 					<th class="tbl1"><?php echo __('ID'); ?></th>
@@ -169,6 +179,17 @@
 				<span data-type="text" data-name="limit_price_multi" data-pk="<?php echo $user['User']['id']; ?>" data-title="SET LIMIT PIRCE GROUP" class="limit_price_multi" style="color:red;font-weight:bold;">
 					<?php echo !empty($user['User']['limit_price_multi'])? money_format('%.0n', $user['User']['limit_price_multi']):money_format('%.0n', 0) ?>
 				</span>
+				<?php 
+					echo $this->Form->postLink(
+						__('Download CSV'),
+						array('controller' => 'keywords', 'action' => 'exportCsvById'),
+						array(
+							'data'=>array('ids'=>implode('-',Hash::extract($keywords, '{n}.ID'))),
+							'escape'=>false, 
+							'class' => 'label label-success'
+						)
+					);
+				?>				
 				<table class="table tableX">
 					<tr>
 						<th class="tbl1"><?php echo __('ID'); ?></th>
@@ -327,7 +348,8 @@
 				<span class="label label-warning"><?php echo __('Limit Price Group') .'2'; ?></span>
 				<span data-type="text" data-name="limit_price_multi2" data-pk="<?php echo $user['User']['id']; ?>" data-title="SET LIMIT PIRCE GROUP" class="limit_price_multi2" style="color:red;font-weight:bold;">
 					<?php echo !empty($user['User']['limit_price_multi2'])? money_format('%.0n', $user['User']['limit_price_multi2']):money_format('%.0n', 0) ?>
-				</span>
+				</span>				
+				
 				<table class="table tableX">
 					<tr>
 						<th class="tbl1"><?php echo __('ID'); ?></th>
@@ -627,6 +649,17 @@
 		<!-- no contract -->
 				<?php	$keywords = Hash::extract($user['Keyword'], '{n}[nocontract=1]');?>
 				<h3><span class="label label-default"><?php echo __('No Contract Keyword'); ?></span></h3>
+				<?php 
+					echo $this->Form->postLink(
+						__('Download CSV'),
+						array('controller' => 'keywords', 'action' => 'exportCsvById'),
+						array(
+							'data'=>array('ids'=>implode('-',Hash::extract($keywords, '{n}.ID'))),
+							'escape'=>false, 
+							'class' => 'label label-success'
+						)
+					);
+				?>				
 				<table class="table tableX">
 					<tr>
 						<th class="tbl1"><?php echo __('ID'); ?></th>
