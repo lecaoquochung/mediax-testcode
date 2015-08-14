@@ -1135,7 +1135,7 @@ class RankhistoriesController extends AppController {
 		$this -> autoRender = false;
 		$this -> Rankhistory -> recursive = -1;
 		$this -> Rankhistory -> updateAll(
-			array('Rankhistory.'.$this -> request -> data['name'] => $this -> request -> data['value']), 
+			array('Rankhistory.'.$this -> request -> data['name'] => "'".$this -> request -> data['value']."'"), 
 			array('Rankhistory.ID' => $this -> request -> data['pk'])
 		);
 

@@ -193,7 +193,7 @@
 		//editables 
 		$.fn.editable.defaults.mode = 'inline';
 		$('.edit_inline').editable({
-			   url: '<?php echo $this->webroot.'keywords/edit_inline' ?>',
+			   url: '<?php echo $this->webroot.'rankhistories/edit_inline' ?>',
 			   type: 'text',
 			   name: $(this).attr('name'),
 			   title: 'Edit '+$(this).attr('name')
