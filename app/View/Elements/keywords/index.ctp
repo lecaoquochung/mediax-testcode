@@ -1,6 +1,6 @@
 <?php 
 	echo $this->Html->link('Export csv',array('controller'=>'keywords','action'=>'exportCsv'),array('class'=>'btn btn-info'));
-	echo $this->Html->link('Upload csv',array('controller'=>'keywords','action'=>'uploadCsv'),array('class'=>'btn btn-success'));
+	// echo $this->Html->link('Upload csv',array('controller'=>'keywords','action'=>'uploadCsv'),array('class'=>'btn btn-success'));
 ?>
 <table id="example" class="display nowrap dataTable dtr-inline" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
 	<thead>
