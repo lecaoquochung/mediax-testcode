@@ -1,14 +1,15 @@
 <?php
-
-App::uses('Component', 'Controller');
-
- /*------------------------------------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------------------------------------
  * Ddnb Common Component
  *
  * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created             201408
  -------------------------------------------------------------------------------------------------------------*/
+
+App::uses('Component', 'Controller');
+App::uses('CakeEmail', 'Network/Email');
+
 class DdnbCommonComponent extends Component {
 
  /*------------------------------------------------------------------------------------------------------------
@@ -418,4 +419,28 @@ class DdnbCommonComponent extends Component {
 
                 return $string;
         }
+        
+/*------------------------------------------------------------------------------------------------------------
+ * cron notice mail
+ *
+ * @input
+ * @logic replace special character: no zenkaku space
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201407
+ -------------------------------------------------------------------------------------------------------------*/
+        public function cronMail($email) {
+               
+                // $Email = new CakeEmail();
+                // $Email->from(array('server-admin@'.$_SERVER['HOSTNAME'] => 'MEDIAX ADMIN'));
+                // $Email->from(array($_SERVER['HOSTNAME']));
+                // $Email->to($email);
+                // $Email->subject('Load Server Time');
+                // $Email->send("Start time: ".$start_time."\n End time: ".$end_time);
+                echo "Test";
+                
+                return True;
+        }
+        
 }
