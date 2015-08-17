@@ -452,6 +452,6 @@ class UsersController extends AppController {
 		$message['limit_price']  = $message['total'] > $this->request->data['limit_price']?money_format('%.0n',$this->request->data['limit_price']):$message['price'];
 		$message['limit_or_not'] = $message['total'] >= $this->request->data['limit_price']?'上限達成':'';
 		return json_encode($message);								
-	}
-
+	}		
+	
 }

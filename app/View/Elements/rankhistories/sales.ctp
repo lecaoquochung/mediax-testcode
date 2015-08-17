@@ -63,9 +63,11 @@
 							</td>
 							<!-- engine rank -->
 							<td>
-								<?php echo $rankhistory['Rankhistory']['Rank']; ?>&nbsp;
+								<div style="float: left;" class="edit_inline" data-name="Rank" data-pk="<?php echo $rankhistory['Rankhistory']['ID']; ?>">
+									<?php echo $rankhistory['Rankhistory']['Rank']; ?>&nbsp;
+								</div>
 								<span class="arrow_row"><?php echo $params['arrow'] ?></span>
-								<div class="new-line"></div>
+								<div class="new-line" style="clear: both;"></div>
 								<?php 
 									global $list_engine;
 									echo h(@$list_engine[$rankhistory['Keyword']['Engine']]);
@@ -184,8 +186,18 @@
 <?php #echo $this->Html->link(__('Set Endate to All Keyword'), '#myModalEnableKeyword', array('data-toggle'=>'modal','role'=>'button','class' => "btn btn-danger")); ?>
 <?php #echo $this->element('modal/set_all_keyword_enddate', array()); ?>
 
+<?php echo $this -> Html -> script(array('bootstrap-editable')); ?>
+<?php echo $this->Html->css(array('bootstrap-editable'));?>
 <script type="text/javascript">
 	$(document).ready(function(){
+		//editables 
+		$.fn.editable.defaults.mode = 'inline';
+		$('.edit_inline').editable({
+			   url: '<?php echo $this->webroot.'rankhistories/edit_inline' ?>',
+			   type: 'text',
+			   name: $(this).attr('name'),
+			   title: 'Edit '+$(this).attr('name')
+		});		
 		//
 		// $('.loadRank').click(function(){
 			// var keyID = $(this).attr('KeyID');
