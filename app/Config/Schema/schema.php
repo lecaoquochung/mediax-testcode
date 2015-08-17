@@ -127,6 +127,7 @@ class AppSchema extends CakeSchema {
 		'cost' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10),
 		'Price' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10, 'key' => 'index'),
 		'limit_price' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 10),
+		'limit_price_check' => array('type' => 'boolean', 'null' => true, 'default' => null),
 		'limit_price_group' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 1, 'comment' => 'set limit price group: 1,2,3'),
 		'upday' => array('type' => 'string', 'null' => false, 'default' => '0', 'length' => 100, 'collate' => 'utf8_unicode_ci', 'charset' => 'utf8'),
 		'goukeifee' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -313,6 +314,43 @@ class AppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 
+	public $sales = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 20, 'key' => 'primary'),
+		'type' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 5),
+		'all_keywords' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'json_all_keywords' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'rank_in' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'json_rank_in' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'sales' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'cost' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'profit' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'date' => array('type' => 'date', 'null' => false, 'default' => null),
+		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'updated' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
+	);
+
+	public $sales_keywords = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 20, 'key' => 'primary'),
+		'keyword_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 20),
+		'keyword' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'rank' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'sales' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'cost' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'profit' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+		'limit' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 5),
+		'date' => array('type' => 'date', 'null' => false, 'default' => null),
+		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'updated' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
+	);
+
 	public $sendemail = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'status' => array('type' => 'string', 'null' => false, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -421,6 +459,7 @@ class AppSchema extends CakeSchema {
 		'updated' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'logo' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_unicode_ci', 'charset' => 'utf8'),
 		'limit_price_multi' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 10),
+		'limit_price_multi_check' => array('type' => 'boolean', 'null' => true, 'default' => null),
 		'limit_price_multi2' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 10),
 		'limit_price_multi3' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 10),
 		'indexes' => array(

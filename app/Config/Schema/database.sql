@@ -17,6 +17,8 @@ DROP TABLE IF EXISTS `semcheck`.`rankhistory`;
 DROP TABLE IF EXISTS `semcheck`.`rankhistoryss`;
 DROP TABLE IF EXISTS `semcheck`.`rankkeywords`;
 DROP TABLE IF EXISTS `semcheck`.`resell_endcustom`;
+DROP TABLE IF EXISTS `semcheck`.`sales`;
+DROP TABLE IF EXISTS `semcheck`.`sales_keywords`;
 DROP TABLE IF EXISTS `semcheck`.`sendemail`;
 DROP TABLE IF EXISTS `semcheck`.`seohistory`;
 DROP TABLE IF EXISTS `semcheck`.`servicelog`;
@@ -127,6 +129,7 @@ CREATE TABLE `semcheck`.`keywords` (
 	`cost` int(10) DEFAULT 0 NOT NULL,
 	`Price` int(10) DEFAULT 0 NOT NULL,
 	`limit_price` int(10) DEFAULT NULL,
+	`limit_price_check` tinyint(1) DEFAULT NULL,
 	`limit_price_group` int(1) DEFAULT NULL COMMENT 'set limit price group: 1,2,3',
 	`upday` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT '0' NOT NULL,
 	`goukeifee` int(11) DEFAULT 0 NOT NULL,
@@ -280,6 +283,37 @@ CREATE TABLE `semcheck`.`resell_endcustom` (
 	COLLATE=utf8_general_ci,
 	ENGINE=MyISAM;
 
+CREATE TABLE `semcheck`.`sales` (
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`type` int(5) NOT NULL,
+	`all_keywords` int(10) NOT NULL,
+	`json_all_keywords` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`rank_in` int(10) NOT NULL,
+	`json_rank_in` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`sales` int(10) NOT NULL,
+	`cost` int(10) NOT NULL,
+	`profit` int(10) NOT NULL,
+	`date` date NOT NULL,
+	`created` datetime NOT NULL,
+	`updated` datetime NOT NULL,	PRIMARY KEY  (`id`)) 	DEFAULT CHARSET=utf8,
+	COLLATE=utf8_general_ci,
+	ENGINE=InnoDB;
+
+CREATE TABLE `semcheck`.`sales_keywords` (
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`keyword_id` int(20) NOT NULL,
+	`keyword` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`rank` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+	`sales` int(10) NOT NULL,
+	`cost` int(10) NOT NULL,
+	`profit` int(10) NOT NULL,
+	`limit` int(5) NOT NULL,
+	`date` date NOT NULL,
+	`created` datetime NOT NULL,
+	`updated` datetime NOT NULL,	PRIMARY KEY  (`id`)) 	DEFAULT CHARSET=utf8,
+	COLLATE=utf8_general_ci,
+	ENGINE=InnoDB;
+
 CREATE TABLE `semcheck`.`sendemail` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`status` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,	PRIMARY KEY  (`id`)) 	DEFAULT CHARSET=utf8,
@@ -370,6 +404,7 @@ CREATE TABLE `semcheck`.`user` (
 	`updated` datetime NOT NULL,
 	`logo` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 	`limit_price_multi` int(10) DEFAULT NULL,
+	`limit_price_multi_check` tinyint(1) DEFAULT NULL,
 	`limit_price_multi2` int(10) DEFAULT NULL,
 	`limit_price_multi3` int(10) DEFAULT NULL,	PRIMARY KEY  (`id`)) 	DEFAULT CHARSET=utf8,
 	COLLATE=utf8_unicode_ci,
