@@ -54,8 +54,11 @@ class SalesKeywordsShell extends Shell {
 		$conds['Keyword.sales'] = 1;
 		$conds['OR'] = array(
 			 array('Keyword.rankend' => 0), 
-			 array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd'))))
+			 array('Keyword.rankend >=' => date('Ymd'))
 		);
+		
+		$order = array();
+		$order['Keyword.ID'] = 'ASC';
 		
 		$this -> Rankhistory -> recursive = 0;
 		
@@ -63,7 +66,8 @@ class SalesKeywordsShell extends Shell {
 			'Rankhistory.ID', 'Rankhistory.Url', 'Rankhistory.Rank', 'Rankhistory.RankDate', 'Rankhistory.params', 
 			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Engine', 'Keyword.rankend', 'Keyword.Enabled', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.Url', 'Keyword.Strict', 'Keyword.limit_price', 'Keyword.limit_price_group', 'Keyword.cost', 'Keyword.price');
 
-		$rankhistories = $this -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields));
+		$rankhistories = $this -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order));
+		$this->out(count($rankhistories));
 		
 		$this -> Extra -> recursive = -1;
 		$keyword_ids = Hash::extract($rankhistories, '{n}.Keyword.ID');
@@ -72,20 +76,32 @@ class SalesKeywordsShell extends Shell {
 		$total_cost = array();
 		$total_sales = array();
 		$total_profit = array();
+		$keywords_is_ranked = array();
 		
 		$count = 0;
 		foreach ($rankhistories as $rankhistory) {
 			$time_start = microtime(true);
 			
-			$ranks = explode('/', $rankhistory['Rankhistory']['Rank']);
-			$rank = min($ranks);
+			if ($rankhistory['Keyword']['Engine'] == 1) {
+				$google_rank = $rankhistory['Rankhistory']['Rank'];
+				$yahoo_rank = 0;
+			} elseif ($rankhistory['Keyword']['Engine'] == 2) {
+				$google_rank = 0;
+				$yahoo_rank = $rankhistory['Rankhistory']['Rank'];
+			} else {
+				$ranks = explode('/', $rankhistory['Rankhistory']['Rank']);
+				$google_rank = $ranks[0];
+				@$yahoo_rank = $ranks[1];
+			}
 			
+			$rank = min($ranks);
 			
 			$data_extra = array();
 			$extra_keyID = Hash::extract($extras,'{n}.Extra[KeyID='.$rankhistory['Keyword']['ID'].']');						
 			$extra = Hash::combine($extra_keyID,'{n}.ExtraType','{n}.Price');
 			foreach($extra as $key_extra => $value_extra) {
-				if(($rank <= $key_extra && $rank != 0)){
+				// if(($rank <= $key_extra && $rank != 0)){
+				if(($google_rank <= $key_extra && $google_rank != 0) || ($yahoo_rank <= $key_extra && $yahoo_rank != 0)){
 					$data_extra[$key_extra] = $value_extra;
 				}
 			}
@@ -104,7 +120,7 @@ class SalesKeywordsShell extends Shell {
 				$total_profit[$rankhistory['Keyword']['ID'] .$rankhistory['Keyword']['Keyword'] .$rankhistory['Rankhistory']['Rank']] = $profit;
 			}else{
 				foreach($extra as $key => $value) {
-					if(($rank <= $key && $rank != 0)){
+					if(($google_rank <= $key_extra && $google_rank != 0) || ($yahoo_rank <= $key_extra && $yahoo_rank != 0)){
 						// cost
 						$total_cost[$rankhistory['Keyword']['ID']] = $rankhistory['Keyword']['cost'];
 						// sales
@@ -117,25 +133,55 @@ class SalesKeywordsShell extends Shell {
 				} 
 			}
 			
-			if(($rank <= $key && $rank != 0)){
+			if(($google_rank <= 10 && $google_rank != 0) || ($yahoo_rank <= 10 && $yahoo_rank != 0)){
 				$count++;
 				// data
+				$data = array();
 				$data['SalesKeyword']['keyword_id'] = $rankhistory['Keyword']['ID'];
 				$data['SalesKeyword']['keyword'] = $rankhistory['Keyword']['Keyword'];
 				$data['SalesKeyword']['rank'] = $rankhistory['Rankhistory']['Rank'];
-				$data['SalesKeyword']['sales'] = @$total_sales[$rankhistory['Keyword']['ID']]  ;
-				$data['SalesKeyword']['cost'] = @$total_cost[$rankhistory['Keyword']['ID']];
-				$data['SalesKeyword']['profit'] = @$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']];
-				// $data['SalesKeyword']['limit'];
+				$data['SalesKeyword']['sales'] = (@$total_sales[$rankhistory['Keyword']['ID']] !== Null) ? @$total_sales[$rankhistory['Keyword']['ID']] : 0  ;
+				$data['SalesKeyword']['cost'] = (@$total_cost[$rankhistory['Keyword']['ID']] !== Null) ? @$total_cost[$rankhistory['Keyword']['ID']] : 0;
+				$data['SalesKeyword']['profit'] = (@$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] !== Null) ? @$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] : 0;
+				// $data['SalesKeyword']['limit']; // deprecated
 				$data['SalesKeyword']['date'] = date('Ymd');
+				
+				// save
+				$conds_data = array();
+				$conds_data['SalesKeyword.keyword_id'] = $rankhistory['Keyword']['ID'];
+				$conds_data['SalesKeyword.date'] = date('Y-m-d');
+				$check_data = $this->SalesKeyword->find('first',array('conditions'=> $conds_data));
+				
+				if($check_data != False){
+					$data['SalesKeyword']['id'] = $check_data['SalesKeyword']['id'];
+				}else{
+					$this -> SalesKeyword -> create();
+				}				
+				$this -> SalesKeyword -> save($data);	
+				
+				sleep(1);
+				
+				// rank-in
+				$keywords_is_ranked [$data['SalesKeyword']['keyword_id']] = $rankhistory['Keyword']['Keyword'];
 				
 				//done keyword
 				$time_end = microtime(true); 
 				$execution_time = $time_end - $time_start;
 				$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$data['SalesKeyword']['sales'] . ' ' .$data['SalesKeyword']['cost'] . ' ' .$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
 			}
-			
 		}
+		
+		@$sum_cost = money_format('%.2n',array_sum(@$total_cost));
+		@$sum_sales = money_format('%.2n',array_sum(@$total_sales));
+		@$sum_profit = money_format('%.2n',array_sum(@$total_profit));
+		@$rankup_percentage = (count(@$total_profit)) / count($rankhistories) * 100;
+		
+		$this -> out('-------------------------------------');
+		$this -> out('Total');
+		$this -> out('Sales: ' .$sum_sales);
+		$this -> out('Cost: ' .$sum_cost);
+		$this -> out('Profit: ' .$sum_profit);
+		$this -> out('Percentage: ' .$rankup_percentage);
 		
 		// load rank successfully
 		$this -> out('---------------DONE------------------');
@@ -143,6 +189,10 @@ class SalesKeywordsShell extends Shell {
 		$this -> out('Start time:	' .$start_time);
 		$this -> out('End time:	' .$end_time);
 		$this -> out('-------------------------------------');
+		
+		foreach($keywords_is_ranked as $key => $value):
+			$this -> out($value);	
+		endforeach; 
 		
 	}
 
