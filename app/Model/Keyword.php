@@ -114,9 +114,9 @@ class Keyword extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'Rankhistory' => array(
+		'SalesKeyword' => array(
 			'className' => 'SalesKeyword',
-			'foreignKey' => 'KeyID',
+			'foreignKey' => 'keyword_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
