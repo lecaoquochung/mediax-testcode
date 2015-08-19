@@ -442,5 +442,21 @@ class DdnbCommonComponent extends Component {
                 
                 return True;
         }
+
+/*------------------------------------------------------------------------------------------------------------
+ * validate date function
+ *
+ * @input
+ * @logic replace special character: no zenkaku space
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201407
+ -------------------------------------------------------------------------------------------------------------*/      
+        public function validateDate($date, $format = 'Y-m-d H:i:s')
+        {
+                $d = DateTime::createFromFormat($format, $date);
+                return $d && $d->format($format) == $date;
+        }
         
 }

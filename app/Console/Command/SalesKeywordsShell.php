@@ -1,12 +1,12 @@
 <?php
 /*------------------------------------------------------------------------------------------------------------
  * Sales Keywords
- * param01: 
+ * param01: date
  *
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created
- * run: sales
+ * run: sales_keywords [param01]
  *-----------------------------------------------------------------------------------------------------------*/	
 
 App::uses('AppShell', 'Console/Command');
@@ -14,6 +14,7 @@ App::uses('ComponentCollection', 'Controller');
 App::uses('RankComponent', 'Controller/Component');
 App::uses('RankMobileComponent', 'Controller/Component');
 App::uses('DdnbCommonComponent', 'Controller/Component');
+App::uses('HComponent', 'Controller/Component');
 App::uses('CakeEmail', 'Network/Email');
 
 class SalesKeywordsShell extends Shell {
@@ -21,40 +22,39 @@ class SalesKeywordsShell extends Shell {
 	public $uses = array('Keyword', 'Rankhistory', 'SalesKeyword', 'Extra');
 
 	public function main() {
-		// offset
-		// @$offset = $this->args[0];
-		
-		$start_time = date('Ymd H:i:s');
-		$this -> out($start_time);
-		
 		//load component
 		$component = new ComponentCollection();
 		App::import('Component', 'Rank');
 		$this -> Rank = new RankComponent($component);
 		
-		$component1 = new ComponentCollection();
-		App::import('Component', 'RankMobile');
-		$this -> RankMobile = new RankMobileComponent($component1);
+		// date
+		$date = date('Ymd');
+		if(isset($this->args[0])) {
+			$date = $this->args[0];
+		} 
 		
-		$ddnbcommon_component = new ComponentCollection();
-		App::import('Component', 'DdnbCommon');
-		$this -> DdnbCommon = new DdnbCommonComponent($ddnbcommon_component);
+		// {
+		// 	$this->out('Not a valid date');
+		// 	exit;
+		// }
+		
+		$start_time = date('Ymd H:i:s');
+		$this -> out($start_time);
 		
 		// recursive
 		$this -> Keyword -> recursive = 0;
 		
 		// filter keyword
 		set_time_limit(0);
-		$rankDate = date('Ymd');
 		$conds = array();
-		$conds['Rankhistory.rankDate'] = date('Ymd');
+		$conds['Rankhistory.rankDate'] = $date;
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
 		$conds['Keyword.service'] = 0;
 		$conds['Keyword.sales'] = 1;
 		$conds['OR'] = array(
 			 array('Keyword.rankend' => 0), 
-			 array('Keyword.rankend >=' => date('Ymd'))
+			 array('Keyword.rankend >=' => $date)
 		);
 		
 		$order = array();
@@ -100,7 +100,6 @@ class SalesKeywordsShell extends Shell {
 			$extra_keyID = Hash::extract($extras,'{n}.Extra[KeyID='.$rankhistory['Keyword']['ID'].']');						
 			$extra = Hash::combine($extra_keyID,'{n}.ExtraType','{n}.Price');
 			foreach($extra as $key_extra => $value_extra) {
-				// if(($rank <= $key_extra && $rank != 0)){
 				if(($google_rank <= $key_extra && $google_rank != 0) || ($yahoo_rank <= $key_extra && $yahoo_rank != 0)){
 					$data_extra[$key_extra] = $value_extra;
 				}
@@ -138,18 +137,19 @@ class SalesKeywordsShell extends Shell {
 				// data
 				$data = array();
 				$data['SalesKeyword']['keyword_id'] = $rankhistory['Keyword']['ID'];
+				$data['SalesKeyword']['user_id'] = $rankhistory['Keyword']['UserID'];
 				$data['SalesKeyword']['keyword'] = $rankhistory['Keyword']['Keyword'];
 				$data['SalesKeyword']['rank'] = $rankhistory['Rankhistory']['Rank'];
 				$data['SalesKeyword']['sales'] = (@$total_sales[$rankhistory['Keyword']['ID']] !== Null) ? @$total_sales[$rankhistory['Keyword']['ID']] : 0  ;
 				$data['SalesKeyword']['cost'] = (@$total_cost[$rankhistory['Keyword']['ID']] !== Null) ? @$total_cost[$rankhistory['Keyword']['ID']] : 0;
 				$data['SalesKeyword']['profit'] = (@$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] !== Null) ? @$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] : 0;
 				// $data['SalesKeyword']['limit']; // deprecated
-				$data['SalesKeyword']['date'] = date('Ymd');
+				$data['SalesKeyword']['date'] = $date;
 				
 				// save
 				$conds_data = array();
 				$conds_data['SalesKeyword.keyword_id'] = $rankhistory['Keyword']['ID'];
-				$conds_data['SalesKeyword.date'] = date('Y-m-d');
+				$conds_data['SalesKeyword.date'] = $date;
 				$check_data = $this->SalesKeyword->find('first',array('conditions'=> $conds_data));
 				
 				if($check_data != False){
@@ -167,7 +167,7 @@ class SalesKeywordsShell extends Shell {
 				//done keyword
 				$time_end = microtime(true); 
 				$execution_time = $time_end - $time_start;
-				$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$data['SalesKeyword']['sales'] . ' ' .$data['SalesKeyword']['cost'] . ' ' .$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
+				$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$date . ' ' .$data['SalesKeyword']['sales'] . ' ' .$data['SalesKeyword']['cost'] . ' ' .$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
 			}
 		}
 		
@@ -183,7 +183,7 @@ class SalesKeywordsShell extends Shell {
 		$this -> out('Profit: ' .$sum_profit);
 		$this -> out('Percentage: ' .$rankup_percentage);
 		
-		// load rank successfully
+		// runtime ok
 		$this -> out('---------------DONE------------------');
 		$end_time = date('Ymd H:i:s');
 		$this -> out('Start time:	' .$start_time);
@@ -197,4 +197,5 @@ class SalesKeywordsShell extends Shell {
 	}
 
 }
+
 ?>

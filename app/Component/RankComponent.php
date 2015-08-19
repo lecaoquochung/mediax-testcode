@@ -30,6 +30,32 @@ class RankComponent extends Component {
 		}
 		return $string;
 	}
+	
+/*------------------------------------------------------------------------------------------------------------
+ * validate date function
+ *
+ * @input
+ * @logic
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201508
+ -------------------------------------------------------------------------------------------------------------*/      
+        public function remainUrl1($string)
+        {
+			// $d = DateTime::createFromFormat($format, $date);
+			// return $d && $d->format($format) == $date;
+			$string = trim($string);
+			$string = str_replace(' ', '', $string);
+			if (substr($string, 0, 4) == "http") {
+				$pos = strpos($string, "//") + 2;
+				$string = substr($string, $pos);
+			}
+			if (substr($string, -1) == "/") {
+				$string = substr($string, 0, -1);
+			}
+			return $string;
+        }
 
 /*------------------------------------------------------------------------------------------------------------
  * remainDomain
@@ -351,6 +377,7 @@ class RankComponent extends Component {
 		}
 		return $out;
 	}
+
 
 }
 
