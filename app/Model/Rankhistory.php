@@ -8,7 +8,7 @@ App::uses('AppModel', 'Model');
  * @property Keyword $Keyword
  */
 class Rankhistory extends AppModel {
-
+	
         /**
          * Use table
          *
@@ -59,7 +59,8 @@ class Rankhistory extends AppModel {
                 'enclosure' => ' ', //The enclosure, default is "
                 'max_execution_time' => 360, //Increase for Models with lots of data, has no effect is php safemode is enabled.
                 'encoding' => 'utf8' //Prefixes the return file with a BOM and attempts to utf_encode() data
-            )
+            ),
+            'Containable'
         );
 
         public function header_csv_by_keyword($headers, $mapHeader) {
