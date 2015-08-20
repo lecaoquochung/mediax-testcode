@@ -13,6 +13,7 @@ class SalesKeywordFixture extends CakeTestFixture {
 	public $fields = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 20, 'key' => 'primary'),
 		'keyword_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 20),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 20),
 		'keyword' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'rank' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'sales' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
@@ -37,15 +38,16 @@ class SalesKeywordFixture extends CakeTestFixture {
 		array(
 			'id' => 1,
 			'keyword_id' => 1,
+			'user_id' => 1,
 			'keyword' => 'Lorem ipsum dolor sit amet',
 			'rank' => 'Lorem ipsum dolor sit amet',
 			'sales' => 1,
 			'cost' => 1,
 			'profit' => 1,
 			'limit' => 1,
-			'date' => '2015-08-17',
-			'created' => '2015-08-17 15:07:52',
-			'updated' => '2015-08-17 15:07:52'
+			'date' => '2015-08-20',
+			'created' => '2015-08-20 15:23:30',
+			'updated' => '2015-08-20 15:23:30'
 		),
 	);
 
