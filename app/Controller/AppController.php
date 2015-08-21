@@ -108,7 +108,7 @@ class AppController extends Controller {
 			$this -> layout = 'default_new';
 		}
 
-		if ($this -> params['controller'] == 'templates' || $this -> params['controller'] == 'keywords' || $this -> params['controller'] == 'rankhistories') {
+		if ($this -> params['controller'] == 'templates' || $this -> params['controller'] == 'keywords' || $this -> params['controller'] == 'rankhistories' || $this -> params['controller'] == 'sales_keywords') {
 			$this -> layout = 'default_new';
 		}
 	}

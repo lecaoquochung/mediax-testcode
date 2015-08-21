@@ -1,34 +1,15 @@
 <aside class="left-side sidebar-offcanvas">
-	<!-- sidebar: style can be found in sidebar.less -->
 	<section class="sidebar">
-		<!-- search form -->
-		<!-- <form action="#" method="get" class="sidebar-form">
-			<div class="input-group">
-				<input type="text" name="q" class="form-control" placeholder="Search..."/>
-				<span class="input-group-btn">
-					<button type='submit' name='search' id='search-btn' class="btn btn-flat">
-						<i class="fa fa-search"></i>
-					</button> </span>
-			</div>
-		</form> -->
-		<!-- sidebar menu: : style can be found in sidebar.less -->
 		<ul class="sidebar-menu">
+			
 <!-- dashboard -->
-			<li class="<?php echo $this->here==$this->webroot.'rankhistories/dashboard'?'active':'' ?>">
-				<a href="<?php echo $this->webroot?>rankhistories/dashboard"> <i class="fa fa-mobile"></i> <span><?php echo __('Dashboard'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>
+			<li class="<?php echo $this->here==$this->webroot.'sales_keywords/dashboard'?'active':'' ?>">
+				<a href="<?php echo $this->webroot?>sales_keywords/dashboard"> <i class="fa fa-mobile"></i> <span><?php echo __('Dashboard'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>
 			</li>
+			
 <!-- contract -->
 			<li class="treeview 
-				<?php 
-					echo (
-							$this->here==$this->webroot.'rankhistories' || 
-							$this->here==$this->webroot || 
-							$this->params['action']== 'service'||
-							$this->params['action']== 'kotei' ||
-							$this->params['action']== 'seika'
-						) ?
-						'active':''
-				?>">
+				<?php echo ($this->here==$this->webroot.'rankhistories' || $this->here==$this->webroot || $this->params['action']== 'service'|| $this->params['action']== 'kotei' || $this->params['action']== 'seika') ? 'active':''; ?>">
 				<a href="#">
 					<i class="fa fa-jpy"></i><span><?php echo __('Contract'); ?></span><i class="fa fa-angle-left pull-right"></i>
 				</a>
@@ -47,7 +28,7 @@
 					</li>
 					<!-- service -->
 					<li class="<?php echo $this->here==$this->webroot.'rankhistories/service'?'active':''?>">
-						<a href="<?php echo $this->webroot?>rankhistories/service"> <i class="fa fa-leaf"></i> <span><?php echo __('Free Service'); ?></span> <!-- <small class="badge pull-right bg-green" id="contract">#</small> --></a>
+						<a href="<?php echo $this->webroot?>rankhistories/service"> <i class="fa fa-leaf"></i> <span><?php echo __('Free Service'); ?></span></a>
 					</li>
 					<!-- sales -->
 					<li class="<?php echo ($this->here==$this->webroot.'rankhistories/sales' || $this->here==$this->webroot)?'active':''?>">
@@ -55,31 +36,26 @@
 					</li>
 				</ul>
 			</li>
+			
 <!-- keyword -->
 			<li class="<?php echo $this->here==$this->webroot.'keywords'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>keywords"> <i class="fa fa-mobile"></i> <span><?php echo __('Keywords'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>
 			</li>
+			
 <!-- mobile -->
 			<li class="<?php echo $this->here==$this->webroot.'rankhistories/rankmobile'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>rankhistories/rankmobile"> <i class="fa fa-mobile"></i> <span><?php echo __('Rank Mobile'); ?></span> <small class="badge pull-right bg-red" id=""></small> </a>
 			</li>
+			
 <!-- no contract -->
-			<!-- keyword -->
 			<li class="<?php echo $this->here==$this->webroot.'rankhistories/nocontract'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>rankhistories/nocontract"> <i class="fa fa-exclamation-triangle"></i> <span><?php echo __('No Contract'); ?></span> <small class="badge pull-right bg-red" id="nocontract"></small> </a>
 			</li>
+			
 <!-- cancel keyword -->
 			<li class="<?php echo $this->here==$this->webroot.'keywords/kaiyakulist'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>keywords/kaiyakulist"> <i class="fa fa-eject"></i> <span><?php echo __('Kaiyaku List'); ?></span> </a>
 			</li>
-			<!-- <li class="treeview">
-				<a href="#">
-					<i class="fa fa-dot-circle-o"></i><span><?php echo __('No Contract'); ?></span><i class="fa fa-angle-left pull-right"></i>
-				</a>
-				
-				<ul class="treeview-menu">
-				</ul>
-			</li> -->
 			
 <!-- customer -->
 			<li class="treeview">
@@ -96,6 +72,7 @@
 					</li>
 				</ul>
 			</li>
+			
 <!-- tools -->
 			<li class="treeview">
 				<a href="#">
@@ -113,10 +90,12 @@
 			<li class="<?php echo $this->here==$this->webroot.'notices'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>notices"> <i class="fa fa-bullhorn"></i> <span><?php echo __('Notice'); ?></span> </a>
 			</li>
+			
 <!-- report -->
 			<!-- <li class="<?php echo $this->here==$this->webroot.'report'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>report"> <i class="fa fa-book"></i> <span><?php echo __('Report'); ?></span> </a>
 			</li> -->
+			
 <!-- system -->
 			<?php if($this->Session->read('Auth.User.user.role')==1): ?>
 			<li class="treeview <?php echo $this->here==$this->webroot.'logs' ? 'active' : '' ?>">
@@ -133,6 +112,7 @@
 				</ul>
 			</li>
 			<?php endif; ?>
+			
 <!-- logout -->
 			<li>nbsps;</li>
 			<li class="<?php echo $this->here==$this->webroot.'users/logout'?'active':'' ?>">
@@ -140,5 +120,4 @@
 			</li>
 		</ul>
 	</section>
-	<!-- /.sidebar -->
 </aside>
