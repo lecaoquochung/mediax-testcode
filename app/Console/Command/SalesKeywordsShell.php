@@ -117,7 +117,7 @@ class SalesKeywordsShell extends Shell {
 			} 
 			
 			// check limit group: check on group 1 only
-			if($rankhistory['Keyword']['limit_price'] != 0) {
+			if($rankhistory['Keyword']['limit_price_group'] != 0) {
 				$conds = array();
 				$conds['SalesKeyword.keyword_id'] = $rankhistory['Rankhistory']['KeyID'];
 				$conds['SalesKeyword.user_id'] = $rankhistory['Keyword']['UserID'];

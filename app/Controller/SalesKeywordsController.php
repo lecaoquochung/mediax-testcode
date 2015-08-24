@@ -1,89 +1,85 @@
 <?php
 App::uses('AppController', 'Controller');
-/**
- * SalesKeywords Controller
+
+/*------------------------------------------------------------------------------------------------------------
+ * Sales Keywords Controller
  *
- * @property SalesKeyword $SalesKeyword
- * @property PaginatorComponent $Paginator
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ *-----------------------------------------------------------------------------------------------------------*/	
 class SalesKeywordsController extends AppController {
 
-/**
- * Components
- *
- * @var array
- */
 	public $components = array('Paginator');
 	
-/**
+/*------------------------------------------------------------------------------------------------------------
  * dashboard method
  *
- * @return void
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ * @output daily [1, 43050, 500, 42550]; weekly ['Day', 'Sales', 'Cost', 'Profit', 'Average'],
+ *-----------------------------------------------------------------------------------------------------------*/	
 	public function dashboard() {
-		$this->SalesKeyword->recursive = 0;
-		
+		$this->SalesKeyword->recursive = -1;
+		$daily = array();
+		$weekly = array();
+		$monthly = array();
 		$date = date('Y-m-d');
+		$today = date('d');
+		$today_int = settype($today, "integer");
+		
 		$conds = array();
 		$conds['SalesKeyword.date BETWEEN ? AND ?'] = array( date('Y-m').'-01', $date);
 		$fields = array();
-		$fields = array('SalesKeyword.id', 'SalesKeyword.keyword_id', 'SalesKeyword.user_id', 'SalesKeyword.keyword', 'SalesKeyword.rank', 'SalesKeyword.sales', 'SalesKeyword.cost', 'SalesKeyword.profit', 'SalesKeyword.date');
+		$fields = array('SalesKeyword.date');
 		
-		$sales_keywords = $this-> SalesKeyword -> find('all', array('conditions' => $conds, 'fields' => $fields));
+		$sales_keywords = $this-> SalesKeyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'group' => 'SalesKeyword.date', 'order' => 'SalesKeyword.date ASC'));
 		$sales_date = Hash::extract($sales_keywords, '{n}.SalesKeyword.date');
-		
-		
-		// debug($sales_date);exit;
-		// debug($sales_keywords);exit;
-		// $sales_keywords = Hash::combine($sales_keywords, '{n}.SalesKeyword.date', array('%s,%s',  '{n}.SalesKeyword.sales', '{n}.SalesKeyword.cost'));
 		
 		$sales_keywords_daily = array();
 		$sum_sales_keyword = array();
-		foreach($sales_keywords as $sales_keyword) {
+		
+		for($i=0; $i<count($sales_date); $i++) {
+			$sum_sales_keyword[$i] = $this->SalesKeyword->find('all', array(
+		    	'conditions' => array('SalesKeyword.date' => $sales_date[$i]),
+		    	'fields' => array('sum(SalesKeyword.sales) as total_sales', 'sum(SalesKeyword.cost) as total_cost', 'sum(SalesKeyword.profit) as total_profit')
+        	));
 			
-			// debug($sales_keyword);exit;
-			
-			for($i=0; $i<=count($sales_keywords); $i++) {
-				
-				// debug($sales_keywords[$i]['SalesKeyword']['date']);
-				// debug($sales_keyword['SalesKeyword']['date']); 
-				
-				// if($sales_keywords[$i]['SalesKeyword']['date'] == $sales_keyword['SalesKeyword']['date']) {
-					// $day_int = date('d', strtotime($sales_keyword['SalesKeyword']['date']));
-					// $day_int = settype($day_int, "integer");
-// 					
-					// @$sum_sales_keyword[$sales_keywords[$i]['SalesKeyword']['date']]['sales'] += $sales_keyword['SalesKeyword']['sales'];
-					// @$sum_sales_keyword[$sales_keywords[$i]['SalesKeyword']['date']]['cost'] += $sales_keyword['SalesKeyword']['cost']; 
-					// @$sum_sales_keyword[$sales_keywords[$i]['SalesKeyword']['date']]['profit'] += $sales_keyword['SalesKeyword']['profit'];
-					// $sales_keywords_daily[$sales_keywords[$i]['SalesKeyword']['date']] = array($day_int, $sales_keyword['SalesKeyword']['sales'], $sales_keyword['SalesKeyword']['cost'], $sales_keyword['SalesKeyword']['profit']);
-				// }
-			}
+			@$monthly['sales'] += @$sum_sales_keyword[$i][0][0]['total_sales'];
+			@$monthly['cost'] += @$sum_sales_keyword[$i][0][0]['total_cost'];
+			@$monthly['profit'] += @$sum_sales_keyword[$i][0][0]['total_profit'];
 		}
 		
-		debug(count($sales_keywords));
-		debug($sales_keywords_daily);
+		$daily = Hash::format($sum_sales_keyword, array('{n}.0.0.total_sales', '{n}.0.0.total_cost', '{n}.0.0.total_profit'), '%d, %d, %d');
+		$weekly = array_slice($daily, $today_int - 11);
 		
-		// debug($sales_keywords_daily);
+		// foreach ($daily as $key => $value): echo '[' .($key+1) .',' .$value .'], '; endforeach; exit;
+		// foreach ($weekly as $key => $value): echo '[' .($key+1) .',' .$value .',' .(array_sum(explode(',', $value)))/3 .'], '; endforeach; exit;
+		// foreach ($monthly as $key => $value): echo '[' .'\''.$key.'\'' .',' .$value .'], '; endforeach; exit;
 		
+		$this->set(compact('daily', 'weekly', 'monthly'));
 	}
 
-/**
+/*------------------------------------------------------------------------------------------------------------
  * index method
  *
- * @return void
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ *-----------------------------------------------------------------------------------------------------------*/
 	public function index() {
 		$this->SalesKeyword->recursive = 0;
 		$this->set('salesKeywords', $this->Paginator->paginate());
 	}
 
-/**
+/*------------------------------------------------------------------------------------------------------------
  * view method
  *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ *-----------------------------------------------------------------------------------------------------------*/
 	public function view($id = null) {
 		if (!$this->SalesKeyword->exists($id)) {
 			throw new NotFoundException(__('Invalid sales keyword'));
@@ -92,11 +88,13 @@ class SalesKeywordsController extends AppController {
 		$this->set('salesKeyword', $this->SalesKeyword->find('first', $options));
 	}
 
-/**
+/*------------------------------------------------------------------------------------------------------------
  * add method
  *
- * @return void
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ *-----------------------------------------------------------------------------------------------------------*/	
 	// public function add() {
 		// if ($this->request->is('post')) {
 			// $this->SalesKeyword->create();
@@ -112,13 +110,13 @@ class SalesKeywordsController extends AppController {
 		// $this->set(compact('keywords', 'users'));
 	// }
 
-/**
+/*------------------------------------------------------------------------------------------------------------
  * edit method
  *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ *-----------------------------------------------------------------------------------------------------------*/	
 	// public function edit($id = null) {
 		// if (!$this->SalesKeyword->exists($id)) {
 			// throw new NotFoundException(__('Invalid sales keyword'));
@@ -139,13 +137,13 @@ class SalesKeywordsController extends AppController {
 		// $this->set(compact('keywords', 'users'));
 	// }
 
-/**
+/*------------------------------------------------------------------------------------------------------------
  * delete method
  *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20150820
+ *-----------------------------------------------------------------------------------------------------------*/	
 	// public function delete($id = null) {
 		// $this->SalesKeyword->id = $id;
 		// if (!$this->SalesKeyword->exists()) {
