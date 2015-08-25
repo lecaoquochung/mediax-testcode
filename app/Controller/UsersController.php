@@ -174,10 +174,10 @@ class UsersController extends AppController {
 		}
 		if ($this->User->delete()) {
 			$this->Session->setFlash(__('User deleted'));
-			$this->redirect(array('action' => 'index'));
+			$this->redirect($this->referer());
 		}
 		$this->Session->setFlash(__('User was not deleted'));
-		$this->redirect(array('action' => 'index'));
+		$this->redirect($this->referer());
 	}
 
 /*------------------------------------------------------------------------------------------------------------

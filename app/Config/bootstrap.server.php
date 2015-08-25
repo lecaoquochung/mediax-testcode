@@ -198,29 +198,23 @@ Configure::write('Page.min', 100);
 // IP
 Configure::write('Server.ip', array('124.33.192.250', '27.142.134.36', '153.121.32.92'));
 
-
 /*------------------------------------------------------------------------------------------------------------
  * User Agent
- * 
+ *
  * author lecaoquochung@gmail.com
  * created
  * updated
  *-----------------------------------------------------------------------------------------------------------*/
 // PC
- Configure::write('Useragent.pc', 
-	array(
-		'0' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36',
-		'1' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:36.0) Gecko/20100101 Firefox/36.0',
-		'2' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'
-	)
-);
+Configure::write('Useragent.pc', array('0' => 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36', '1' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:36.0) Gecko/20100101 Firefox/36.0', '2' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'));
 
 // Mobile
-Configure::write('Useragent.mobile', 
-	array(
-		'0' => "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
-		'1' => "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4",
-		'2' => "Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B411",
-		'3' => "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70",
-	)
-);
+Configure::write('Useragent.mobile', array('0' => "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53", '1' => "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4", '2' => "Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B411", '3' => "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70", ));
+
+// User.role
+Configure::write('User.role', array('1' => __('User Admin'), '2' => __('Rank Admin'), ));
+
+Configure::write('User.admin', array('2' => __('Rank Admin'), ));
+
+// User.permission
+Configure::write('User.permission', array('1' => array('index', 'view', 'edit', 'delete'), '2' => array('index', 'view'), ));
