@@ -409,6 +409,8 @@ class UsersController extends AppController {
 				$this->Session->setFlash(__('Username or password is incorrect. Please, try again.'), 'default', array('class' => 'error'));
 			}
 		}
+		
+		$this->layout = 'default';
 	}
 
 /**

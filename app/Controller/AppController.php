@@ -91,21 +91,13 @@ class AppController extends Controller {
 
 		// template path
 		// switch ($this->here) {
-			// case '/mediax/' :
-				// $this -> layout = 'default_new';
-				// break;
-			// case '/logs' :
-				// $this -> layout = 'default_new';
+			// case '/users/login' :
+				// $this -> layout = 'default';
 				// break;
 		// }
-
-		// if ($this -> params['action'] == 'service' || 
-			// $this -> params['action'] == 'report' || 
-			// $this -> params['action'] == 'kotei' || 
-			// $this -> params['action'] == 'seika' || 
-			// $this -> params['action'] == 'view') 
+		// if ($this -> params['action'] == 'login')
 		// {
-			// $this -> layout = 'default_new';
+			// $this -> layout = 'default';
 		// }
 		// if ($this -> params['controller'] == 'templates' || 
 			// $this -> params['controller'] == 'keywords' || 
