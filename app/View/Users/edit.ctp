@@ -1,7 +1,3 @@
-<?php $this->assign('title', __('Company Edit'));?>
-<div id="admin_users">
-<?php echo $this->element('navigation'); ?>
-<div class="main span10">
+<?php echo $this->assign('title', __($this->params['controller'] .' ' .$this->params['action'])) ?>
+<?php // echo $this->element($this->params['controller'] .'/' .$this->params['action']) ?>
 <?php echo $this->element('company/box/user_company_edit') ?>
-</div>
-</div>

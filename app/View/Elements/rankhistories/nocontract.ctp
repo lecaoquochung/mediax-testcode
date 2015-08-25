@@ -1,10 +1,5 @@
-<div class="box admin_statuses span12">
-    <div class="navbar">
-        <div class="navbar-inner">
-            <h3 class="brand"><?php echo __('Nocontract List'); ?></h3>
-        </div>
-    </div>
-    <div class="section">
+<div class="row">
+    <div class="col-xs-12">
     <?php echo $this->Session->flash(); ?>
     <?php echo $this->Form->create('Rankhistory',array('class'=>'form-search')); ?>
         <?php
@@ -57,7 +52,7 @@
                 <td>
                     <?php 
                         global $list_engine;
-                        echo h($list_engine[$rankhistory['Keyword']['Engine']]); 
+                        echo h(@$list_engine[$rankhistory['Keyword']['Engine']]); 
                     ?>&nbsp;
                     <?php 
                         // echo $rankhistory['Rankhistory']['Rank'];

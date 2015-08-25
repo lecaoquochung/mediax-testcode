@@ -180,6 +180,127 @@ class UsersController extends AppController {
 		$this->redirect(array('action' => 'index'));
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * admin method
+ *
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created
+ *-----------------------------------------------------------------------------------------------------------*/
+    public function admin() {
+        if($this->Session->read('Auth.User.user.role')!=1) {
+                $this->Security->SystemLog(Null);
+                throw new NotFoundException(__('Page Not Found'));
+        }
+
+        $this->User->recursive = 0;
+        $conds = array();
+        $conds['User.role'] =array(1,2);
+        $fields = array();
+        $this->set('users', $this->User->find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'User.id DESC')));
+    }
+	
+/*------------------------------------------------------------------------------------------------------------
+ * add admin method
+ *
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created
+ *-----------------------------------------------------------------------------------------------------------*/
+    public function add_admin() {
+        $this->Security->permCheck();
+
+        if ($this -> request -> is('post')) {
+            $this -> User -> create();
+            if ($this -> request -> data['User']['password'] != '') {
+                $this -> request -> data['User']['password'] = Security::hash($this->request->data['User']['password'], 'sha1', Configure::read('Security.salt'));
+            }
+            if ($this -> User -> save($this -> request -> data)) {
+
+                $data = array($this -> request -> data['User']['name'], $this -> request -> data['User']['password'], $this->request->data['User']['email']);
+                $email = array();
+                $email = Configure::read('Admin.email');
+                $email[] = $this->request->data['User']['email'];
+
+                //send mail
+                $sendmail = $this->sendMail(array(
+                    'to'=> $email,
+                    'subject'=>'[MediaX]新規アカウント発行お知らせ',
+                    'template'=>'admin',
+                    'data'=>$data
+                ));
+
+                $this -> Session -> setFlash(__('The user has been saved'));
+                $this -> redirect(array('action' => 'admin'));
+            } else {
+                $this -> Session -> setFlash(__('The user could not be saved. Please, try again.'));
+                unset($this -> request -> data['User']['pwd']);
+            }
+        }
+    }
+
+/*------------------------------------------------------------------------------------------------------------
+ * edit admin method
+ *
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created
+ *-----------------------------------------------------------------------------------------------------------*/
+    public function edit_admin($id = null) {
+        $this->Security->permCheck();
+
+        $this -> User -> id = $id;
+        if (!$this -> User -> exists()) {
+            throw new NotFoundException(__('Invalid user'));
+        }
+
+        if ($this -> request -> is('post') || $this -> request -> is('put')) {
+            if ($this -> request -> data['User']['password'] != '') {
+                $this -> request -> data['User']['password'] = Security::hash($this->request->data['User']['password'], 'sha1', Configure::read('Security.salt'));
+            } else {
+                $User = $this -> User -> read(null, $id);
+                $this -> request -> data['User']['password'] = $User['User']['pwd'];
+            }
+            if ($this -> User -> save($this -> request -> data)) {
+                $this -> Session -> setFlash(__('The company has been saved'), 'default', array('class' => 'success'));
+                // $this -> redirect(array('action' => 'view', $id));
+                $this -> redirect(array('action' => 'admin'));
+            } else {
+                $this -> Session -> setFlash(__('The company could not be saved. Please, try again.'), 'default', array('class' => 'error'));
+            }
+        } else {
+            $this -> request -> data = $this -> User -> read(null, $id);
+            unset($this -> request -> data['User']['password']);
+        }
+    }
+
+/*------------------------------------------------------------------------------------------------------------
+ * delete admin method
+ *
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created
+ *-----------------------------------------------------------------------------------------------------------*/
+    public function delete_admin($id = null) {
+        $this->Security->permCheck();
+
+        if (!$this -> request -> is('post')) {
+            throw new MethodNotAllowedException();
+        }
+
+        $this -> User -> id = $id;
+        if (!$this -> User -> exists()) {
+            throw new NotFoundException(__('Invalid user'));
+        }
+
+        if ($this -> User -> delete()) {
+            $this -> Session -> setFlash(__('User deleted'));
+            $this -> redirect(array('action' => 'admin'));
+        }
+        $this -> Session -> setFlash(__('User was not deleted'));
+        $this -> redirect(array('action' => 'admin'));
+    }
+
 /**
  * admin_index method
  *

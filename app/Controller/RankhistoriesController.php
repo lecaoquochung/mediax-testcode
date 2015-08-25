@@ -1132,16 +1132,43 @@ class RankhistoriesController extends AppController {
 	 */
 	public function edit_inline() {
 		Configure::write('debug', 0);
+		$pks = explode(',', $this -> request -> data['pk']);
+		print_r($pks);
+		
 		$this -> autoRender = false;
+		
 		$this -> Rankhistory -> recursive = -1;
 		$this -> Rankhistory -> updateAll(
 			array('Rankhistory.'.$this -> request -> data['name'] => "'".$this -> request -> data['value']."'"), 
-			array('Rankhistory.ID' => $this -> request -> data['pk'])
+			// array('Rankhistory.ID' => $this -> request -> data['pk'])
+			array('Rankhistory.KeyID' => trim($pks[0]), 'Rankhistory.RankDate' => trim($pks[1]))
 		);
+		
+		$this->Security->SystemLog($this -> request -> data);
 
 		$message = array();
 		$message['name'] = $this -> request -> data['name'];
 		$message['value'] = $this -> request -> data['value'];
 		return json_encode($message);
-	}		
+	}
+
+	public function set_inline_rank() {
+        Configure::write('debug', 0);
+        $pks = explode(',', $this -> request -> data['pk']);
+        $this -> autoRender = false;
+        // save db
+        $this -> Keyword -> Rankhistory -> recursive = -1;
+        $this -> Keyword -> Rankhistory -> updateAll(
+        	array('Rankhistory.' . $this -> request -> data['name'] => "'" . $this -> request -> data['value'] . "'"), 
+        	array('Rankhistory.KeyID' => trim($pks[0]), 'Rankhistory.RankDate' => trim($pks[1]))
+		);
+        // log
+        $this->Security->SystemLog($this -> request -> data);
+        // return
+        $message = array();
+        $message['name'] = $this -> request -> data['name'];
+        $message['value'] = $this -> request -> data['value'];
+
+        return json_encode($message);
+    }	
 }

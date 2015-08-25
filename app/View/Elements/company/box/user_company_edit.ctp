@@ -1,10 +1,5 @@
-<div class="box admin_statuses span12">
-    <div class="navbar">
-        <div class="navbar-inner">
-        <h3 class="brand"><?php echo __('Edit Company'); ?></h3>
-        </div>
-    </div>
-    <div class="section company form">
+<div class="row">
+    <div class="col-md-12">
     <?php echo $this->Form->create('User'); ?>
         <?php echo $this->Form->input('id'); ?>
         <table class="table tableX">

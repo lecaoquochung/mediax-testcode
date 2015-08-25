@@ -185,5 +185,17 @@ class LayoutHelper extends Helper {
 		return $history;
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * dashboard money format
+ * 
+ * author lecaoquochung@gmail.com
+ * created 201502
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function MoneyFormat($money) {
+		$money = money_format('%.0n', $money);
+		
+		return $money;
+	}
+
 }
 ?>

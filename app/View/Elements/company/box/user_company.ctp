@@ -1,10 +1,5 @@
-<div class="box admin_statuses span12">
-	<div class="navbar">
-		<div class="navbar-inner">
-		<h3 class="brand"><?php  echo __('Customer List');?></h3>
-		</div>
-	</div>
-	<div class="section">
+<div class="row">
+	<div class="col-md-12">
 		<div class="common-button"><?php echo $this->Html->link(__('Add Company'), array('action' => 'add'), array('class' => "btn btn-warning")); ?></div>
 		<table class="table tableX">
 			<tr>

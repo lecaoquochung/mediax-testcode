@@ -1,10 +1,5 @@
-<div class="box admin_statuses span12">
-	<div class="navbar">
-		<div class="navbar-inner">
-		<h3 class="brand"><?php  echo __('Agent');?></h3>
-		</div>
-	</div>
-	<div class="section">
+<div class="row">
+	<div class="col-md-12">
 		<table class="table tableX">
 			<tr>
 				<th><?php echo __('Id'); ?></th>

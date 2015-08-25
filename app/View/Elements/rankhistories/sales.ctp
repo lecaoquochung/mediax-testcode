@@ -63,7 +63,11 @@
 							</td>
 							<!-- engine rank -->
 							<td>
-								<div style="float: left;" class="edit_inline" data-name="Rank" data-pk="<?php echo $rankhistory['Rankhistory']['ID']; ?>">
+								<div 
+									style="float: left;"
+									class="edit_inline" 
+									data-name="Rank" 
+									data-pk="<?php echo $rankhistory['Keyword']['ID']; ?>,<?php echo $rankhistory['Rankhistory']['RankDate']; ?>,<?php echo $rankhistory['Rankhistory']['Rank']; ?>,<?php echo $this->Session->read('Auth.User.user.email'); ?>,<?php echo $this->here; ?>,">
 									<?php echo $rankhistory['Rankhistory']['Rank']; ?>&nbsp;
 								</div>
 								<span class="arrow_row"><?php echo $params['arrow'] ?></span>
@@ -191,13 +195,31 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		//editables 
+		<?php if($this->Session->read('Auth.User.user.role') == 2): ?>
+		
 		$.fn.editable.defaults.mode = 'inline';
+		// $('.edit_inline').editable({
+			   // url: '<?php echo $this->webroot.'rankhistories/edit_inline' ?>',
+			   // type: 'text',
+			   // name: $(this).attr('name'),
+			   // title: 'Edit '+$(this).attr('name')
+		// });
+		
 		$('.edit_inline').editable({
-			   url: '<?php echo $this->webroot.'rankhistories/edit_inline' ?>',
-			   type: 'text',
-			   name: $(this).attr('name'),
-			   title: 'Edit '+$(this).attr('name')
-		});		
+			url: '<?php echo $this->webroot ?>keywords/set_inline_rank',
+			display: function (value) {
+			
+			},
+			ajaxOptions: {
+				type: 'post'
+			},
+			success: function (response, newValue) {
+				window.location.reload(true);
+			}
+		});
+		
+		<?php endif; ?>
+		
 		//
 		// $('.loadRank').click(function(){
 			// var keyID = $(this).attr('KeyID');

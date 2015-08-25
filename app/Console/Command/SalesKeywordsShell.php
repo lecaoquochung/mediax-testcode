@@ -119,7 +119,6 @@ class SalesKeywordsShell extends Shell {
 			// check limit group: check on group 1 only
 			if($rankhistory['Keyword']['limit_price_group'] != 0) {
 				$conds = array();
-				$conds['SalesKeyword.keyword_id'] = $rankhistory['Rankhistory']['KeyID'];
 				$conds['SalesKeyword.user_id'] = $rankhistory['Keyword']['UserID'];
 				$conds['SalesKeyword.date BETWEEN ? AND ?'] = array( date('Y-m').'-01', date('Y-m-d', strtotime($date)));
 				$fields = array();
@@ -137,7 +136,7 @@ class SalesKeywordsShell extends Shell {
 					$limit = 1;
 				}
 			}
-			
+
 			// sales & profit
 			if ($rankhistory['Keyword']['Engine'] == 1) {
 				$google_rank = $rankhistory['Rankhistory']['Rank'];
@@ -202,31 +201,37 @@ class SalesKeywordsShell extends Shell {
 					$data['SalesKeyword']['limit'] = $limit; // deprecated
 					$data['SalesKeyword']['date'] = $date;
 					
+					// debug($data);
+					
 					// save
 					$conds_data = array();
 					$conds_data['SalesKeyword.keyword_id'] = $rankhistory['Keyword']['ID'];
 					$conds_data['SalesKeyword.date'] = $date;
 					$check_data = $this->SalesKeyword->find('first',array('conditions'=> $conds_data));
+					// debug($check_data);exit;
 					
 					if($check_data != False){
 						$data['SalesKeyword']['id'] = $check_data['SalesKeyword']['id'];
 					}else{
 						$this -> SalesKeyword -> create();
 					}				
-					$this -> SalesKeyword -> save($data);	
+					
+					if($this -> SalesKeyword -> save($data)) {
+						//done keyword
+						$time_end = microtime(true); 
+						$execution_time = $time_end - $time_start;
+						
+						if ($limit == 0) {
+							$count++;
+							// rank-in
+							$keywords_is_ranked [$data['SalesKeyword']['keyword_id']] = $rankhistory['Keyword']['Keyword'];
+							$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$date . ' ' .$data['SalesKeyword']['sales'] . ' ' .$data['SalesKeyword']['cost'] . ' ' .$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
+						}
+					} else {
+						$this -> out("Db error");
+					}
 					
 					sleep(1);
-					
-					//done keyword
-					$time_end = microtime(true); 
-					$execution_time = $time_end - $time_start;
-					
-					if ($limit == 0) {
-						$count++;
-						// rank-in
-						$keywords_is_ranked [$data['SalesKeyword']['keyword_id']] = $rankhistory['Keyword']['Keyword'];
-						$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$date . ' ' .$data['SalesKeyword']['sales'] . ' ' .$data['SalesKeyword']['cost'] . ' ' .$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
-					}
 				}
 			}
 		}

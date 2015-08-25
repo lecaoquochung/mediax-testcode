@@ -1,13 +1,10 @@
-<div class="box admin_statuses span12">
-	<div class="navbar">
-		<div class="navbar-inner">
-		<h3 class="brand"><?php echo __(Inflector::singularize($this->params['controller']) .' ' .$this->params['action']); ?></h3>
-		</div>
-	</div>
-	<div class="section">
+<div class="row">
+	<div class="col-md-12">
 		<?php echo $this->Session->flash(); ?>
-		<div class="common-button"><?php echo $this -> Html -> link(__('Add Admin'), array('action' => 'add_admin'), array('class' => "btn btn-warning")); ?></div>
-		<table class="table tableX">
+		<div class="box-header">
+			<?php echo $this -> Html -> link(__('Add Admin'), array('action' => 'add_admin'), array('class' => "btn btn-warning")); ?>
+		</div>
+		<table class="table">
 			<tr>
 					<th><?php echo __('#'); ?></th>
 					<th><?php echo __('Name'); ?></th>

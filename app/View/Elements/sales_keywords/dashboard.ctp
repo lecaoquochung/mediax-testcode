@@ -1,5 +1,63 @@
 <div class="row">
-	
+	<div class="col-md-4">
+        <!-- Warning box -->
+        <div class="box box-solid box-warning">
+            <div class="box-header">
+                <h3 class="box-title"><?php echo __('Sales') ?></h3>
+                <!-- <div class="box-tools pull-right">
+                    <button class="btn btn-warning btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-warning btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div> -->
+            </div>
+            <div class="box-body">
+                <!-- <?php echo __('Total') ?>: <code>.box.box-solid.box-warning</code> -->
+                <h3>
+                	<?php echo $this->Layout->MoneyFormat($monthly['sales']); ?>
+                </h3>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+    
+    <div class="col-md-4">
+        <!-- Danger box -->
+        <div class="box box-solid box-danger">
+            <div class="box-header">
+                <h3 class="box-title"><?php echo __('Cost') ?></h3>
+                <!-- <div class="box-tools pull-right">
+                    <button class="btn btn-danger btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-danger btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div> -->
+            </div>
+            <div class="box-body">
+                <!-- <?php echo __('Total') ?>: <code>.box.box-solid.box-danger</code> -->
+                <h3>
+                	<?php echo $this->Layout->MoneyFormat($monthly['cost']); ?>
+                </h3>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+    
+    	<div class="col-md-4">
+        <!-- Success box -->
+        <div class="box box-solid box-success">
+            <div class="box-header">
+                <h3 class="box-title"><?php echo __('Profit') ?></h3>
+                <!-- <div class="box-tools pull-right">
+                    <button class="btn btn-success btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-success btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div> -->
+            </div>
+            <div class="box-body">
+                <!-- <?php echo __('Total') ?>: <code>.box.box-solid.box-success</code> -->
+                <h3>
+                	<?php echo $this->Layout->MoneyFormat($monthly['profit']); ?>
+                </h3>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div><!-- /.col -->
+</div>
+
+<div class="row">
 	<div class="col-xs-4">
 	    <!-- interactive chart -->
 	    <div class="box box-primary">
@@ -15,7 +73,7 @@
 	            </div>
 	        </div>
 	        <div class="box-body">
-	            <div id="chart_pie" style="width: auto; height: 300px;"></div>
+	            <div id="chart_pie" style="width: auto; height: 250px;"></div>
 	        </div>
 	    </div>
 	</div>
@@ -35,7 +93,7 @@
 	            </div>
 	        </div>
 	        <div class="box-body">
-	            <div id="chart_bar" style="width: auto; height: 300px;"></div>
+	            <div id="chart_bar" style="width: auto; height: 250px;"></div>
 	        </div>
 	    </div>
 	
@@ -59,7 +117,7 @@
 	            </div>
 	        </div>
 	        <div class="box-body">
-	            <div id="chart_line" style="width: auto; height: 420px;"></div>
+	            <div id="chart_line" style="width: auto; height: 350px;"></div>
 	        </div>
 	    </div>
 	
@@ -70,21 +128,19 @@
 <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
+      
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
-          ['Amount', 'Yen'],
-          <?php foreach ($monthly as $key => $value): echo '[' .'\''.$key.'\'' .',' .$value .'], '; endforeach; ?>
-          // ['Sales',     20], ['Cost',      5], ['Profit',  15],
+          ['<?php echo __('Total') ?>', 'Yen'],
+          <?php foreach ($monthly as $key => $value): echo '[' .'\''.__($key).'\'' .',' .$value .'], '; endforeach; ?>
         ]);
 
         var options = {
-			title: 'Total Amount',
+			title: '<?php echo __('Total') ?>',
 			colors: ['orange', 'red', '#109618'],
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
-
         chart.draw(data, options);
       }
     </script>
@@ -97,14 +153,14 @@
       function drawVisualization() {
 		// Some raw data (not necessarily accurate)
 		var data = google.visualization.arrayToDataTable([
-			['Day', 'Sales', 'Cost', 'Profit', 'Average'],
-			<?php foreach ($weekly as $key => $value): echo '[' .($key+1) .',' .$value .',' .(array_sum(explode(',', $value)))/4 .'], '; endforeach; ?>
+			['<?php echo __('Day') ?>', '<?php echo __('Sales') ?>', '<?php echo __('Cost') ?>', '<?php echo __('Profit') ?>', '<?php echo __('Average') ?>'],
+			<?php foreach ($weekly as $key => $value): $day = date('Y/m/') .(string)(date('d')-(count($weekly)-1-$key)); echo '[' .'"'.$day.'"' .',' .$value .',' .(array_sum(explode(',', $value)))/4 .'], '; endforeach; ?>
 		]);
 		
 		var options = {
-			title : 'Seika Performance',
-			vAxis: {title: 'Amount'},
-			hAxis: {title: 'Day'},
+			title : '<?php echo __('Seika Performance') ?>',
+			vAxis: {title: '<?php echo __('Total') ?>'},
+			hAxis: {title: '<?php echo __('Day') ?>'},
 			colors: ['orange', 'red', '#109618', 'black'],
 			seriesType: 'bars',
 			series: {3: {type: 'line'}}
@@ -122,10 +178,10 @@
 	
 	function drawTrendlines() {
 	      var data = new google.visualization.DataTable();
-	      data.addColumn('number', 'Day');
-	      data.addColumn('number', 'Sales');
-	      data.addColumn('number', 'Cost');
-	      data.addColumn('number', 'Profit');
+	      data.addColumn('number', '<?php echo __('Day') ?>');
+	      data.addColumn('number', '<?php echo __('Sales') ?>');
+	      data.addColumn('number', '<?php echo __('Cost') ?>');
+	      data.addColumn('number', '<?php echo __('Profit') ?>');
 	
 	      data.addRows([
 	      	<?php foreach ($daily as $key => $value): echo '[' .($key+1) .',' .$value .'], '; endforeach; ?>
@@ -133,10 +189,10 @@
 	
 	      var options = {
 	        hAxis: {
-	          title: 'Day'
+	          title: '<?php echo __('Day'); ?> '
 	        },
 	        vAxis: {
-	          title: 'Amount'
+	          title: '<?php echo __('Total') ?>'
 	        },
 	        colors: ['orange', 'red', '#109618'],
 	        trendlines: {

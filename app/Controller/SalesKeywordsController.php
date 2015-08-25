@@ -19,6 +19,10 @@ class SalesKeywordsController extends AppController {
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created 20150820
  * @output daily [1, 43050, 500, 42550]; weekly ['Day', 'Sales', 'Cost', 'Profit', 'Average'],
+ * @debug
+ * foreach ($daily as $key => $value): echo '[' .($key+1) .',' .$value .'], '; endforeach; exit;
+ * foreach ($weekly as $key => $value): $day = date('Y/m/') .(string)(date('d')-(count($weekly)-1-$key)); echo '[' .'"'.$day.'"' .',' .$value .',' .(array_sum(explode(',', $value)))/4 .'], '; endforeach; exit;
+ * foreach ($monthly as $key => $value): echo '[' .'\''.$key.'\'' .',' .$value .'], '; endforeach; exit;
  *-----------------------------------------------------------------------------------------------------------*/	
 	public function dashboard() {
 		$this->SalesKeyword->recursive = -1;
@@ -43,7 +47,7 @@ class SalesKeywordsController extends AppController {
 		for($i=0; $i<count($sales_date); $i++) {
 			$sum_sales_keyword[$i] = $this->SalesKeyword->find('all', array(
 		    	'conditions' => array('SalesKeyword.date' => $sales_date[$i]),
-		    	'fields' => array('sum(SalesKeyword.sales) as total_sales', 'sum(SalesKeyword.cost) as total_cost', 'sum(SalesKeyword.profit) as total_profit')
+		    	'fields' => array('sum(SalesKeyword.sales) as total_sales', 'sum(SalesKeyword.cost) as total_cost', 'sum(SalesKeyword.profit) as total_profit', 'SalesKeyword.date')
         	));
 			
 			@$monthly['sales'] += @$sum_sales_keyword[$i][0][0]['total_sales'];
@@ -52,12 +56,7 @@ class SalesKeywordsController extends AppController {
 		}
 		
 		$daily = Hash::format($sum_sales_keyword, array('{n}.0.0.total_sales', '{n}.0.0.total_cost', '{n}.0.0.total_profit'), '%d, %d, %d');
-		$weekly = array_slice($daily, $today_int - 11);
-		
-		// foreach ($daily as $key => $value): echo '[' .($key+1) .',' .$value .'], '; endforeach; exit;
-		// foreach ($weekly as $key => $value): echo '[' .($key+1) .',' .$value .',' .(array_sum(explode(',', $value)))/3 .'], '; endforeach; exit;
-		// foreach ($monthly as $key => $value): echo '[' .'\''.$key.'\'' .',' .$value .'], '; endforeach; exit;
-		
+		$weekly = array_slice($daily, $today_int - 8);
 		$this->set(compact('daily', 'weekly', 'monthly'));
 	}
 
