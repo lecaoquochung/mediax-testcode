@@ -1,21 +1,20 @@
 <?php
 /*------------------------------------------------------------------------------------------------------------
- * Load Server Time
+ * Rank Keyword Shell
  * 
- * param01: offset (start: 0)
- * param02: limit (default: 300)
- * param03: interval time (default: 15)
- * param04: c_logic (boolean: check company) -> deprecated
- * param05: random time between 2 query 01 (default: 10)
- * param06: random time between 2 query 02 (default: 30)
- * param07: interval keyword (default: 40 -> best testing)
- * param08: speed (boolean: delay or not on crawler)
- * param09: company (UserID default:0 not set check all)
- *
+ * param01(0): offset (start: 0)
+ * param02(1): limit (default: 300)
+ * param03(2): interval time (default: 15)
+ * param04(3): c_logic (boolean: check company) -> deprecated
+ * param05(4): random time between 2 query 01 (default: 10)
+ * param06(5): random time between 2 query 02 (default: 30)
+ * param07(6): interval keyword (default: 40 -> g, 10 -> y)
+ * param08(7): nocontract (default: 0 -> contract)
+
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created
- * run: load_server_time 0 300 15 1 10 30 40 1 0
+ * run: rank_keyword_nocontract 0 100 15 0 1 30 10 1
  *-----------------------------------------------------------------------------------------------------------*/	
 
 App::uses('AppShell', 'Console/Command');
@@ -24,7 +23,7 @@ App::uses('RankComponent', 'Controller/Component');
 App::uses('RankMobileComponent', 'Controller/Component');
 App::uses('CakeEmail', 'Network/Email');
 
-class LoadServerTimeShell extends Shell {
+class RankKeywordShell extends Shell {
 
 	public $uses = array('Keyword', 'Rankhistory');
 
@@ -37,7 +36,7 @@ class LoadServerTimeShell extends Shell {
 			$c_logic = 1;
 		}
 		
-		$rand01 = 10;
+		$rand01 = 1;
 		if(isset($this->args[4])) {
 			$rand01 = $this->args[4];
 		}
@@ -50,6 +49,11 @@ class LoadServerTimeShell extends Shell {
 		$interval_keyword = 50;
 		if(isset($this->args[6])) {
 			$interval_keyword = $this->args[6];
+		}
+		
+		$nocontract = 0;
+		if(isset($this->args[7])) {
+			$nocontract = $this->args[7];
 		}
 		
 		$start_time = date('Ymd H:i:s');
@@ -69,7 +73,7 @@ class LoadServerTimeShell extends Shell {
 		// filter keyword
 		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
-		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.nocontract'] = $nocontract;
 		$conds['Keyword.c_logic'] = $c_logic;
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
@@ -214,9 +218,9 @@ class LoadServerTimeShell extends Shell {
 		$this -> out('-------------------------------------');
 		
 		$Email = new CakeEmail();
-		$Email->from(array('server-admin@'.$_SERVER['HOSTNAME'] => 'MEDIAX ADMIN'));
+		$Email->from(array('server-admin@'.gethostbyname(exec('hostname')) => 'MEDIAX ADMIN'));
 		$Email->to('lecaoquochung.com@gmail.com');
-		$Email->subject('Load Server Time');
+		$Email->subject('Rank Keyword');
 		$Email->send("Start time: ".$start_time."\n End time: ".$end_time);		
 	}
 
