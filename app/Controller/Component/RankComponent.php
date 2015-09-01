@@ -131,7 +131,7 @@ class RankComponent extends Component {
         $start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
 
         $page_start++;
-        $pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 10 : 1;
+        $pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 1;
 
         //only check rank within top10
         if ($onlytop10) {
@@ -273,7 +273,9 @@ class RankComponent extends Component {
 		
         $engines['yahoo_jp'] = array(
             // 'url0' => 'https://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=&n=10',
-            'url0' => 'http://search.yahoo.co.jp/search?ei=UTF-8&p=_QUERY_',
+            'url0' => 'http://search.yahoo.co.jp/search?ei=UTF-8&p=_QUERY_', // Problem
+            // 'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&aq=-1&oq=&ei=UTF-8&fr=top_ga1_sa&x=wrt', // Problem
+            // 'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&aq=-1&oq=&ei=UTF-8&fr=&x=wrt', // Problem
             'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&aq=-1&oq=&ei=UTF-8&x=wrt&b=_START_',
             'url2' => 'http://search.yahoo.co.jp/search?p=_QUERY_&aq=-1&oq=&ei=UTF-8&x=wrt&b=_START_',
             'url3' => 'http://search.yahoo.co.jp/search?p=_QUERY_&aq=-1&oq=&ei=UTF-8&x=wrt&b=_START_',
@@ -289,7 +291,7 @@ class RankComponent extends Component {
 
         $start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
 
-        $pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 10 : 1;
+        $pagemax = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 2 : 1;
 
         //only check rank within top10
         if ($onlytop10) {
