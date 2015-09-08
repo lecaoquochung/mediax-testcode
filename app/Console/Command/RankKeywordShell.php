@@ -14,7 +14,7 @@
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created
- * run: rank_keyword_nocontract 0 100 15 0 1 30 10 1
+ * run: rank_keyword 0 100 15 0 1 30 10 1
  *-----------------------------------------------------------------------------------------------------------*/	
 
 App::uses('AppShell', 'Console/Command');

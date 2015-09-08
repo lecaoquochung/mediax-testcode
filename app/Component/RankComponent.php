@@ -10,6 +10,8 @@ App::uses('Component', 'Controller');
  * @created             201408
  -------------------------------------------------------------------------------------------------------------*/
 class RankComponent extends Component {
+	
+	public $components = array('DdnbCommon');
 
 /*------------------------------------------------------------------------------------------------------------
  * remainUrl
@@ -249,6 +251,349 @@ class RankComponent extends Component {
 //		 pr($this->remainDomain($url));
 //		 pr($rank);
 		return $rank;
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * GoogleJP method
+ *
+ * @input
+ * @output
+ *
+ * @author		lecaoquochung <lecaoquochung@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created		2014
+ -------------------------------------------------------------------------------------------------------------*/
+	public function GoogleJP($engine, $url, $keyword, $strict = 0, $g_local=0, $savecache = false, $onlytop10 = false) {
+		$status = 0;
+		// 0 - new keyword, 1 - keyword need update, 2 - keyword is effective
+		$rank = 0;
+		$page_start = -1;
+		
+		// Euc2Utf8 return mb_convert_encoding($str, 'UTF-8', 'EUC-JP');
+		$keystring = urlencode($this -> arrayToUtf8($keyword));
+		
+		if($strict == 1) {
+			$url = $this->DdnbCommon->remainUrl($url);
+		} else {
+			$url = $this->DdnbCommon->remainDomain($url);
+		}
+		
+		// g code
+		$g_lcode = Configure::read('G_LCODE');
+		$engines['google_jp'] = array(
+			'url0' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=20'.$g_lcode[$g_local], 
+			'url1' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=100&start=_START_'.$g_lcode[$g_local], 
+			'pattern' => '/<div class="s".*?<cite.*?([^<>].*?)<\/cite><div.*?nBb.*?>/'
+		);
+
+		$start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
+		$page_start++;
+		$pagemax = 1;
+		//only check rank within top10
+		if ($onlytop10) {
+			$pagemax = 0;
+		}
+
+		for ($page = $page_start; $page <= $pagemax; $page++) {
+			$start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
+			$search_url = $engines[$engine]['url' . $page];
+			$search_url = str_replace('_QUERY_', $keystring, $search_url);
+			$search_url = str_replace('_START_', $start, $search_url);
+			
+			$html = $this -> getWebContent($search_url);
+			$html = str_replace('<strong>', "", $html);
+			$html = str_replace('</strong>', "", $html);
+			if ($page == 0)
+				$html0 = $html;
+			$html = str_replace('<b>', "", $html);
+			$html = str_replace('</b>', "", $html);
+			
+			if ($engine == "google_jp") {
+				$html = mb_convert_encoding($html, "UTF-8", "JIS, eucjp-win, sjis-win");
+			} else {
+				$html = mb_convert_encoding($html, 'UTF-8', "auto");
+			}
+			
+			preg_match_all($engines[$engine]['pattern'], $html, $matches);
+			if (isset($matches[1])) {
+				$matches[1] = array_map("Text2Domain", $matches[1]);
+				$rank_arr['pages'][$page] = $matches[1];
+				$rank_arr['pagecount'] = $page;
+				
+				if($url == "luxia.jp") {
+					$strict = 1;
+				}
+				$key = $this -> rootDomainSearch($url, $matches[1], $strict);
+				if ($key !== false) {
+					$rank = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $key + 1;
+					break;
+				}
+			}
+			if ($page < $pagemax - 1) {
+				sleep(1);
+			} else {
+				if ($rank > 0 && $rank <= 10) {// if top 100's rank <= 10, set it to 11
+					$rank = 11;
+				}
+			}
+		}
+
+		// $rank_arr['update'] = time();
+		// $rank_str = serialize($rank_arr);
+		// $this -> Rankkeyword = ClassRegistry::init('Rankkeyword');
+		// if ($status == 0) {
+			// $rankkeyword['Rankkeyword']['Keyword'] = $keyword;
+			// $rankkeyword['Rankkeyword'][$engine] = $rank_str;
+		// } else {
+			// $rankkeyword['Rankkeyword']['ID'] = $keyid;
+			// $rankkeyword['Rankkeyword'][$engine] = $rank_str;
+			// $this -> Rankkeyword -> create();
+		// }
+		// $this -> Rankkeyword -> save($rankkeyword);
+
+		//save cahce
+		if ($savecache == true) {
+			if (!empty($html0) && $rank > 0 && $rank <= 10) {
+				$this->saveSearchCache($rank, $keyword, $engine, $html0, $html);
+			}
+		}
+		
+		return $rank;
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * GoogleJPPro
+ *
+ * @input	
+ * @output	json rankmobile
+ * 
+ * @author		lecaoquochung <lecaoquochung@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created		2015
+ -------------------------------------------------------------------------------------------------------------*/
+	public function GoogleJPPro($engine, $url, $keyword, $strict = 0, $local=0, $savecache = False, $onlytop10 = False) {
+		$status = 0; // save cache new rank-in (0: new)
+		$rank = 0; // init rank
+		$page_start = -1; // page start
+		
+		$keystring = urlencode($this -> DdnbCommon -> arrayToUtf8($keyword));
+		if($strict == 1) {
+			$url = $this->DdnbCommon->remainUrl($url);
+		} else {
+			$url = $this->DdnbCommon->remainDomain($url);
+		}
+		
+		$g_lcode = Configure::read('Search.locale');
+		$userAgent = Configure::read('Useragent.pc');
+		$random = rand(0,count($userAgent)-1);
+		$random1 = rand(0,count($userAgent)-1);
+		
+		$engines['google_jp'] = array(
+			// 'url0' => 'http://www.google.co.jp/m?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2',
+			'url0' => 'https://www.google.co.jp/?gfe_rd=cr&#q=_QUERY_',
+			'url1' => 'http://www.google.co.jp/search?hl=ja&q=_QUERY_&btnG=Google+%E6%A4%9C%E7%B4%A2&lr=&num=100&start=_START_'.$g_lcode[$local], 
+			'useragent0' => $userAgent[$random],
+			'useragent1' => $userAgent[$random1],
+			// 'pattern' => '/<h3 class="r".*?href=".*?([^<>].*?)"/'
+			'pattern' => '/<div class="s".*?<cite.*?([^<>].*?)<\/cite><div.*?nBb.*?>/'
+		);
+		
+		$start_base = 0;
+		$page_start++;
+		$pagemax = 1;
+		
+		if ($onlytop10) {
+			$pagemax = 0;
+		}
+
+		for ($page = $page_start; $page <= $pagemax; $page++) {
+			$start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
+			$search_url = $engines[$engine]['url' . $page];
+			$search_url = str_replace('_QUERY_', $keystring, $search_url);
+			$search_url = str_replace('_START_', $start, $search_url);
+			
+			// $html = $this ->DdnbCommon -> getWebContentMobile($search_url);
+			$html = $this ->DdnbCommon -> getWebContent($search_url, $engines[$engine]['useragent' . $page]);
+			if ($page == 0) {
+				 $html0 = $html;
+			}
+			
+			preg_match_all($engines[$engine]['pattern'], $html, $matches);
+			if (isset($matches[1])) {
+				$matches[1] = str_replace("&amp;", "&", $matches[1]);
+				$key = $this -> DdnbCommon -> rootDomainSearch($url, $matches[1], $strict);
+				if ($key !== False) {
+					$rank = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $key + 1;
+					break;
+				}
+			}
+			
+			if ($page < $pagemax - 1) {
+				sleep(1);
+			} else {
+				if ($rank > 0 && $rank <= 10) {// if top 100's rank <= 10, set it to 11
+					$rank = 11;
+				}
+			}
+		}
+		
+		// rank-in 
+		
+		// save cache
+		if ($savecache == True) {
+			if (!empty($html0) && $rank > 0 && $rank <= 10) {
+				$this->saveSearchCache($rank, $keyword, $engine, $html0, $html);
+			}
+		} else {
+			if (!empty($html0) && $rank >= 0 && $rank <= 100) {
+				$html0 = $html;
+				$this->saveSearchCache($rank, $keyword, $engine, $html0, $html);
+			}
+		}
+		
+		return $rank;
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * YahooJP method
+ *
+ * @input
+ * @output
+ *
+ * @author		lecaoquochung <lecaoquochung@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created		2014
+ -------------------------------------------------------------------------------------------------------------*/
+	public function YahooJP($engine, $url, $keyword, $strict = 0, $local=0, $savecache = false, $onlytop10 = false) {
+		$status = 0;
+		// 0 - new keyword, 1 - keyword need update, 2 - keyword is effective
+		$rank = 0;
+		$page_start = -1;
+
+		// Euc2Utf8 return mb_convert_encoding($str, 'UTF-8', 'EUC-JP');
+		$keystring = urlencode($this -> arrayToUtf8($keyword));
+		
+		if($strict == 1) {
+			$url = $this->DdnbCommon->remainUrl($url);
+		} else {
+			$url = $this->DdnbCommon->remainDomain($url);
+		}
+		
+		$engines['yahoo_jp'] = array(
+			'url0' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&fl=0&pstart=1&fr=top_v2&n=20', 
+			'url1' => 'http://search.yahoo.co.jp/search?p=_QUERY_&ei=UTF-8&n=100&fl=0&pstart=1&fr=top_v2&b=_START_', 
+			'pattern' => '/<li><a href="([^<>]*)">/'
+		);
+		
+		$start_base = ($engine == 'yahoo_jp' || $engine == 'yahoo_en') ? 1 : 0;
+
+		$page_start++;
+		$pagemax = 1;
+		
+		//only check rank within top10
+		if ($onlytop10) {
+			$pagemax = 0;
+		}
+
+		for ($page = $page_start; $page <= $pagemax; $page++) {
+			$start = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $start_base;
+			$search_url = $engines[$engine]['url' . $page];
+			$search_url = str_replace('_QUERY_', $keystring, $search_url);
+			$search_url = str_replace('_START_', $start, $search_url);
+			
+			$html = $this -> getWebContent($search_url);
+			$html = str_replace('<strong>', "", $html);
+			$html = str_replace('</strong>', "", $html);
+			if ($page == 0)
+				$html0 = $html;
+			$html = str_replace('<b>', "", $html);
+			$html = str_replace('</b>', "", $html);
+			
+			if ($engine == "google_jp") {
+				$html = mb_convert_encoding($html, "UTF-8", "JIS, eucjp-win, sjis-win");
+			} else {
+				$html = mb_convert_encoding($html, 'UTF-8', "auto");
+			}
+			
+			preg_match_all($engines[$engine]['pattern'], $html, $matches);
+			if (isset($matches[1])) {
+				$matches[1] = array_map("Text2Domain", $matches[1]);
+				$rank_arr['pages'][$page] = $matches[1];
+				$rank_arr['pagecount'] = $page;
+				
+				if($url == "luxia.jp") {
+					$strict = 1;
+				}
+				$key = $this -> rootDomainSearch($url, $matches[1], $strict);
+				if ($key !== false) {
+					$rank = (($page - 1 < 0) ? 0 : $page - 1) * 100 + $key + 1;
+					break;
+				}
+			}
+			if ($page < $pagemax - 1) {
+				sleep(1);
+			} else {
+				if ($rank > 0 && $rank <= 10) {// if top 100's rank <= 10, set it to 11
+					$rank = 11;
+				}
+			}
+		}
+
+		// $rank_arr['update'] = time();
+		// $rank_str = serialize($rank_arr);
+		// $this -> Rankkeyword = ClassRegistry::init('Rankkeyword');
+		// if ($status == 0) {
+			// $rankkeyword['Rankkeyword']['Keyword'] = $keyword;
+			// $rankkeyword['Rankkeyword'][$engine] = $rank_str;
+		// } else {
+			// $rankkeyword['Rankkeyword']['ID'] = $keyid;
+			// $rankkeyword['Rankkeyword'][$engine] = $rank_str;
+			// $this -> Rankkeyword -> create();
+		// }
+		// $this -> Rankkeyword -> save($rankkeyword);
+
+		//save cahce
+		if ($savecache == true) {
+			if (!empty($html0) && $rank > 0 && $rank <= 10) {
+				$this->saveSearchCache($rank, $keyword, $engine, $html0, $html);
+			}
+		}
+		
+		return $rank;
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * saveSearchCache
+ *
+ * @input	
+ * @output	json rankmobile
+ * 
+ * @author		lecaoquochung <lecaoquochung@gmail.com>
+ * @license		http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created		2015
+ -------------------------------------------------------------------------------------------------------------*/
+	function saveSearchCache($rank, $keyword, $engine, $html0, $html) {
+		$date = date('Ymd');
+		if ($rank > 10) {
+			$html0 = $html;
+		}
+		$cachepath = ROOT . "/../rankcache/pc" . $date;
+		if (!file_exists($cachepath)) {
+			mkdir($cachepath, 0777);
+		}
+		$filename = $cachepath . "/" . md5(mb_convert_encoding($keyword . "_" . $engine, 'EUC-JP')) . ".html";
+
+		if ($handle = fopen($filename, 'w')) {
+
+			if ($engine == "google_jp") {
+				$html0 = mb_convert_encoding($html0, "UTF-8", "JIS, eucjp-win, sjis-win");
+			} else {
+				$html0 = mb_convert_encoding($html0, 'UTF-8', "auto");
+			}
+
+			fwrite($handle, $html0);
+			fclose($handle);
+		}
 	}
 
 /*------------------------------------------------------------------------------------------------------------

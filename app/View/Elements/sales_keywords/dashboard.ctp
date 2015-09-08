@@ -132,12 +132,24 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['<?php echo __('Total') ?>', 'Yen'],
-          <?php foreach ($monthly as $key => $value): echo '[' .'\''.__($key).'\'' .',' .$value .'], '; endforeach; ?>
+          <?php 
+          	$monthly_sales = $monthly;
+			unset($monthly_sales['sales']);
+          	foreach 
+          		($monthly_sales as $key => $value): echo '[' .'\''.__($key).'\'' .',' .$value .'], ';
+          	endforeach;
+          ?>
         ]);
-
+		
+		var formatter = new google.visualization.NumberFormat({
+			prefix: '￥'
+		});
+		formatter.format(data, 1);
+		
         var options = {
 			title: '<?php echo __('Total') ?>',
-			colors: ['orange', 'red', '#109618'],
+			colors: ['red', '#109618'],
+			pieSliceText: 'value',
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
