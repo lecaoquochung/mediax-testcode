@@ -1,7 +1,7 @@
 <?php
 /*------------------------------------------------------------------------------------------------------------
  * Sales Keywords
- * param01: date
+ * param01: Ymd
  *
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License

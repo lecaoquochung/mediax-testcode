@@ -142,7 +142,8 @@
         ]);
 		
 		var formatter = new google.visualization.NumberFormat({
-			prefix: '￥'
+			prefix: '￥',
+			fractionDigits: 0
 		});
 		formatter.format(data, 1);
 		
@@ -164,14 +165,20 @@
 
       function drawVisualization() {
 		// Some raw data (not necessarily accurate)
-		var data = google.visualization.arrayToDataTable([
-			['<?php echo __('Day') ?>', '<?php echo __('Sales') ?>', '<?php echo __('Cost') ?>', '<?php echo __('Profit') ?>', '<?php echo __('Average') ?>'],
-			<?php foreach ($weekly as $key => $value): $day = date('Y/m/') .(string)(date('d')-(count($weekly)-1-$key)); echo '[' .'"'.$day.'"' .',' .$value .',' .(array_sum(explode(',', $value)))/4 .'], '; endforeach; ?>
-		]);
+		var data = google.visualization.arrayToDataTable(<?php echo json_encode($weekly) ?>);
+		
+		var formatter = new google.visualization.NumberFormat({
+			prefix: '￥',
+			fractionDigits: 0
+		});
+		
+		formatter.format(data,1);
+		formatter.format(data,2);
+		formatter.format(data,3);
 		
 		var options = {
 			title : '<?php echo __('Seika Performance') ?>',
-			vAxis: {title: '<?php echo __('Total') ?>'},
+			vAxis: {title: '<?php echo __('Total') ?>', format: 'decimal'},
 			hAxis: {title: '<?php echo __('Day') ?>'},
 			colors: ['orange', 'red', '#109618', 'black'],
 			seriesType: 'bars',

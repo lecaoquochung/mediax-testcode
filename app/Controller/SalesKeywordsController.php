@@ -56,7 +56,34 @@ class SalesKeywordsController extends AppController {
 		}
 		
 		$daily = Hash::format($sum_sales_keyword, array('{n}.0.0.total_sales', '{n}.0.0.total_cost', '{n}.0.0.total_profit'), '%d, %d, %d');
-		$weekly = array_slice($daily, $today_int - 8);
+		
+		// $weekly = array_slice($daily, $today_int - 8);
+		/* WEEKLY */
+		$weekly = array(array(__('Day'),__('Sales'),__('Cost'),__('Profit'),__('Average')));
+		$week_tmp[] = array_slice($daily,0,7);
+		$week_tmp[] = array_slice($daily,7,7);
+		$week_tmp[] = array_slice($daily,14,7);
+		$week_tmp[] = array_slice($daily,21,7);
+		$week_tmp[] = array_slice($daily,28,7);
+		foreach($week_tmp as $w=>$value_week){
+			$s_w = array();
+			$c_w = array();
+			$p_w = array();
+			$a_w = array();
+			foreach($value_week as $v){
+				$s = explode(', ',$v);
+				$s_w[] = $s[0];
+				$c_w[] = $s[1];
+				$p_w[] = $s[2];
+				$a_w[] = $s[0]/7;
+			}			
+			$weekly[$w+1][] = 'Week '.($w+1);
+			$weekly[$w+1][] = array_sum($s_w);
+			$weekly[$w+1][] = array_sum($c_w);
+			$weekly[$w+1][] = array_sum($p_w);
+			$weekly[$w+1][] = array_sum($a_w);
+		}
+		
 		$this->set(compact('daily', 'weekly', 'monthly'));
 	}
 
