@@ -98,7 +98,8 @@
 			
 <!-- system -->
 			<?php if($this->Session->read('Auth.User.user.role')==1): ?>
-			<li class="treeview <?php echo $this->here==$this->webroot.'logs' ? 'active' : '' ?>">
+			<li class="treeview <?php echo ($this->here==$this->webroot.'logs' || $this->here==$this->webroot.'users/admin' || $this->here==$this->webroot.'servers' ) ? 'active' : '' ?>">
+			
 				<a href="#">
 					<i class="glyphicon glyphicon-cog"></i><span><?php echo __('System'); ?></span><i class="fa fa-angle-left pull-right"></i>
 				</a>
@@ -108,6 +109,9 @@
 					</li>
 					<li class="<?php echo $this->here==$this->webroot.'logs'?'active':'' ?>">
 						<a href="<?php echo $this->webroot?>logs" style="margin-left: 10px;"><i class="fa fa-angle-double-right"></i> <?php echo __('Logs'); ?></a>
+					</li>
+					<li class="<?php echo $this->here==$this->webroot.'servers'?'active':'' ?>">
+						<a href="<?php echo $this->webroot?>servers" style="margin-left: 10px;"><i class="fa fa-cloud"></i> <?php echo __('Servers'); ?></a>
 					</li>
 				</ul>
 			</li>

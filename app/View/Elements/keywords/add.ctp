@@ -95,6 +95,7 @@ global $current_year;
 						<span class="alert-danger"><strong><?php echo __('Check this box if keyword is marking as penalty in Search Engine') ?></strong></span>
 					</div>
 				</div>
+<!-- form -->
 			<?php echo $this->Form->button(__('Add Keyword'), array('class'=>'btn btn-warning', 'div'=>FALSE)); ?>
 			<?php echo $this -> Form -> end(); ?>
 		</div>
