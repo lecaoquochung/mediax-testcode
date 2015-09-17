@@ -72,7 +72,8 @@ class ServersController extends AppController {
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Server->save($this->request->data)) {
-				$this->Flash->success(__('The server has been saved.'));
+				// $this->Flash->success(__('The server has been saved.'));
+				$this -> Session -> setFlash(__('The server has been saved.'), 'default', array('class' => 'error'));
 				return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Flash->error(__('The server could not be saved. Please, try again.'));
