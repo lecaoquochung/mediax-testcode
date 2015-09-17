@@ -10,7 +10,7 @@
 			<th class=""><?php echo __('Keyword'); ?></th>
 			<th class=""><?php echo __('Company'); ?></th>
 			<th class=""><?php echo __('Cost'); ?></th>
-			<th class=""><?php echo __('Price'); ?></th>
+			<th class=""><?php echo __('Limit Price'); ?></th>
 			<th class=""><?php echo __('Sales'); ?></th>
 			<th class=""><?php echo __('Actions'); ?></th>
 		</tr>
@@ -33,19 +33,19 @@
 				</div>
 			</td>
 			<td>
-				<div class="edit_inline" data-name="Price" data-pk="<?php echo $keyword['Keyword']['ID']; ?>">
-					<?php echo $keyword['Keyword']['Price']; ?>
+				<div class="edit_inline" data-name="limit_price" data-pk="<?php echo $keyword['Keyword']['ID']; ?>">
+					<?php echo $keyword['Keyword']['limit_price']; ?>
 				</div>
 			</td>
 			<td>
 				<?php if(empty($keyword['Keyword']['sales'])): ?>
-					<a href="javascript:void(0)" class="edit_ajax" data-value="1" data-name="sales" data-pk="<?php echo $keyword['Keyword']['ID']; ?>"><i class="fa fa-times"></i></a>
+					<a href="javascript:void(0)" class="edit_ajax" data-value="1" data-name="sales" data-pk="<?php echo $keyword['Keyword']['ID']; ?>"><span class="label label-default"><i class="fa fa-times"></i></span></a>
 				<?php else: ?>
-					<a href="javascript:void(0)" class="edit_ajax" data-value="0" data-name="sales" data-pk="<?php echo $keyword['Keyword']['ID']; ?>"><i class="fa fa-check"></i></a>
+					<a href="javascript:void(0)" class="edit_ajax" data-value="0" data-name="sales" data-pk="<?php echo $keyword['Keyword']['ID']; ?>"><span class="label label-success"><i class="fa fa-check"></i></span></a>
 				<?php endif; ?>
 			</td>			
 			<td class="edit_keyword_extra">
-				<a href="<?php echo $this->webroot; ?>extras/add/<?php echo $keyword['Keyword']['ID']; ?>/popup" title="Edit keyowrd <?php echo $keyword['Keyword']['Keyword']; ?>"><i class="fa fa-edit"></i></a>
+				<a href="<?php echo $this->webroot; ?>extras/add/<?php echo $keyword['Keyword']['ID']; ?>/popup" title="Edit keyowrd <?php echo $keyword['Keyword']['Keyword']; ?>"><span class="label label-warning"><i class="fa fa-edit"></i></span></a>
 			</td>
 		</tr>
 	<?php endforeach; ?>
@@ -85,8 +85,10 @@
 					obj.attr('data-value',tmp_value);
 					if(tmp_value==1){
 						obj.find('i').attr('class','fa fa-times');
+						obj.find('span').attr('class','label label-default');
 					}else{
 						obj.find('i').attr('class','fa fa-check');
+						obj.find('span').attr('class','label label-success');
 					}
 				}
 			});
