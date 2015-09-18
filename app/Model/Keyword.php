@@ -59,6 +59,13 @@ class Keyword extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'Server' => array(
+			'className' => 'Server',
+			'foreignKey' => 'server_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
 

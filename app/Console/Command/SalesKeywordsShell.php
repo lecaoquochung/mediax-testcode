@@ -111,7 +111,7 @@ class SalesKeywordsShell extends Shell {
 					@$sum_sales_keyword['profit'] += $sales_keyword['SalesKeyword']['profit']; 
 				}
 
-				if(@$sum_sales_keyword['sales'] > $rankhistory['Keyword']['limit_price']) {
+				if(@$sum_sales_keyword['sales'] >= $rankhistory['Keyword']['limit_price']) {
 					$limit = 1;
 				}
 			} 
@@ -132,7 +132,7 @@ class SalesKeywordsShell extends Shell {
 					@$sum_sales_keyword['profit'] += $sales_keyword['SalesKeyword']['profit']; 
 				}
 
-				if(@$sum_sales_keyword['sales'] > $rankhistory['Keyword']['User']['limit_price_multi']) {
+				if(@$sum_sales_keyword['sales'] >= $rankhistory['Keyword']['User']['limit_price_multi']) {
 					$limit = 1;
 				}
 			}

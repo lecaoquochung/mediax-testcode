@@ -38,12 +38,13 @@ class KeywordsController extends AppController {
 		);
 
 		$fields = array(
-			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 
-			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost','Keyword.sales',
-			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime'
+			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 'Keyword.limit_price',
+			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost','Keyword.sales', 'Keyword.server_id',
+			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime',
+			'Server.id', 'Server.name', 'Server.ip', 'Server.api',
 		);
 
-		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID DESC', 'offset' => $offset));
+		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID ASC', 'offset' => $offset));
 		$now = time();
 		$two_weeks = 7 * 24 * 60 * 60;
 
@@ -201,11 +202,11 @@ class KeywordsController extends AppController {
 			}
 		}
 
-		# tooday rank set boolean
+		// tooday rank set boolean
 		$today_rank = 1;
 		$this -> set('today_rank', $today_rank);
 
-		# extra
+		// extra
 		$this -> loadModel('Extra');
 		$this -> Extra -> recursive = -1;
 		$extra = $this -> Extra -> find('list', array('fields' => array('Extra.ExtraType', 'Extra.Price'), 'conditions' => array('Extra.KeyID' => $id)));
@@ -293,8 +294,6 @@ class KeywordsController extends AppController {
 		}
 		if ($this -> request -> is('post') || $this -> request -> is('put')) {
 			
-//			debug($this->request->data);exit;
-
 			if (isset($this -> request -> data['Keyword']['rankend'])) {
 				$this -> request -> data['Keyword']['rankend'] = implode('', $this -> request -> data['Keyword']['rankend']);
 			}
@@ -602,21 +601,21 @@ class KeywordsController extends AppController {
 			$rank = $this -> Rank -> keyWordRank('google_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local']);
 		} elseif ($engine == 2) {
 			$rank = $this -> Rank -> keyWordRank('yahoo_jp', $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local']);
-		} else {//end
+		} else { // end
 			$engine_list = Configure::read('ENGINES');
 			$rank = $this -> Rank -> keyWordRank($engine_list[$engine]['Name'], $domain, $keyword['Keyword']['Keyword'], $keyword['Keyword']['Strict'], $keyword['Keyword']['g_local']);
 		}
 
-		//delete Rankhistory current date
+		// delete Rankhistory current date
 		$this -> Keyword -> Rankhistory -> deleteAll(array('Rankhistory.KeyID' => $keyword['Keyword']['ID'], 'Rankhistory.RankDate' => date('Ymd')));
 
-		//Insert Rankhistory current date
+		// insert Rankhistory current date
 		$rankhistory['Rankhistory']['KeyID'] = $keyword['Keyword']['ID'];
 		$rankhistory['Rankhistory']['Url'] = $domain;
 		$rankhistory['Rankhistory']['Rank'] = $rank;
 		$rankhistory['Rankhistory']['RankDate'] = date('Ymd');
 
-		//check color and arrow
+		// check color and arrow
 		$check_params = array();
 		$rankDate = date('Ymd', strtotime(date('Y-m-d') . '-1 day'));
 		$data_rankhistory = Cache::read($keyword['Keyword']['ID'] . '_' . $rankDate, 'Rankhistory');
@@ -652,7 +651,7 @@ class KeywordsController extends AppController {
 			$rank_new[1] = 0;
 		}
 
-		//color
+		// color
 		if ($rank_new[0] >= 1 && $rank_new[0] <= 10 || $rank_new[1] >= 1 && $rank_new[1] <= 10) {
 			$check_params['color'] = '#E4EDF9';
 		} else if ($rank_old[0] >= 1 && $rank_old[0] <= 10 && $rank_new[0] > 10 || $rank_old[1] >= 1 && $rank_old[1] <= 10 && $rank_new[1] > 10) {
@@ -663,7 +662,7 @@ class KeywordsController extends AppController {
 			$check_params['color'] = '';
 		}
 
-		//arrow
+		// arrow
 		if (($rank_new[0] > $rank_old[0] && $rank_old[0] !=0) || ($rank_new[1] > $rank_old[1] && $rank_old[1] !=0) || ($rank_new[0] == 0 && $rank_old[0] != 0) || ($rank_new[1] == 0 && $rank_old[1] != 0)) {
 			$check_params['arrow'] = '<span class="red-arrow">↓</span>';
 		} else if (($rank_new[0] < $rank_old[0]) || ($rank_new[1] < $rank_old[1]) || ($rank_old[0] == 0 && $rank_new[0] != 0)) {
@@ -779,39 +778,43 @@ class KeywordsController extends AppController {
 				$rank = $this -> Rank -> keyWordRank('google_jp', $domain, $keyword['Keyword']['Keyword']) . '/' . $this -> Rank -> keyWordRank('yahoo_jp', $domain, $keyword['Keyword']['Keyword']);
 			} elseif ($engine == 6) {
 				$rank = $this -> Rank -> keyWordRank('google_en', $domain, $keyword['Keyword']['Keyword']) . '/' . $this -> Rank -> keyWordRank('yahoo_en', $domain, $keyword['Keyword']['Keyword']);
-			} elseif ($engine == 7) {//mobile search engine
+			} elseif ($engine == 7) { // mobile search engine
 				$rank = $this -> RankMobile -> keywordRankYahooMobile($domain, $keyword['Keyword']['Keyword']);
 			} elseif ($engine == 8) {
 				$rank = $this -> RankMobile -> keywordRankGoogleMobile($domain, $keyword['Keyword']['Keyword']);
-			} else {//end
+			} else { // end
 				$engine_list = $this -> Rank -> getEngineList();
 				$rank = $this -> Rank -> keyWordRank($engine_list[$engine]['Name'], $domain, $keyword['Keyword']['Keyword']);
 			}
 
-			//delete Rankhistory current date
+			// delete Rankhistory current date
 			$this -> Keyword -> Rankhistory -> deleteAll(array('Rankhistory.KeyID' => $keyword['Keyword']['ID'], 'Rankhistory.RankDate' => date('Ymd')));
-			//Insert Rankhistory current date
+			
+			// insert Rankhistory current date
 			$rankhistory['Rankhistory']['KeyID'] = $keyword['Keyword']['ID'];
 			$rankhistory['Rankhistory']['Url'] = $domain;
 			$rankhistory['Rankhistory']['Rank'] = $rank;
 			$rankhistory['Rankhistory']['RankDate'] = date('Ymd');
-			//check color and arrow
+			
+			// check color and arrow
 			$check_params = array();
 			$rankDate = date('Ymd', strtotime(date('Y-m-d') . '-1 day'));
 			$data_rankhistory = Cache::read($keyword['Keyword']['ID'] . '_' . $rankDate, 'Rankhistory');
-			// No cache
+			
+			// no cache
 			if (!$data_rankhistory) {
 				$data_rankhistory = $this -> Keyword -> Rankhistory -> find('first', array('fields' => array('Rankhistory.Rank'), 'conditions' => array('Rankhistory.KeyID' => $keyword['Keyword']['ID'], 'Rankhistory.RankDate' => $rankDate)));
 				Cache::write($keyword['Keyword']['ID'] . '_' . $rankDate, $rankhistory, 'Rankhistory');
 			}
-			// Already cache
+			
+			// already cache
 			if (isset($data_rankhistory['Rankhistory']['Rank']) && strpos($data_rankhistory['Rankhistory']['Rank'], '/')) {
 				$rank_old = explode('/', $data_rankhistory['Rankhistory']['Rank']);
 			} else {
 				$rank_old[0] = 0;
 				$rank_old[1] = 0;
 			}
-			// Check rank is not empty and has a slash
+			// check rank is not empty and has a slash
 			if (!empty($rank) && strpos($rank, '/')) {
 				$rank_new = explode('/', $rank);
 			} else {
@@ -819,7 +822,7 @@ class KeywordsController extends AppController {
 				$rank_new[1] = 0;
 			}
 
-			//color
+			// color
 			if ($rank_new[0] >= 1 && $rank_new[0] <= 10 || $rank_new[1] >= 1 && $rank_new[1] <= 10) {
 				$check_params['color'] = '#E4EDF9';
 			} else if ($rank_new[0] >= 11 && $rank_new[0] <= 20 || $rank_new[1] >= 11 && $rank_new[1] <= 20) {
@@ -830,7 +833,7 @@ class KeywordsController extends AppController {
 				$check_params['color'] = '';
 			}
 
-			//arrow
+			// arrow
 			if ($rank_new[0] > $rank_old[0] || $rank_new[1] > $rank_old[1]) {
 				$check_params['arrow'] = '<span class="red-arrow">↓</span>';
 			} else if ($rank_new[0] < $rank_old[0] || $rank_new[1] < $rank_old[1]) {
@@ -864,7 +867,6 @@ class KeywordsController extends AppController {
 
 			$message[] = $keyword['Keyword']['ID'];
 		}
-		#return implode(', ',$message);
 		echo implode(', ', $message);
 		$this -> redirect($this -> referer());
 	}
@@ -1010,13 +1012,14 @@ class KeywordsController extends AppController {
 		);
 		
 		$fields = array();
-		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'User.company', 'Keyword.cost', 'Keyword.Price');
+		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.server_id', 'Keyword.cost', 'Keyword.limit_price');
 		$this -> export(array(
 			//'recursive'=>1,
 			'conditions' => $conds,
 			'fields' => $fields, 
-			'order' => 'Keyword.ID DESC', 
-			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD'
+			'order' => 'Keyword.ID ASC', 
+			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD',
+			'filename' => '[MEDIAX]Keywords',
 		));
 	}	
 	

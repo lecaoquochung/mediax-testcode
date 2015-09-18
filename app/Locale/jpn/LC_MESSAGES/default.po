@@ -231,6 +231,8 @@ msgid "Action"
 msgstr "トップにマックする"
 msgid "Sales"
 msgstr "売上"
+msgid "Seika Sales"
+msgstr "成果売上"
 
 msgid "Admin Add Sale"
 msgstr "目標売上設定"
