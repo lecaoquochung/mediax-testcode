@@ -86,15 +86,23 @@
 				</ul>
 			</li>
 			
-			
+<!-- report -->
+			<li class="treeview">
+				<a href="#">
+					<i class="fa fa-folder"></i><span><?php echo __('Report'); ?></span><i class="fa fa-angle-left pull-right"></i>
+				</a>
+				
+				<ul class="treeview-menu">
+					<li class="<?php echo $this->here==$this->webroot.'rankhistories/report'?'active':'' ?>">
+						<a href="<?php echo $this->webroot?>rankhistories/reports"> <i class="fa fa-folder-open"></i> <span><?php echo __('Rank'); ?></span> </a>
+					</li>
+				</ul>
+			</li>
+
+<!-- notice -->
 			<li class="<?php echo $this->here==$this->webroot.'notices'?'active':'' ?>">
 				<a href="<?php echo $this->webroot?>notices"> <i class="fa fa-bullhorn"></i> <span><?php echo __('Notice'); ?></span> </a>
 			</li>
-			
-<!-- report -->
-			<!-- <li class="<?php echo $this->here==$this->webroot.'report'?'active':'' ?>">
-				<a href="<?php echo $this->webroot?>report"> <i class="fa fa-book"></i> <span><?php echo __('Report'); ?></span> </a>
-			</li> -->
 			
 <!-- system -->
 			<?php if($this->Session->read('Auth.User.user.role')==1): ?>

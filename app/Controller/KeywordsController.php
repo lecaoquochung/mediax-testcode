@@ -39,11 +39,12 @@ class KeywordsController extends AppController {
 
 		$fields = array(
 			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Enabled', 'Keyword.Price', 'Keyword.nocontract', 'Keyword.limit_price',
-			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost','Keyword.sales',
-			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime'
+			'Keyword.Penalty', 'Keyword.c_logic', 'Keyword.created', 'Keyword.updated', 'Keyword.cost','Keyword.sales', 'Keyword.server_id',
+			'User.id', 'User.company', 'User.name', 'User.loginip', 'User.logintime',
+			'Server.id', 'Server.name', 'Server.ip', 'Server.api',
 		);
 
-		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID DESC', 'offset' => $offset));
+		$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Keyword.ID ASC', 'offset' => $offset));
 		$now = time();
 		$two_weeks = 7 * 24 * 60 * 60;
 
@@ -1011,13 +1012,14 @@ class KeywordsController extends AppController {
 		);
 		
 		$fields = array();
-		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'User.company', 'Keyword.cost', 'Keyword.Price');
+		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.server_id', 'Keyword.cost', 'Keyword.limit_price');
 		$this -> export(array(
 			//'recursive'=>1,
 			'conditions' => $conds,
 			'fields' => $fields, 
-			'order' => 'Keyword.ID DESC', 
-			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD'
+			'order' => 'Keyword.ID ASC', 
+			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD',
+			'filename' => '[MEDIAX]Keywords',
 		));
 	}	
 	
