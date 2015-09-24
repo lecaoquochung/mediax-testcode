@@ -94,7 +94,7 @@
 				
 				<ul class="treeview-menu">
 					<li class="<?php echo $this->here==$this->webroot.'rankhistories/report'?'active':'' ?>">
-						<a href="<?php echo $this->webroot?>rankhistories/reports"> <i class="fa fa-folder-open"></i> <span><?php echo __('Rank'); ?></span> </a>
+						<a href="<?php echo $this->webroot?>rankhistories/report"> <i class="fa fa-folder-open"></i> <span><?php echo __('Rank'); ?></span> </a>
 					</li>
 				</ul>
 			</li>
