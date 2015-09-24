@@ -308,63 +308,47 @@ class RankhistoriesController extends AppController {
  * created 2015
  *-----------------------------------------------------------------------------------------------------------*/
 	public function report($status = 0, $rankrange = FALSE) {
-		set_time_limit(0);
-		$conds = array();
-
-		$conds['Rankhistory.rankDate'] = date('Ymd');
-		$conds['Keyword.Enabled'] = 1;
-		$conds['Keyword.nocontract'] = 0;
-		$conds['Keyword.service'] = 1;
-		$conds['OR'] = array( array('Keyword.rankend' => 0), array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))));
-
-		if ($rankrange == 10) {
-			$conds['Rankhistory.Rank REGEXP'] = '^([{1-9}][^0-9])|10 | ([1-9])|10$';
-		}
-
-		if ($rankrange == 20) {
-			$conds['Rankhistory.Rank REGEXP'] = '^([1][1-9])|20 | ([1][1-9])|20$';
-		}
-
-		if ($rankrange == 100) {
-			$conds['Rankhistory.Rank REGEXP'] = '^([2-9][1-9])|100 | ([2-9][1-9])|100$';
-		}
-
-		if ($rankrange == 1000) {
-			$conds['Rankhistory.Rank REGEXP'] = '^([0-0])/([0-0])';
-		}
-
-		if ($this -> request -> is('post')) {
-			if (!empty($this -> request -> data['Rankhistory']['keyword'])) {
-				$users = $this -> Rankhistory -> Keyword -> User -> find('list', array('fields' => array('User.id', 'User.id'), 'conditions' => array('User.company LIKE' => '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%')));
-				$conds['OR']['Rankhistory.url LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%';
-				$conds['OR']['Keyword.Keyword LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%';
-				$conds['OR']['Keyword.url LIKE'] = '%' . mb_strtolower(trim($this -> request -> data['Rankhistory']['keyword']), 'UTF-8') . '%';
-				$conds['OR']['Keyword.UserID'] = $users;
-			}
-			$conds['Rankhistory.rankDate'] = $this -> request -> data['Rankhistory']['rankDate']['year'] . $this -> request -> data['Rankhistory']['rankDate']['month'] . $this -> request -> data['Rankhistory']['rankDate']['day'];
-		}
-
-		$this -> Rankhistory -> recursive = 0;
-
-		$order = array();
-		$order['Keyword.UserID'] = 'DESC';
-		$order['Rankhistory.updated'] = 'DESC';
-
-		$fields = array(
-			'Rankhistory.ID', 'Rankhistory.Url', 'Rankhistory.Rank', 'Rankhistory.RankDate', 'Rankhistory.params', 
-			'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Engine', 'Keyword.rankend', 'Keyword.Enabled', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.Url', 'Keyword.Strict', 'Keyword.limit_price', 'Keyword.limit_price_group');
-
-		$rankhistories = $this -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order));
-		$keyword_id = Hash::extract($rankhistories, '{n}.Keyword.ID');
-
-		#Extra
-		$this -> loadModel('Extra');
-		$this -> Extra -> recursive = -1;
-		$extras = $this -> Extra -> find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_id)));
-
-		$this -> set('rankhistories', $rankhistories);
-		$this -> set('extras', $extras);
-		$this -> set('user', $this -> Rankhistory -> Keyword -> User -> find('list', array('fields' => array('User.id', 'User.company'))));
+        $sumaries = array();
+        $keywords = array();
+        
+        $conds = array();
+        $conds['Rankhistory.rankDate'] = date('Ymd');
+        $conds['Keyword.Enabled'] = 1;
+        $conds['Keyword.nocontract'] = 0;
+        $conds['OR'] = array( array('Keyword.rankend' => 0), array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))));                       
+        
+        $conds['Rankhistory.Rank REGEXP'] = '^([{1-9}][^0-9])|10 | ([1-9])|10$';
+        $sumaries['today']['1~10'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));
+        $keywords['today']['1~10'] = $this -> Rankhistory -> find('all',array('fields'=>array('Rankhistory.Rank','Keyword.Keyword','Keyword.Url'),'conditions' => $conds));                        
+                    
+        $conds['Rankhistory.Rank REGEXP'] = '^([1][1-9])|20 | ([1][1-9])|20$';
+        $sumaries['today']['11~20'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));
+        $keywords['today']['11~20'] = $this -> Rankhistory -> find('all',array('fields'=>array('Rankhistory.Rank','Keyword.Keyword','Keyword.Url'),'conditions' => $conds));                        
+        
+        $conds['Rankhistory.Rank REGEXP'] = '^([2-9][1-9])|100 | ([2-9][1-9])|100$';
+        $sumaries['today']['21~100'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));
+        
+        $conds['Rankhistory.Rank REGEXP'] = '0|0';
+        $sumaries['today']['no_rank'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));                                                            
+        
+        #yesterday
+        $conds['Rankhistory.rankDate'] = date('Ymd',  strtotime('-1 day'));
+        
+        $conds['Rankhistory.Rank REGEXP'] = '^([{1-9}][^0-9])|10 | ([1-9])|10$';
+        $sumaries['yesterday']['1~10'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));
+        $keywords['yesterday']['1~10']  = $this -> Rankhistory -> find('all',array('fields'=>array('Rankhistory.Rank','Keyword.Keyword','Keyword.Url'),'conditions' => $conds));                                    
+                    
+        $conds['Rankhistory.Rank REGEXP'] = '^([1][1-9])|20 | ([1][1-9])|20$';
+        $sumaries['yesterday']['11~20'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));
+        $keywords['yesterday']['11~20'] = $this -> Rankhistory -> find('all',array('fields'=>array('Rankhistory.Rank','Keyword.Keyword','Keyword.Url'),'conditions' => $conds));                                    
+        
+        $conds['Rankhistory.Rank REGEXP'] = '^([2-9][1-9])|100 | ([2-9][1-9])|100$';
+        $sumaries['yesterday']['21~100'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));
+        
+        $conds['Rankhistory.Rank REGEXP'] = '^0|0';
+        $sumaries['yesterday']['no_rank'] = $this -> Rankhistory -> find('count', array('conditions' => $conds));                                                                
+        
+        $this->set(compact('sumaries','keywords'));
 	}
 
 /*------------------------------------------------------------------------------------------------------------
