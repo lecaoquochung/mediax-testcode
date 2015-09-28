@@ -166,10 +166,10 @@ class SalesKeywordsShell extends Shell {
 					ksort($data_extra);
 					$key_extra = array_keys($data_extra);
 					// sales
-					$sales =  $data_extra[$key_extra[0]];
+					$sales = (int) $data_extra[$key_extra[0]];
 					$total_sales[$rankhistory['Keyword']['ID']] = $sales;
 					// cost
-					$total_cost[$rankhistory['Keyword']['ID']] = $rankhistory['Keyword']['cost'];
+					$total_cost[$rankhistory['Keyword']['ID']] = (int) $rankhistory['Keyword']['cost'];
 					// profit
 					$profit = $data_extra[$key_extra[0]] - $rankhistory['Keyword']['cost'];
 					$total_profit[$rankhistory['Keyword']['ID'] .$rankhistory['Keyword']['Keyword'] .$rankhistory['Rankhistory']['Rank']] = $profit;
@@ -177,17 +177,32 @@ class SalesKeywordsShell extends Shell {
 					foreach($extra as $key => $value) {
 						if(($google_rank <= $key_extra && $google_rank != 0) || ($yahoo_rank <= $key_extra && $yahoo_rank != 0)){
 							// sales
-							$sales = isset($value) ? $value : 0;
+							$sales = isset($value) ? (int) $value : 0;
 							$total_sales[$rankhistory['Keyword']['ID']] = $sales;
 							// cost
-							$total_cost[$rankhistory['Keyword']['ID']] = $rankhistory['Keyword']['cost'];
+							$total_cost[$rankhistory['Keyword']['ID']] = (int) $rankhistory['Keyword']['cost'];
 							// profit
-							$profit = isset($value) ? $value - $rankhistory['Keyword']['cost'] : 0;
+							$profit = isset($value) ? (int) $value - (int)$rankhistory['Keyword']['cost'] : 0;
 							$total_profit[$rankhistory['Keyword']['ID'] .$rankhistory['Keyword']['Keyword'] .$rankhistory['Rankhistory']['Rank']] = $profit;
 						}
 					} 
 				}
-			
+				
+				// MDX-76 3875
+				// keyword limit
+				if($rankhistory['Keyword']['limit_price'] != 0) {
+					if((int) $rankhistory['Keyword']['limit_price'] - (int) @$sum_sales_keyword['sales'] < (int) @$total_sales[$rankhistory['Keyword']['ID']] &&
+						(int) $rankhistory['Keyword']['limit_price'] - (int) @$sum_sales_keyword['sales'] > 0) 
+					{
+						(int) @$total_sales[$rankhistory['Keyword']['ID']] = (int) $rankhistory['Keyword']['limit_price'] - (int) @$sum_sales_keyword['sales'];
+						(int) @$total_profit[$rankhistory['Keyword']['ID'] .$rankhistory['Keyword']['Keyword'] .$rankhistory['Rankhistory']['Rank']] = (int) @$total_sales[$rankhistory['Keyword']['ID']] - (int)$rankhistory['Keyword']['cost'];
+					}
+				}
+				
+				// if($rankhistory['Keyword']['ID'] == 3875) {
+					// debug($total_profit);
+				// }
+				
 				if(($google_rank <= 10 && $google_rank != 0) || ($yahoo_rank <= 10 && $yahoo_rank != 0)){
 					// data
 					$data = array();
@@ -195,9 +210,9 @@ class SalesKeywordsShell extends Shell {
 					$data['SalesKeyword']['user_id'] = $rankhistory['Keyword']['UserID'];
 					$data['SalesKeyword']['keyword'] = $rankhistory['Keyword']['Keyword'];
 					$data['SalesKeyword']['rank'] = $rankhistory['Rankhistory']['Rank'];
-					$data['SalesKeyword']['sales'] = (@$total_sales[$rankhistory['Keyword']['ID']] !== Null) ? @$total_sales[$rankhistory['Keyword']['ID']] : 0  ;
-					$data['SalesKeyword']['cost'] = (@$total_cost[$rankhistory['Keyword']['ID']] !== Null) ? @$total_cost[$rankhistory['Keyword']['ID']] : 0;
-					$data['SalesKeyword']['profit'] = (@$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] !== Null) ? @$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] : 0;
+					$data['SalesKeyword']['sales'] = (@$total_sales[$rankhistory['Keyword']['ID']] !== Null) ? (int) @$total_sales[$rankhistory['Keyword']['ID']] : 0  ;
+					$data['SalesKeyword']['cost'] = (@$total_cost[$rankhistory['Keyword']['ID']] !== Null) ? (int) @$total_cost[$rankhistory['Keyword']['ID']] : 0;
+					$data['SalesKeyword']['profit'] = (@$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] !== Null) ? (int) @$total_profit[$rankhistory['Keyword']['ID'] .@$rankhistory['Keyword']['Keyword'] .@$rankhistory['Rankhistory']['Rank']] : 0;
 					$data['SalesKeyword']['limit'] = $limit; // deprecated
 					$data['SalesKeyword']['date'] = $date;
 					
@@ -225,7 +240,7 @@ class SalesKeywordsShell extends Shell {
 							$count++;
 							// rank-in
 							$keywords_is_ranked [$data['SalesKeyword']['keyword_id']] = $rankhistory['Keyword']['Keyword'];
-							$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$date . ' ' .$data['SalesKeyword']['sales'] . ' ' .$data['SalesKeyword']['cost'] . ' ' .$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
+							$this -> out($count .' ' .date('H:i:s') .' ' . $rankhistory['Keyword']['ID'] .' ' .$rankhistory['Rankhistory']['Rank'] . ' ' . $rankhistory['Keyword']['Keyword'] . ' ' .$date . ' ' .(int)$data['SalesKeyword']['sales'] . ' ' .(int)$data['SalesKeyword']['cost'] . ' ' .(int)$data['SalesKeyword']['profit'] .' ' .$execution_time .'s');
 						}
 					} else {
 						$this -> out("Db error");
@@ -256,8 +271,12 @@ class SalesKeywordsShell extends Shell {
 		$this -> out('-------------------------------------');
 		
 		foreach($keywords_is_ranked as $key => $value):
-			$this -> out($value);	
-		endforeach; 
+			$this -> out($value);
+		endforeach;
+		
+		// debug($total_sales);
+		// debug($total_profit);
+		// debug(array_sum($total_sales));
 		
 	}
 
