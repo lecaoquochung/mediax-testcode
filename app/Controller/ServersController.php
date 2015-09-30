@@ -23,6 +23,7 @@ class ServersController extends AppController {
  * @return void
  */
 	public function index() {
+		$this -> Paginator -> settings = array('limit' => 20, 'order' => array('code' => 'ASC'));
 		$this->Server->recursive = 0;
 		$this->set('servers', $this->Paginator->paginate());
 	}

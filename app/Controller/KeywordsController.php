@@ -1013,6 +1013,7 @@ class KeywordsController extends AppController {
 		
 		$fields = array();
 		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.server_id', 'Keyword.cost', 'Keyword.limit_price');
+		// $fields = array('Keyword.ID', 'Keyword.code', 'Keyword.Keyword', 'Keyword.server_id', 'Keyword.cost', 'Keyword.limit_price');
 		$this -> export(array(
 			//'recursive'=>1,
 			'conditions' => $conds,

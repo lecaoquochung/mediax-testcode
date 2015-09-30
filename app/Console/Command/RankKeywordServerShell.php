@@ -25,7 +25,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class RankKeywordServerShell extends Shell {
 
-	public $uses = array('Keyword', 'Rankhistory');
+	public $uses = array('Keyword', 'Rankhistory', 'Server');
 
 	public function main() {
 		@$offset = $this->args[0];
@@ -68,7 +68,8 @@ class RankKeywordServerShell extends Shell {
 		$this -> RankMobile = new RankMobileComponent($component1);
 		
 		//get server id
-		$server = $this->Server->findByIp($_SERVER['SERVER_ADDR']);
+		$server_ip = gethostbyname(exec('hostname'));
+		$server = $this->Server->findByIp($server_ip);
 		
 		if($server!=false){
 			// recursive
@@ -83,7 +84,7 @@ class RankKeywordServerShell extends Shell {
 				array('Keyword.rankend' => 0), 
 				array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
 			);
-			$conds['Keyword.server_id'] = $server['Server']['ip'];
+			$conds['Keyword.server_id'] = $server['Server']['id'];
 
 			$keywords = $this -> Keyword -> find('all', array('conditions' => $conds, 'limit' => $limit, 'offset' => $offset));
 			

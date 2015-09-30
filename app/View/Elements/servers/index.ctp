@@ -5,6 +5,7 @@
 	<thead>
 		<tr>
 			<th><?php echo $this->Paginator->sort('id'); ?></th>
+			<th><?php echo $this->Paginator->sort('code'); ?></th>
 			<th><?php echo $this->Paginator->sort('name'); ?></th>
 			<th><?php echo $this->Paginator->sort('ip'); ?></th>
 			<th><?php echo $this->Paginator->sort('api'); ?></th>
@@ -17,6 +18,7 @@
 	<?php foreach ($servers as $server): ?>
 		<tr>
 			<td><?php echo h($server['Server']['id']); ?>&nbsp;</td>
+			<td><?php echo h($server['Server']['code']); ?>&nbsp;</td>
 			<td><?php echo h($server['Server']['name']); ?>&nbsp;</td>
 			<td><?php echo h($server['Server']['ip']); ?>&nbsp;</td>
 			<td><?php echo h($server['Server']['api']); ?>&nbsp;</td>
