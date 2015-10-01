@@ -218,3 +218,21 @@ Configure::write('User.admin', array('2' => __('Rank Admin'), ));
 
 // User.permission
 Configure::write('User.permission', array('1' => array('index', 'view', 'edit', 'delete'), '2' => array('index', 'view'), ));
+
+Configure::write('HEADER_CSV_EXPORT_KEYWORD', array(
+	'Keyword.ID' => 'ID',
+	// 'Keyword.code' => 'code', 
+	'Keyword.Keyword' => 'Keyword',
+	'Keyword.server_id' => 'Server',
+	'Keyword.cost' => 'Cost',
+	'Keyword.limit_price' => 'Limit'
+));
+
+
+Configure::write('HEADER_CSV_KEYWORD', array(
+	'ID' => 'Keyword.ID', 
+	'Keyword' => 'Keyword.Keyword',
+	'Server' => 'Keyword.server_id',
+	'Cost' => 'Keyword.cost',
+	'Limit' => 'Keyword.limit_price'
+));
