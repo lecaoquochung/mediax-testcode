@@ -228,9 +228,9 @@ class RankKeywordServerShell extends Shell {
 		$this -> out('-------------------------------------');
 		
 		$Email = new CakeEmail();
-		$Email->from(array('server-admin@'.gethostbyname(exec('hostname')) => 'MEDIAX ADMIN'));
+		$Email->from(array('server-admin@sem-check.com' => 'MEDIAX'));
 		$Email->to('lecaoquochung.com@gmail.com');
-		$Email->subject('Rank Keyword');
+		$Email->subject('Rank Keyword ' .gethostbyname(exec('hostname')));
 		$Email->send("Start time: ".$start_time."\n End time: ".$end_time);		
 	}
 

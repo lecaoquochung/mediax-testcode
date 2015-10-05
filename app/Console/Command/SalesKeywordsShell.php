@@ -127,9 +127,9 @@ class SalesKeywordsShell extends Shell {
 				$sales_keywords = $this-> SalesKeyword -> find('all', array('conditions' => $conds, 'fields' => $fields));
 				$sum_sales_keyword = array();
 				foreach($sales_keywords as $sales_keyword) {
-					@$sum_sales_keyword['sales'] += $sales_keyword['SalesKeyword']['sales']; 
-					@$sum_sales_keyword['cost'] += $sales_keyword['SalesKeyword']['cost']; 
-					@$sum_sales_keyword['profit'] += $sales_keyword['SalesKeyword']['profit']; 
+					@$sum_sales_keyword['sales'] += $sales_keyword['SalesKeyword']['sales'];
+					@$sum_sales_keyword['cost'] += $sales_keyword['SalesKeyword']['cost'];
+					@$sum_sales_keyword['profit'] += $sales_keyword['SalesKeyword']['profit'];
 				}
 
 				if(@$sum_sales_keyword['sales'] >= $rankhistory['Keyword']['User']['limit_price_multi']) {
@@ -195,6 +195,16 @@ class SalesKeywordsShell extends Shell {
 						(int) $rankhistory['Keyword']['limit_price'] - (int) @$sum_sales_keyword['sales'] > 0) 
 					{
 						(int) @$total_sales[$rankhistory['Keyword']['ID']] = (int) $rankhistory['Keyword']['limit_price'] - (int) @$sum_sales_keyword['sales'];
+						(int) @$total_profit[$rankhistory['Keyword']['ID'] .$rankhistory['Keyword']['Keyword'] .$rankhistory['Rankhistory']['Rank']] = (int) @$total_sales[$rankhistory['Keyword']['ID']] - (int)$rankhistory['Keyword']['cost'];
+					}
+				}
+				
+				// group limit
+				if($rankhistory['Keyword']['limit_price_group'] != 0) {
+					if((int) $rankhistory['Keyword']['User']['limit_price_multi'] - (int) @$sum_sales_keyword['sales'] < (int) @$total_sales[$rankhistory['Keyword']['ID']] &&
+						(int) $rankhistory['Keyword']['User']['limit_price_multi'] - (int) @$sum_sales_keyword['sales'] > 0) 
+					{
+						(int) @$total_sales[$rankhistory['Keyword']['ID']] = $rankhistory['Keyword']['User']['limit_price_multi'] - (int) @$sum_sales_keyword['sales'];
 						(int) @$total_profit[$rankhistory['Keyword']['ID'] .$rankhistory['Keyword']['Keyword'] .$rankhistory['Rankhistory']['Rank']] = (int) @$total_sales[$rankhistory['Keyword']['ID']] - (int)$rankhistory['Keyword']['cost'];
 					}
 				}
