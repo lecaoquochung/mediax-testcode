@@ -718,11 +718,11 @@ class KeywordsController extends AppController {
 				
 			$engine = 3;
 			$rank = array();
-			// $rank['google_jp'] = $this -> Rank -> keyWordRankTest('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
+			$rank['google_jp'] = $this -> Rank -> keyWordRankTest('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
 			// $rank['yahoo_jp'] = $this -> Rank -> keyWordRankTest('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0);
 			
 			// $rank['google_jp'] = $this -> Rank -> GoogleJP('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
-			$rank['yahoo_jp'] = $this -> Rank -> YahooJP('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, 1, False, False, 9);
+			// $rank['yahoo_jp'] = $this -> Rank -> YahooJP('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, 1, False, False, 9);
 			
 			// $rank['google_jp_mobile'] = $this -> RankMobile -> GoogleJPPro('google_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
 			// $rank['yahoo_jp_mobile'] = $this -> RankMobile -> YahooJPPro('yahoo_jp', $domain, $this->request->data['Keyword']['Keyword'], $this->request->data['Keyword']['Strict'], 0, False);
@@ -1022,7 +1022,7 @@ class KeywordsController extends AppController {
 			'mapHeader' => 'HEADER_CSV_EXPORT_KEYWORD',
 			'filename' => '[MEDIAX]Keywords',
 		));
-	}	
+	}
 	
 /**
  * upload csv method
