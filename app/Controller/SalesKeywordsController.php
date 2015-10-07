@@ -84,7 +84,12 @@ class SalesKeywordsController extends AppController {
 			$weekly[$w+1][] = array_sum($a_w);
 		}
 		
-		$this->set(compact('daily', 'weekly', 'monthly'));
+		// goal seika monthly type = 1 
+		$this->loadModel('SalesGoal');
+		$this->SalesGoal->recursive = 0;
+		$goal = $this-> SalesGoal -> find('first', array('conditions' => array('SalesGoal.target' => date('Y-m'))));
+		
+		$this->set(compact('daily', 'weekly', 'monthly', 'goal'));
 	}
 
 /*------------------------------------------------------------------------------------------------------------

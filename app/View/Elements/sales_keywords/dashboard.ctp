@@ -13,6 +13,7 @@
                 <!-- <?php echo __('Total') ?>: <code>.box.box-solid.box-warning</code> -->
                 <h3>
                 	<?php echo $this->Layout->MoneyFormat($monthly['sales']); ?>
+                	(<?php echo $this->Layout->MoneyFormat($goal['SalesGoal']['goal']); ?>)
                 </h3>
             </div><!-- /.box-body -->
         </div><!-- /.box -->

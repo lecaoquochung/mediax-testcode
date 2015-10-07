@@ -86,6 +86,18 @@
 				</ul>
 			</li>
 			
+<!-- sales_goals -->
+			<li class="treeview">
+				<a href="#">
+					<i class="fa fa-folder"></i><span><?php echo __('Goal'); ?></span><i class="fa fa-angle-left pull-right"></i>
+				</a>
+				
+				<ul class="treeview-menu">
+					<li class="<?php echo $this->here==$this->webroot.'sales_goals/seika'?'active':'' ?>">
+						<a href="<?php echo $this->webroot?>sales_goals/seika"> <i class="fa fa-folder-open"></i> <span><?php echo __('Seika Goal'); ?></span> </a>
+					</li>
+				</ul>
+			</li>
 <!-- report -->
 			<li class="treeview">
 				<a href="#">

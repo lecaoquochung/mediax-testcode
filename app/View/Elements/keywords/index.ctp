@@ -32,7 +32,11 @@
 					<br />
 					<?php echo $this->Text->truncate($keyword['Keyword']['Url'], 30); ?>
 				</td>
-				<td><?php echo $keyword['Server']['name']; ?></td>
+				<td>
+					<div class="edit_inline" data-name="server_id" data-pk="<?php echo $keyword['Keyword']['ID']; ?>">
+						<?php echo $keyword['Server']['name']; ?>
+					</div>
+				</td>
 				<td>
 					<div class="edit_inline" data-name="cost" data-pk="<?php echo $keyword['Keyword']['ID']; ?>">
 						<?php echo $keyword['Keyword']['cost']; ?>

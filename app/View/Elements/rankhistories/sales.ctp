@@ -25,7 +25,7 @@
 						isset($this->params['pass'][1]) ? $this->params['pass'][1] : 1,
 						isset($rankDate) ? $rankDate : date('Ymd'),
 						1 // sales list
-					)); 
+					));
 				?>
 			<div class="box-body table-responsive no-padding">
 				<table id="example" class="display nowrap dataTable dtr-inline" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
