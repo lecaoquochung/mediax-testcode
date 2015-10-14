@@ -1,12 +1,12 @@
 <?php
 App::uses('AppModel', 'Model');
 /**
- * Rank Model
+ * Ranklog Model
  *
  * @property Keyword $Keyword
  * @property Engine $Engine
  */
-class Rank extends AppModel {
+class Ranklog extends AppModel {
 
 /**
  * Validation rules
