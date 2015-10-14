@@ -4,7 +4,6 @@
 		<div class="col-xs-12">
 			<span class="align-right">
 				<a href="<?php echo Router::url(array('action'=>'exportCsv')) ?>" class="btn-sm btn-info"><i class="fa fa-download"></i></a>
-				<a href="<?php echo Router::url(array('action'=>'uploadCsv')) ?>" class="btn-sm btn-warning"><i class="fa fa-upload"></i></a>
 			</span>
 		</div>
 				
