@@ -81,7 +81,7 @@ class SalesKeywordsShell extends Shell {
 		$this->out(count($rankhistories));
 		
 		$this -> Extra -> recursive = -1;
-		$keyword_ids = Hash::extract($rankhistories, '{n}.Keyword.ID');
+		$keyword_ids = Hash::extract($rankhistories, '{n}.Rankhistory.KeyID');
 		$extras = $this -> Extra -> find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_ids)));
 		
 		$total_cost = array();
@@ -136,6 +136,9 @@ class SalesKeywordsShell extends Shell {
 					$limit = 1;
 				}
 			}
+			
+			// print_r($rankhistory['Rankhistory']['KeyID']);
+			// print_r($sum_sales_keyword);
 
 			// sales & profit
 			if ($rankhistory['Keyword']['Engine'] == 1) {
@@ -209,7 +212,7 @@ class SalesKeywordsShell extends Shell {
 					}
 				}
 				
-				// if($rankhistory['Keyword']['ID'] == 3875) {
+				// if($rankhistory['Keyword']['ID'] == 3516) {
 					// debug($total_profit);
 				// }
 				

@@ -236,3 +236,16 @@ Configure::write('HEADER_CSV_KEYWORD', array(
 	'Cost' => 'Keyword.cost',
 	'Limit' => 'Keyword.limit_price'
 ));
+
+/*------------------------------------------------------------------------------------------------------------
+ * Sales: sales_goals
+ * 
+ * author lecaoquochung@gmail.com
+ * created
+ * updated
+ *-----------------------------------------------------------------------------------------------------------*/
+ Configure::write('sales_goals.seika', 
+	array(
+		1 => __('Seika Monthly'),
+	)
+);

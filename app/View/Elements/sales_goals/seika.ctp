@@ -22,9 +22,15 @@
 			<td><?php echo h($salesGoal['SalesGoal']['target']); ?>&nbsp;</td>
 			<td><?php echo h($salesGoal['SalesGoal']['date']); ?>&nbsp;</td>
 			<td class="actions">
-				<?php echo $this->Html->link(__('View'), array('action' => 'view', $salesGoal['SalesGoal']['id'])); ?>
-				<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $salesGoal['SalesGoal']['id'])); ?>
-				<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $salesGoal['SalesGoal']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $salesGoal['SalesGoal']['id']))); ?>
+				<?php 
+					echo $this->Form->postLink(
+						$this->Html->tag('i', '', array('class' => 'glyphicon glyphicon-remove', 'data-toggle'=>'tooltip', 'rel'=>'tooltip', 'title'=>__('削除'))). "",
+						array('action' => 'delete', $salesGoal['SalesGoal']['id']),
+						array('escape'=>false, 'class' => 'label label-danger'),
+						__('この目標 「# %s」を削除しますか？', $salesGoal['SalesGoal']['id']),
+						array('class' => '')
+					);
+				?>
 			</td>
 		</tr>
 		<?php endforeach; ?>
