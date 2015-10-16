@@ -1036,10 +1036,6 @@ class KeywordsController extends AppController {
 		if($this->request->is('post') && !empty($this->request->data['Keyword']['csv'])){
 			$result = $this->Upload->uploadFile(Configure::read('FOLDER_UPLOAD_CSV'),$this->request->data['Keyword']['csv']);
 			if(array_key_exists('name', $result)){
-				$keyword['Keyword']['Engine'] = 3;
-				$keyword['Keyword']['Strict'] = 0;				
-				$keyword['Keyword']['seika'] = 0;								
-				$keyword['Keyword']['nocontract'] = 0;												
 				try {
 					$this->Keyword->importCSV(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name'],$keyword);
 					$this->Session->setFlash( __('Upload csv successfull.'));

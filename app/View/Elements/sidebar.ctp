@@ -8,7 +8,7 @@
 			</li>
 			
 <!-- new contract: ranks -->
-			<!-- <li class="treeview 
+			<li class="treeview 
 				<?php echo ($this->here==$this->webroot.'ranklogs' || $this->here==$this->webroot || $this->params['action']== 'kotei' || $this->params['action']== 'seika') ? 'active':''; ?>">
 				<a href="#">
 					<i class="fa fa-jpy"></i><span><?php echo __('NEW Contract'); ?></span><i class="fa fa-angle-left pull-right"></i>
@@ -23,7 +23,7 @@
 						<a href="<?php echo $this->webroot?>ranklogs/seika"> <i class="fa fa-check-square-o"></i> <span><?php echo __('Seika List'); ?></span> <small class="badge pull-right bg-yellow" id="contract"></small></a>
 					</li>
 				</ul>
-			</li> -->
+			</li>
 			
 <!-- contract -->
 			<li class="treeview 

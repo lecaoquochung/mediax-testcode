@@ -24,36 +24,36 @@ class Ranklog extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'engine_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'keyword' => array(
-			'notBlank' => array(
-				'rule' => array('notBlank'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'url' => array(
-			'notBlank' => array(
-				'rule' => array('notBlank'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
+		// 'engine_id' => array(
+			// 'numeric' => array(
+				// 'rule' => array('numeric'),
+				// //'message' => 'Your custom message here',
+				// //'allowEmpty' => false,
+				// //'required' => false,
+				// //'last' => false, // Stop validation after this rule
+				// //'on' => 'create', // Limit validation to 'create' or 'update' operations
+			// ),
+		// ),
+		// 'keyword' => array(
+			// 'notBlank' => array(
+				// 'rule' => array('notBlank'),
+				// //'message' => 'Your custom message here',
+				// //'allowEmpty' => false,
+				// //'required' => false,
+				// //'last' => false, // Stop validation after this rule
+				// //'on' => 'create', // Limit validation to 'create' or 'update' operations
+			// ),
+		// ),
+		// 'url' => array(
+			// 'notBlank' => array(
+				// 'rule' => array('notBlank'),
+				// //'message' => 'Your custom message here',
+				// //'allowEmpty' => false,
+				// //'required' => false,
+				// //'last' => false, // Stop validation after this rule
+				// //'on' => 'create', // Limit validation to 'create' or 'update' operations
+			// ),
+		// ),
 		'rank' => array(
 			'notBlank' => array(
 				'rule' => array('notBlank'),
