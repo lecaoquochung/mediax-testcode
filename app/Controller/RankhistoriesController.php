@@ -632,15 +632,13 @@ class RankhistoriesController extends AppController {
  * author lecaoquochung@gmail.com
  * created 2014
  *-----------------------------------------------------------------------------------------------------------*/
-	public function csv_all_keyword($rankrange = FALSE, $rankDate = FALSE, $sales = FALSE) {
+	public function csv_all_keyword($rankrange = FALSE, $rankDate = FALSE) {
 		set_time_limit(0);
 		$conds = array();
 		$conds['Rankhistory.rankDate'] = $rankDate;
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
-		$conds['Keyword.service'] = 0;
-		$conds['Keyword.sales'] = $sales;
-		$conds['OR'] = array( array('Keyword.rankend' => 0), array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . $rankDate))));
+		$conds['OR'] = array( array('Keyword.rankend' => 0), array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))));
 
 		if ($rankrange == 10) {
 			$conds['Rankhistory.Rank REGEXP'] = '^([^0]|10)/([^0]|10)';
@@ -665,19 +663,9 @@ class RankhistoriesController extends AppController {
 
 		$rankhistories = $this -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.updated DESC'));
 
-		$this -> export(array(
-			'conditions' => $conds,
-			// 'fields' => array('Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Rankhistory.Rank'),
-			'fields' => array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'Rankhistory.Rank', 'Rankhistory.RankDate'), 
-			'contain' => array(
-				'Keyword' => array('fields' => array('User.company'), 'conditions' => array('User.id' => 'Keyword.UserID'), )
-			), 
-			'order' => array('Keyword.ID' => 'desc'), 
-			'mapHeader' => 'HEADER_CSV_ALL_KEYWORD', 
-			'filename' => '_【MEDIAX】順位チェック' .$rankDate, 
-			'callbackHeader' => 'header_csv_all_keyword', 
-			'callbackRow' => 'row_csv_all_keyword', 
-		));
+		$this -> export(array('conditions' => $conds,
+		// 'fields' => array('Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Rankhistory.Rank'),
+		'fields' => array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'Rankhistory.Rank'), 'contain' => array('Keyword' => array('fields' => array('User.company'), 'conditions' => array('User.id' => 'Keyword.UserID'), )), 'order' => array('Keyword.ID' => 'desc'), 'mapHeader' => 'HEADER_CSV_ALL_KEYWORD', 'filename' => '_【MEDIAX】順位チェック', 'callbackHeader' => 'header_csv_all_keyword', 'callbackRow' => 'row_csv_all_keyword', ));
 	}
 
 /*------------------------------------------------------------------------------------------------------------

@@ -137,6 +137,61 @@ class RanklogsShell extends Shell {
                     $ranks['Ranklog']['url'] = $domain;
                     $ranks['Ranklog']['rank'] = json_encode($rank);
                     $ranks['Ranklog']['rankdate'] = date('Y-m-d');
+					
+					 // check color and arrow
+					$check_params = array();
+					$rankdate = date('Ymd', strtotime(date('Y-m-d') . '-1 day'));
+                    
+                    // yesterday rank
+					$data_ranklog = $this -> Ranklog -> find('first', array(
+						'fields' => array('Ranklog.rank'), 
+						'conditions' => array(
+							'Ranklog.keyword_id' => $keyword['Keyword']['ID'], 
+							'Ranklog.rankdate' => $rankdate
+					)));
+					
+					$data_ranklog = json_decode($data_ranklog['Ranklog']['rank'], true);
+					
+					// params
+					if (isset($data_ranklog['google_jp']) && isset($data_ranklog['yahoo_jp'])) {
+                        $rank_old = $data_ranklog;
+					} elseif (isset($data_ranklog['google_jp']) && !isset($data_ranklog['yahoo_jp'])) {
+						$rank_old[0] = $data_ranklog;
+						$rank_old[1] = $data_ranklog;
+					} else {
+						$rank_old[0] = 0;
+						$rank_old[1] = 0;
+					}
+					
+					//color
+					if ($rank['google_jp'] >= 1 && $rank['google_jp'] <= 10 || $rank['yahoo_jp'] >= 1 && $rank['yahoo_jp'] <= 10) {
+						$check_params['color'] = '#E4EDF9';
+					} else if ($rank_old['google_jp'] >= 1 && $rank_old['google_jp'] <= 10 && $rank['google_jp'] > 10 || $rank_old['yahoo_jp'] >= 1 && $rank_old['yahoo_jp'] <= 10 && $rank['yahoo_jp'] > 10) {
+						$check_params['color'] = '#FFBFBF';
+					} else if ($rank['google_jp'] > 10 && $rank['google_jp'] <= 20 || $rank['yahoo_jp'] > 10 && $rank['yahoo_jp'] <= 20) {
+						$check_params['color'] = '#FAFAD2';
+					} else {
+						$check_params['color'] = '';
+					}
+
+					//arrow
+					if (($rank['google_jp'] > $rank_old['google_jp'] && $rank_old['google_jp'] !=0) || ($rank['yahoo_jp'] > $rank_old['yahoo_jp'] && $rank_old['yahoo_jp'] !=0) || 
+						($rank['google_jp'] == 0 && $rank_old['google_jp'] != 0) || ($rank['yahoo_jp'] == 0 && $rank_old['yahoo_jp'] != 0)) 
+					{
+						$check_params['arrow'] = '<span class="red-arrow">↓</span>';
+					} 
+					else if (($rank['google_jp'] < $rank_old['google_jp']) || ($rank['yahoo_jp'] < $rank_old['yahoo_jp']) || ($rank_old['google_jp'] == 0 && $rank['google_jp'] != 0)) 
+					{
+						$check_params['arrow'] = '<span class="blue-arrow">↑</span>';
+					} 
+					else 
+					{
+						$check_params['arrow'] = '';
+					}
+
+					$ranks['Ranklog']['params'] = json_encode($check_params);
+					
+					debug($ranks['Ranklog']['params']);
 
                     $this->Ranklog->create();
                     $this->Ranklog->save($ranks);
