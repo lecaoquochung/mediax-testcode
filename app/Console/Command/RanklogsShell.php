@@ -10,12 +10,13 @@
  * param05(4): random time between 2 query 01 (default: 10)
  * param06(5): random time between 2 query 02 (default: 30)
  * param07(6): interval keyword (default: 40 -> g, 10 -> y)
- * param08(7): nocontract (default: 0 or NULL -> contract)
+ * param08(7): nocontract (default: 0 -> contract)
+ * param09(8): company_id (default: 0, or company_id: check by company or user_id )
 
  * @author lecaoquochung@gmail.com
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @created
- * run: ranklogs 0 100 15 0 1 30 10 0
+ * run: ranklogs 0 100 15 0 1 30 10 0 0 
  * ----------------------------------------------------------------------------------------------------------- */
 
 App::uses('AppShell', 'Console/Command');
@@ -56,6 +57,11 @@ class RanklogsShell extends Shell {
         if (isset($this->args[7])) {
             $nocontract = $this->args[7];
         }
+		
+		 $company_id = 0;
+        if (isset($this->args[8])) {
+            $company_id = $this->args[8];
+        }
 
         $start_time = date('Ymd H:i:s');
         $this->out($start_time);
@@ -70,14 +76,14 @@ class RanklogsShell extends Shell {
 
         //get server id
         $server_ip = gethostbyname(exec('hostname'));
+		$localhost = "127.0.0.1";
 
         $this->out('---------------------------------');
         $this->out('IP SERVER: '.$server_ip);
         $this->out('---------------------------------');
         $server = $this->Server->findByIp($server_ip);
-
-        if ($server != false) {
-            // recursive
+		
+        if ($server != false || $server_ip === $localhost) {
             $this->Keyword->recursive = -1;
 
             // filter keyword
@@ -89,11 +95,20 @@ class RanklogsShell extends Shell {
                 array('Keyword.rankend' => 0),
                 array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
             );
-            $conds['Keyword.server_id'] = $server['Server']['id'];
+			
+			// allow localhost
+			if($server_ip != $localhost) {
+				$conds['Keyword.server_id'] = @$server['Server']['id'];
+			}
+			
+			// keyword by company
+			if($company_id > 0) {
+				$conds['Keyword.UserID'] = @$company_id;
+			}
 
             $keywords = $this->Keyword->find('all', array('conditions' => $conds, 'limit' => $limit, 'offset' => $offset));
-
-            if (count($keywords) > 0) {
+			
+			if (count($keywords) > 0) {
                 $count = 0;
                 foreach ($keywords as $keyword) {
                     $time_start = microtime(true);
@@ -150,7 +165,7 @@ class RanklogsShell extends Shell {
 							'Ranklog.rankdate' => $rankdate
 					)));
 					
-					$data_ranklog = json_decode($data_ranklog['Ranklog']['rank'], true);
+					$data_ranklog = json_decode(@$data_ranklog['Ranklog']['rank'], true);
 					
 					// params
 					if (isset($data_ranklog['google_jp']) && isset($data_ranklog['yahoo_jp'])) {
@@ -166,21 +181,21 @@ class RanklogsShell extends Shell {
 					//color
 					if ($rank['google_jp'] >= 1 && $rank['google_jp'] <= 10 || $rank['yahoo_jp'] >= 1 && $rank['yahoo_jp'] <= 10) {
 						$check_params['color'] = '#E4EDF9';
-					} else if ($rank_old['google_jp'] >= 1 && $rank_old['google_jp'] <= 10 && $rank['google_jp'] > 10 || $rank_old['yahoo_jp'] >= 1 && $rank_old['yahoo_jp'] <= 10 && $rank['yahoo_jp'] > 10) {
+					} else if (@$rank_old['google_jp'] >= 1 && @$rank_old['google_jp'] <= 10 && @$rank['google_jp'] > 10 || @$rank_old['yahoo_jp'] >= 1 && @$rank_old['yahoo_jp'] <= 10 && @$rank['yahoo_jp'] > 10) {
 						$check_params['color'] = '#FFBFBF';
-					} else if ($rank['google_jp'] > 10 && $rank['google_jp'] <= 20 || $rank['yahoo_jp'] > 10 && $rank['yahoo_jp'] <= 20) {
+					} else if (@$rank['google_jp'] > 10 && @$rank['google_jp'] <= 20 || @$rank['yahoo_jp'] > 10 && @$rank['yahoo_jp'] <= 20) {
 						$check_params['color'] = '#FAFAD2';
 					} else {
 						$check_params['color'] = '';
 					}
 
 					//arrow
-					if (($rank['google_jp'] > $rank_old['google_jp'] && $rank_old['google_jp'] !=0) || ($rank['yahoo_jp'] > $rank_old['yahoo_jp'] && $rank_old['yahoo_jp'] !=0) || 
-						($rank['google_jp'] == 0 && $rank_old['google_jp'] != 0) || ($rank['yahoo_jp'] == 0 && $rank_old['yahoo_jp'] != 0)) 
+					if ((@$rank['google_jp'] > @$rank_old['google_jp'] && @$rank_old['google_jp'] !=0) || (@$rank['yahoo_jp'] > @$rank_old['yahoo_jp'] && @$rank_old['yahoo_jp'] !=0) || 
+						(@$rank['google_jp'] == 0 && @$rank_old['google_jp'] != 0) || (@$rank['yahoo_jp'] == 0 && @$rank_old['yahoo_jp'] != 0)) 
 					{
 						$check_params['arrow'] = '<span class="red-arrow">↓</span>';
 					} 
-					else if (($rank['google_jp'] < $rank_old['google_jp']) || ($rank['yahoo_jp'] < $rank_old['yahoo_jp']) || ($rank_old['google_jp'] == 0 && $rank['google_jp'] != 0)) 
+					else if ((@$rank['google_jp'] < @$rank_old['google_jp']) || (@$rank['yahoo_jp'] < @$rank_old['yahoo_jp']) || (@$rank_old['google_jp'] == 0 && @$rank['google_jp'] != 0)) 
 					{
 						$check_params['arrow'] = '<span class="blue-arrow">↑</span>';
 					} 
@@ -191,8 +206,6 @@ class RanklogsShell extends Shell {
 
 					$ranks['Ranklog']['params'] = json_encode($check_params);
 					
-					debug($ranks['Ranklog']['params']);
-
                     $this->Ranklog->create();
                     $this->Ranklog->save($ranks);
                     

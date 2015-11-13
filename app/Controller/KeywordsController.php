@@ -215,6 +215,119 @@ class KeywordsController extends AppController {
 		$this -> set(compact('data_rankhistories', 'rankhistories'));
 	}
 
+/*------------------------------------------------------------------------------------------------------------
+ * keywords ranklog (NEW view)
+ * 
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20151113 
+ * @updated
+ *-----------------------------------------------------------------------------------------------------------*/	
+	public function ranklog($id = null, $show_all = 'false') {
+		$this -> loadModel('Engine');
+		$engine_list = $this -> Engine -> find('all');
+		$this -> Keyword -> id = $id;
+		$this -> Keyword -> recursive = 0;
+
+		if (!$this -> Keyword -> exists()) {
+			throw new NotFoundException(__('Invalid keyword'));
+		}
+
+		$this -> set('keyword', $this -> Keyword -> read(null, $id));
+		$this -> set('engine_list', $engine_list);
+		$fields = array('Rankhistory.ID', 'Rankhistory.Url', 'Rankhistory.Rank', 'Rankhistory.RankDate');
+		$conds = array();
+		$conds['Rankhistory.KeyID'] = $id;
+
+		# show only data of this month
+		$month_start_day = date('Ym') . '01';
+		$month_end_day = date('Ym') . '31';
+		$conds1 = array();
+		$conds1['Rankhistory.KeyID'] = $id;
+
+		if ($show_all == 10) {
+			$conds1['Rankhistory.Rank REGEXP'] = '^([1-9]|10)/([1-9]|10)';
+			$conds1['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m")'] = date('Y-m');
+			$this -> Paginator -> settings = array('limit' => 1000, 'conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC');
+		} else if ($show_all != 'false') {
+			 // show all condition
+			$conds1['DATE_FORMAT(Rankhistory.RankDate,"%Y")'] = date('Y'); // show year
+			$this -> Paginator -> settings = array('limit' => 1000, 'conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC');
+		} else {
+			 // show all month
+			$conds1['Rankhistory.RankDate BETWEEN ? AND ?'] = array($month_start_day, $month_end_day);
+			$this -> Paginator -> settings = array('limit' => 31, 'conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC');
+		}
+		$data_rankhistories = $this -> paginate('Rankhistory');
+
+		if ($this -> request -> is('post')) {
+			if (!isset($this -> request -> data['Rankhistory']['data_rank_history'])) {
+				 # graph data　with Ajax
+				$beginDate = implode('-', $this -> request -> data['Rankhistory']['RankDate1']);
+				$endDate = implode('-', $this -> request -> data['Rankhistory']['RankDate2']);
+				$days = $this -> dateDiff($beginDate, $endDate);
+				
+				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m-%d")'] = $this -> forDate($beginDate, $endDate, $this->dayToStep($days));
+				$conds['Rankhistory.RankDate BETWEEN ? AND ?'] = array(implode('', $this -> request -> data['Rankhistory']['RankDate1']), implode('', $this -> request -> data['Rankhistory']['RankDate2']));
+				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+				$this -> set(compact('rankhistories'));
+
+				// custom show rank data
+				$conds1['Rankhistory.RankDate BETWEEN ? AND ?'] = array(implode('', $this -> request -> data['Rankhistory']['RankDate1']), implode('', $this -> request -> data['Rankhistory']['RankDate2']));
+				$data_rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds1, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+			} elseif($this -> request -> data['Rankhistory']['show_by_year'] == 1) {
+				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y")'] = $this -> request -> data['Rankhistory']['RankDate_list']['year']; // show year
+				$data_rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+
+				# graph data
+				$beginDate = $this -> request -> data['Rankhistory']['RankDate_list']['year'] . '-01-01';
+				$endDate = $this -> request -> data['Rankhistory']['RankDate_list']['year'] . '-12-31';
+				$days = $this -> dateDiff($beginDate, $endDate);
+				$beginDate_db = $this -> request -> data['Rankhistory']['RankDate_list']['year'] . '0101';
+				$endDate_db = $this -> request -> data['Rankhistory']['RankDate_list']['year'] . '1231';
+				
+				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m-%d")'] = $this -> forDate($beginDate, $endDate, $this->dayToStep($days));
+				$conds['Rankhistory.RankDate BETWEEN ? AND ?'] = array($beginDate_db, $endDate_db);
+				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+			} else {
+				 # history rank date: choose month data from select month
+				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('limit' => 1000, 'conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m")'] = date('Y-m', strtotime($this -> request -> data['Rankhistory']['RankDate_list']['year'] . '-' . $this -> request -> data['Rankhistory']['RankDate_list']['month']));
+				$data_rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+
+				# graph data
+				$beginDate = implode('-', $this -> request -> data['Rankhistory']['RankDate_list']) . '-01';
+				$endDate = implode('-', $this -> request -> data['Rankhistory']['RankDate_list']) . '-31';
+				$days = $this -> dateDiff($beginDate, $endDate);
+				$beginDate_db = implode('', $this -> request -> data['Rankhistory']['RankDate_list']) . '01';
+				$endDate_db = implode('', $this -> request -> data['Rankhistory']['RankDate_list']) . '31';
+
+				$conds['DATE_FORMAT(Rankhistory.RankDate,"%Y-%m-%d")'] = $this -> forDate($beginDate, $endDate, $this->dayToStep($days));
+				$conds['Rankhistory.RankDate BETWEEN ? AND ?'] = array($beginDate_db, $endDate_db);
+				$rankhistories = $this -> Keyword -> Rankhistory -> find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => 'Rankhistory.ID DESC'));
+			}
+		} else {
+			 // page first load
+			if (count($data_rankhistories) > 0) {
+				$rankhistories = array_slice($data_rankhistories, 0, 31);
+			} else {
+				$rankhistories = array();
+			}
+		}
+
+		// tooday rank set boolean
+		$today_rank = 1;
+		$this -> set('today_rank', $today_rank);
+
+		// extra
+		$this -> loadModel('Extra');
+		$this -> Extra -> recursive = -1;
+		$extra = $this -> Extra -> find('list', array('fields' => array('Extra.ExtraType', 'Extra.Price'), 'conditions' => array('Extra.KeyID' => $id)));
+		$this -> set('extra', $extra);
+
+		$this -> set(compact('data_rankhistories', 'rankhistories'));
+	}
+
 	/**
 	 * add method
 	 *
