@@ -34,16 +34,11 @@ class SalesKeywordsShell extends Shell {
 			$date = $this->args[0];
 		} 
 		
-		// {
-		// 	$this->out('Not a valid date');
-		// 	exit;
-		// }
-		
 		$start_time = date('Ymd H:i:s');
 		$this -> out($start_time);
-		
+			
 		// recursive
-		$this -> Keyword -> recursive = 0;
+		$this -> Keyword -> recursive = 2;
 		
 		// filter keyword
 		set_time_limit(0);
@@ -62,6 +57,7 @@ class SalesKeywordsShell extends Shell {
 		$order['Keyword.ID'] = 'ASC';
 		
 		$this -> Rankhistory -> recursive = 1;
+		$this->Rankhistory->Behaviors->load('Containable');
 		
 		$fields = array(
 			// 'Rankhistory.ID', 'Rankhistory.Url', 'Rankhistory.Rank', 'Rankhistory.RankDate', 'Rankhistory.params', 
@@ -132,14 +128,11 @@ class SalesKeywordsShell extends Shell {
 					@$sum_sales_keyword['profit'] += $sales_keyword['SalesKeyword']['profit'];
 				}
 
-				if(@$sum_sales_keyword['sales'] >= $rankhistory['Keyword']['User']['limit_price_multi']) {
+				if(@$sum_sales_keyword['sales'] >= @$rankhistory['Keyword']['User']['limit_price_multi']) {
 					$limit = 1;
 				}
 			}
 			
-			// print_r($rankhistory['Rankhistory']['KeyID']);
-			// print_r($sum_sales_keyword);
-
 			// sales & profit
 			if ($rankhistory['Keyword']['Engine'] == 1) {
 				$google_rank = $rankhistory['Rankhistory']['Rank'];
@@ -229,14 +222,11 @@ class SalesKeywordsShell extends Shell {
 					$data['SalesKeyword']['limit'] = $limit; // deprecated
 					$data['SalesKeyword']['date'] = $date;
 					
-					// debug($data);
-					
 					// save
 					$conds_data = array();
 					$conds_data['SalesKeyword.keyword_id'] = $rankhistory['Keyword']['ID'];
 					$conds_data['SalesKeyword.date'] = $date;
 					$check_data = $this->SalesKeyword->find('first',array('conditions'=> $conds_data));
-					// debug($check_data);exit;
 					
 					if($check_data != False){
 						$data['SalesKeyword']['id'] = $check_data['SalesKeyword']['id'];
@@ -286,10 +276,6 @@ class SalesKeywordsShell extends Shell {
 		foreach($keywords_is_ranked as $key => $value):
 			$this -> out($value);
 		endforeach;
-		
-		// debug($total_sales);
-		// debug($total_profit);
-		// debug(array_sum($total_sales));
 		
 	}
 

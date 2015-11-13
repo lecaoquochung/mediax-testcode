@@ -37,7 +37,6 @@
 				<!-- load rank -->
 				<?php echo $this->Html->link(__('CSV'), array('controller' => 'rankhistories', 'action' => 'csv_by_keyword',$keyword['Keyword']['ID']), array('class' => 'btn btn-success btn-sm')); ?>
 				<?php echo $this->Session->read('Auth.User.user.role')==2 ? $this->Html->link(__('Load Rank'), 'javascript:void(0)',array('class'=>'loadRank btn btn-danger btn-sm','KeyID'=>$keyword['Keyword']['ID'])) .$this->Html->image('loading.gif',array('class'=>'loading','style'=>'display:none')):''; ?>
-				<?php #echo $this->Html->link(__('Load Rank'), 'javascript:void(0)',array('class'=>'loadRank btn btn-danger btn-sm','KeyID'=>$keyword['Keyword']['ID'])) .$this->Html->image('loading.gif',array('class'=>'loading','style'=>'display:none')); ?>
 			</div>
 		</div>
 	</div>
@@ -114,7 +113,6 @@
 	<div class="col-xs-12">
 		<div class="newline">&nbsp;</div>
 		<div class="col-md-6">
-			<!-- <?php echo $this->Html->link(__('今月全件'), array('controller' => 'keywords', 'action' => 'view',$keyword['Keyword']['ID']), array('class' => 'btn')); ?> -->
 			<?php echo $this->Html->link(__('1~10'), array('controller' => 'keywords', 'action' => 'view',$keyword['Keyword']['ID'], 10), array('class' => 'btn btn-success btn-sm')); ?>
 			<?php echo $this->Html->link(__('キーワード特別条件'), array('controller' => 'extras', 'action' => 'add', $keyword['Keyword']['ID']), array('class' => 'btn btn-warning btn-sm')); ?>
 		</div>
