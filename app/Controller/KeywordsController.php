@@ -1125,8 +1125,11 @@ class KeywordsController extends AppController {
 		);
 		
 		$fields = array();
-		$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.server_id', 'Keyword.cost', 'Keyword.limit_price');
-		// $fields = array('Keyword.ID', 'Keyword.code', 'Keyword.Keyword', 'Keyword.server_id', 'Keyword.cost', 'Keyword.limit_price');
+		$fields = array(
+			'Keyword.ID', 'Keyword.UserID', 'Keyword.server_id', 'Keyword.Keyword', 'Keyword.Url',
+			'Keyword.Strict', 'Keyword.seika', 'Keyword.nocontract', 'Keyword.mobile',
+			'Keyword.Engine', 'Keyword.g_local', 'Keyword.cost', 'Keyword.limit_price'
+		);
 		$this -> export(array(
 			//'recursive'=>1,
 			'conditions' => $conds,
@@ -1150,7 +1153,7 @@ class KeywordsController extends AppController {
 			$result = $this->Upload->uploadFile(Configure::read('FOLDER_UPLOAD_CSV'),$this->request->data['Keyword']['csv']);
 			if(array_key_exists('name', $result)){
 				try {
-					$this->Keyword->importCSV(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name'],$keyword);
+					$this->Keyword->importCSV(Configure::read('FOLDER_UPLOAD_CSV').'/'.$result['name']);
 					$this->Session->setFlash( __('Upload csv successfull.'));
 				} catch (Exception $e) {
 					$import_errors = $this->Keyword->getImportErrors();
@@ -1168,7 +1171,7 @@ class KeywordsController extends AppController {
 			$conds['Keyword.ID'] = explode('-',$this->request->data['ids']);
 			
 			$fields = array();
-			$fields = array('Keyword.ID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Price');
+			$fields = array('Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Url', 'Keyword.Price');
 			$this -> export(array(
 				//'recursive'=>2,
 				'conditions' => $conds,

@@ -152,6 +152,8 @@ protected function remove_utf8_bom($text){
 			if (method_exists($Model, 'beforeImport')) {
 				$data = $Model->beforeImport($data);
 			}
+			
+			// debug($data);exit;
 
 			$error = false;
 			$Model->set($data);
@@ -173,6 +175,8 @@ protected function remove_utf8_bom($text){
 			if (method_exists($Model, 'afterImport')) {
 				$data = $Model->afterImport($data);
 			}
+			
+			debug($data);exit;
 			
 			if (!$error) {
 				$this->_notify($Model, 'onImportRow', $data);
