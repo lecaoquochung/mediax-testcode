@@ -147,6 +147,19 @@ class Keyword extends AppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
+		'Ranklog' => array(
+            'className' => 'Ranklog',
+            'foreignKey' => 'keyword_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
 	);
 
 /**

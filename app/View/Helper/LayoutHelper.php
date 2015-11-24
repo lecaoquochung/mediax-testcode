@@ -198,7 +198,7 @@ class LayoutHelper extends Helper {
 	}
 
 /*------------------------------------------------------------------------------------------------------------
- *  best rank logic
+ * best rank logic
  * 
  * author lecaoquochung@gmail.com
  * created 201510
@@ -209,6 +209,34 @@ class LayoutHelper extends Helper {
 		
 		return $min;
 	}
+	
+/*------------------------------------------------------------------------------------------------------------
+ * best rank logic v1.2
+ * 
+ * input json
+ * output string
+ * author lecaoquochung@gmail.com
+ * created 201511
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function bestRankJson($rank_json) {
+		$rank = json_decode($rank_json, true);
+		@$min = min(array_diff($rank, array(0)));
+		$min = ($min==True)?$min:0;
+		
+		return $min;
+	}
+	
+/*------------------------------------------------------------------------------------------------------------
+ *  strip hyphen (string)
+ * 
+ * author lecaoquochung@gmail.com
+ * created 201510
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function stripHyphen($string) {
+		$string = str_replace('-', '', $string);
+		
+		return $string;
+	}	
 
 }
 ?>
