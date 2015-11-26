@@ -1,11 +1,14 @@
 <?php
 App::uses('AppController', 'Controller');
+
 /**
  * Users Controller
  *
  * @property User $User
  */
 class UsersController extends AppController {
+
+	public $components = array('Mediax');
 
 /**
  * index method
@@ -77,9 +80,10 @@ class UsersController extends AppController {
 					'Duration' => array(
 						'conditions'=>array('Duration.Flag'=>1),
 						'fields' => array('Duration.ID','Duration.KeyID','Duration.StartDate','Duration.EndDate','Duration.Flag')
-					)
+					),
+					'order' => 'Keyword.ID DESC'
                 )
-            )
+            ),
 		));
 		
 		$this->set('user', $user);
@@ -100,6 +104,82 @@ class UsersController extends AppController {
 		$this->Extra->recursive = -1;
 		$extras = $this->Extra->find('all',array('fields'=>array('Extra.ExtraType','Extra.Price','Extra.KeyID'),'conditions'=>array('Extra.KeyID'=>$keyword_ids)));
 		$this->set('extras', $extras);
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * users ranklog (view on NEW rank data)
+ * 
+ * @author lecaoquochung@gmail.com
+ * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created 20151125
+ * @updated
+ *-----------------------------------------------------------------------------------------------------------*/	
+	public function ranklog($id = null) {               
+        set_time_limit(0);
+		ini_set('memory_limit', '512M');
+		$this->User->recursive = 1;
+		$this->User->id = $id;
+		if (!$this->User->exists()) {
+			throw new NotFoundException(__('Invalid user'));
+		}
+        $user = $this->User->find('first',array(
+            'fields'=>array('User.company', 'User.email', 'User.name', 'User.tel', 'User.fax', 'User.agent', 'User.pwd', 'User.limit_price_multi', 'User.limit_price_multi2', 'User.limit_price_multi3'),
+            'conditions'=>array('User.id'=>$id),
+            'contain'=>array(
+                'Keyword'=>array(
+                    'fields'=>array('Keyword.ID', 'Keyword.Keyword as keyword', 'Keyword.Url', 'Keyword.rankstart', 'Keyword.nocontract', 'Keyword.rankend','Keyword.Engine', 'Keyword.limit_price_group', 'Keyword.c_logic'),
+					'Duration' => array(
+						'conditions'=>array('Duration.Flag'=>1),
+						'fields' => array('Duration.ID','Duration.KeyID','Duration.StartDate','Duration.EndDate','Duration.Flag')
+					),
+					'order' => 'Keyword.ID DESC'
+                )
+            ),
+		));
+		
+		$keywords = Hash::extract($user['Keyword'], '{n}.ID');
+		
+        $conds = array();
+        $conds['Ranklog.keyword_id'] = $keywords;
+        $conds['Ranklog.rankdate'] = date('Y-m-d');
+		$fields = array('Ranklog.keyword_id','Ranklog.rank');
+		
+		$conds_g = array();
+		$conds_g = array();
+        $conds_g['Ranklog.keyword_id'] = $keywords;
+        $conds_g['Ranklog.rankdate >='] = date('Y-m-d', strtotime("-30 days"));
+		$fields_g = array('Ranklog.keyword_id','Ranklog.rank', 'Ranklog.rankdate');
+		$limit_g = count($keywords)*30;
+		$order_g = 'Ranklog.rankdate DESC';
+		
+		// post
+        if($this->request->is('post')){
+			$conds['Ranklog.rankdate'] = implode('',$this->request->data['Rankhistory']['rankDate']);
+        }
+
+        $graph = $this->User->Keyword->Ranklog->find('list',array('fields'=>$fields_g,'conditions'=>$conds_g, 'limit' => $limit_g, 'order' => $order_g));
+		$rankhistory = $graph[date('Y-m-d')];
+		
+		foreach($graph as $key => $value) {
+			foreach ($value as $keyID => $json) {
+				// rank==0?100:rank
+				$graph[$key][$keyID] = $this->Mediax->bestRankJson($json) == 0 ? 100 : $this->Mediax->bestRankJson($json);
+			}
+		}
+		
+		// array_reverse
+		$graph = (array_values($graph));
+		foreach ($graph as $key => $value) {
+			$graph[$key] = array_sum($value)/count($value);
+		}
+		
+		// extra
+		$keyword_ids = Hash::extract($user['Keyword'], '{n}.ID');
+		$this->loadModel('Extra');
+		$this->Extra->recursive = -1;
+		$extras = $this->Extra->find('all',array('fields'=>array('Extra.ExtraType','Extra.Price','Extra.KeyID'),'conditions'=>array('Extra.KeyID'=>$keyword_ids)));
+		
+		$this->set(compact('user', 'extras', 'rankhistory', 'graph'));
 	}
 
 /**

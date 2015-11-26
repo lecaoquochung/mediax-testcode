@@ -25,11 +25,10 @@
                         <tr>
                             <th class=""><?php echo __('#'); ?></th>
                             <th class=""><?php echo __('Keyword') . '/' . __('Url'); ?></th>
-                            <th class=""><?php echo __('GoogleJP'); ?></th>
-                            <th class=""><?php echo __('YahooJP'); ?></th>
+                            <th class=""><?php echo __('G'); ?></th>
+                            <th class=""><?php echo __('Y'); ?></th>
                             <th class=""><?php echo __('G/Y'); ?></th>
                             <th class=""><?php echo __('Company'); ?></th>
-                            <!-- <th class=""><?php echo __('Price'); ?></th> -->
                             <th class=""><?php echo __('Actions'); ?></th>
                         </tr>
                     </thead>
@@ -56,11 +55,11 @@
                                 </td>
 <!-- google_jp -->
                                 <td>
-                                    <?php echo isset($rank['google_jp'])?$rank['google_jp']:'-'; ?>&nbsp;
+                                    <?php echo isset($rank['google_jp'])?$rank['google_jp']:$rank['google']; ?>&nbsp;
                                 </td>
 <!-- yahoo_jp -->
                                 <td>
-                                    <?php echo isset($rank['yahoo_jp'])?$rank['yahoo_jp']:'-'; ?>&nbsp;
+                                    <?php echo isset($rank['yahoo_jp'])?$rank['yahoo_jp']:$rank['yahoo']; ?>&nbsp;
                                 </td>
 <!-- G/Y -->
                                 <td>
@@ -70,7 +69,7 @@
 <!-- company -->
                                 <td>
                                     <?php echo (isset($ranklog['Keyword']['limit_price_group']) && $ranklog['Keyword']['limit_price_group'] != 0) ? '<span class="label label-warning">グループ上限</span>' : ''; ?>
-                                    <?php echo $this->Html->link($this->Text->truncate($user[$ranklog['Keyword']['UserID']], 15), array('controller' => 'users', 'action' => 'view', $ranklog['Keyword']['UserID'])); ?>
+                                    <?php echo $this->Html->link($this->Text->truncate($user[$ranklog['Keyword']['UserID']], 15), array('controller' => 'users', 'action' => 'ranklog', $ranklog['Keyword']['UserID'])); ?>
                                     <div class="new-line"></div>
                                 </td>
 <!-- actions -->

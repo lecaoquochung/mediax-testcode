@@ -1,6 +1,6 @@
 <?php
 /*------------------------------------------------------------------------------------------------------------
- * Ddnb Common Component
+ * Mediax Component
  *
  * @author              lecaoquochung <lecaoquochung@gmail.com>
  * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
@@ -10,7 +10,7 @@
 App::uses('Component', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
 
-class DdnbCommonComponent extends Component {
+class MediaxComponent extends Component {
 
  /*------------------------------------------------------------------------------------------------------------
  * get referer method
@@ -458,5 +458,24 @@ class DdnbCommonComponent extends Component {
                 $d = DateTime::createFromFormat($format, $date);
                 return $d && $d->format($format) == $date;
         }
+		
+/*------------------------------------------------------------------------------------------------------------
+ * best rank json function
+ *
+ * @input
+ * @logic
+ *
+ * @author              lecaoquochung <lecaoquochung@gmail.com>
+ * @license             http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @created             201511
+ -------------------------------------------------------------------------------------------------------------*/      
+    public function bestRankJson($json)
+    {
+    	$rank = json_decode($json, true);
+		@$min = min(array_diff($rank, array(0)));
+		$min = ($min==True)?$min:0;
+		
+		return $min;
+	}
         
 }

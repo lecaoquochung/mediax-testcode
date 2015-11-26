@@ -240,7 +240,7 @@ class KeywordsController extends AppController {
 		$conds = array();
 		$conds['Ranklog.keyword_id'] = $id;
 
-		# show only data of this month
+		// show only data of this month
 		$month_start_day = date('Ym') . '01';
 		$month_end_day = date('Ym') . '31';
 		$conds1 = array();

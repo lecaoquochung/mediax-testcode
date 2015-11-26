@@ -79,13 +79,13 @@ class ConvertRankhistoryShell extends Shell {
 				
 				if($rankhistory['Keyword']['Engine'] == 3) {
 					$explode = explode('/', $rankhistory['Rankhistory']['Rank']);
-					$rank_data['google'] = $explode[0];
-					$rank_data['yahoo'] = $explode[1];
+					$rank_data['google_jp'] = $explode[0];
+					$rank_data['yahoo_jp'] = $explode[1];
 					
 				} else if ($rankhistory['Keyword']['Engine'] == 2) {
-					$rank_data['yahoo'] = $rankhistory['Rankhistory']['Rank'];
+					$rank_data['yahoo_jp'] = $rankhistory['Rankhistory']['Rank'];
 				} else if ($rankhistory['Keyword']['Engine'] == 1) {
-					$rank_data['google'] = $rankhistory['Rankhistory']['Rank'];
+					$rank_data['google_jp'] = $rankhistory['Rankhistory']['Rank'];
 				}
 				
                 $ranks['Ranklog']['rank'] = json_encode($rank_data);
