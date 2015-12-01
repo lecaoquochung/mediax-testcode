@@ -29,6 +29,9 @@ class RanklogsController extends AppController {
         $rankDate = date('Y-m-d');
         $conds = array();
         $conds['Ranklog.rankdate'] = $rankDate;
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.service'] = 0;
 
         if ($rankrange == 10) {
             $conds['Ranklog.rank REGEXP'] = '(:[1-9],)|(:[1-9]})|10';
