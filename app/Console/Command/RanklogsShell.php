@@ -76,14 +76,14 @@ class RanklogsShell extends Shell {
 
         //get server id
         $server_ip = gethostbyname(exec('hostname'));
-		$localhost = "127.0.0.1";
+		$localhost = array('127.0.0.1', '49.212.199.80');
 
         $this->out('---------------------------------');
         $this->out('IP SERVER: '.$server_ip);
         $this->out('---------------------------------');
         $server = $this->Server->findByIp($server_ip);
 		
-        if ($server != false || $server_ip === $localhost) {
+        if ($server != false || in_array($server_ip, $localhost)) {
             $this->Keyword->recursive = -1;
 
             // filter keyword
@@ -97,7 +97,7 @@ class RanklogsShell extends Shell {
             );
 			
 			// allow localhost
-			if($server_ip != $localhost) {
+			if(!in_array($server_ip, $localhost)) {
 				$conds['Keyword.server_id'] = @$server['Server']['id'];
 			}
 			
