@@ -50,7 +50,7 @@ class RanklogsController extends AppController {
         }
 
         if ($this->request->is('post')) {
-            $rankDate = $this->request->data['Ranklog']['rankDate']['year'] .'-'. $this->request->data['Ranklog']['rankDate']['month'] .'-'. $this->request->data['Ranklog']['rankDate']['day'];
+            $rankDate = $this->request->data['Ranks']['rankDate']['year'] .'-'. $this->request->data['Ranks']['rankDate']['month'] .'-'. $this->request->data['Ranks']['rankDate']['day'];
             if (!empty($this->request->data['Ranklog']['keyword'])) {
                 $users = $this->Rankhistory->Keyword->User->find('list', array('fields' => array('User.id', 'User.id'), 'conditions' => array('User.company LIKE' => '%' . mb_strtolower(trim($this->request->data['Ranklogs']['keyword']), 'UTF-8') . '%')));
                 $conds['OR']['Ranklog.url LIKE'] = '%' . mb_strtolower(trim($this->request->data['Ranklog']['keyword']), 'UTF-8') . '%';
