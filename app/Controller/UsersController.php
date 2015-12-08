@@ -117,7 +117,7 @@ class UsersController extends AppController {
 	public function ranklog($id = null) {               
         set_time_limit(0);
 		ini_set('memory_limit', '512M');
-		$this->User->recursive = 1;
+		$this->User->recursive = 0;
 		$this->User->id = $id;
 		if (!$this->User->exists()) {
 			throw new NotFoundException(__('Invalid user'));
@@ -139,7 +139,7 @@ class UsersController extends AppController {
 		
 		$keywords = Hash::extract($user['Keyword'], '{n}.ID');
 		
-        $conds = array();
+		$conds = array();
         $conds['Ranklog.keyword_id'] = $keywords;
         $conds['Ranklog.rankdate'] = date('Y-m-d');
 		$fields = array('Ranklog.keyword_id','Ranklog.rank');
@@ -159,7 +159,7 @@ class UsersController extends AppController {
 
         $graph = $this->User->Keyword->Ranklog->find('list',array('fields'=>$fields_g,'conditions'=>$conds_g, 'limit' => $limit_g, 'order' => $order_g));
 		$rankhistory = $graph[date('Y-m-d')];
-		
+
 		foreach($graph as $key => $value) {
 			foreach ($value as $keyID => $json) {
 				// rank==0?100:rank
@@ -180,6 +180,7 @@ class UsersController extends AppController {
 		$extras = $this->Extra->find('all',array('fields'=>array('Extra.ExtraType','Extra.Price','Extra.KeyID'),'conditions'=>array('Extra.KeyID'=>$keyword_ids)));
 		
 		$this->set(compact('user', 'extras', 'rankhistory', 'graph'));
+		debug($keywords);exit;
 	}
 
 /**
