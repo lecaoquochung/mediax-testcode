@@ -20,7 +20,7 @@
 <!-- target -->
 				<div class="form-group">
 					<label for="InputIp"><?php echo $this -> Html -> tag('span', __('Target')); ?></label>
-					<?php echo $this -> Form -> input('target', array('type' => 'text', 'label' => FALSE, 'placeholder' => __('Enter Target'), 'class' => 'form-control')); ?>
+					<?php echo $this -> Form -> input('target', array('type' => 'text', 'label' => FALSE, 'div'=>array('class'=>'input-group'),'placeholder' => __('Enter Target'), 'class' => 'form-control','after'=>'<div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div>')); ?>
 					<?php 
 						// echo $this->Form->input('target', array(
 							// 'div' => TRUE,
@@ -41,3 +41,10 @@
 		</div>
 	</div>
 </div>
+<?php $this->append('scriptBootom');?>
+<script type="text/javascript">
+	$('document').ready(function(){
+		$('#SalesGoalTarget').datepicker();
+	});
+</script>
+<?php $this->end(); ?>

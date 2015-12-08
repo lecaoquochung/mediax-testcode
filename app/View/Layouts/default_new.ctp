@@ -95,6 +95,8 @@
 	?>
 	
 	<?php #echo $this->element('footer'); ?>
+	
+	<?php echo $this -> fetch('scriptBootom'); ?>
 </body>
 
 </html>
