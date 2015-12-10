@@ -180,7 +180,6 @@ class UsersController extends AppController {
 		$extras = $this->Extra->find('all',array('fields'=>array('Extra.ExtraType','Extra.Price','Extra.KeyID'),'conditions'=>array('Extra.KeyID'=>$keyword_ids)));
 		
 		$this->set(compact('user', 'extras', 'rankhistory', 'graph'));
-		debug($keywords);exit;
 	}
 
 /**
