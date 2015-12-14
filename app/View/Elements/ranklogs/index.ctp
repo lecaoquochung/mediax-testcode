@@ -29,7 +29,6 @@
                             <th class=""><?php echo __('Y'); ?></th>
                             <th class=""><?php echo __('G/Y'); ?></th>
                             <th class=""><?php echo __('-1 Day'); ?></th>
-                            <th class=""><?php echo __('-15 Days'); ?>(Demo)</th>
                             <th class=""><?php echo __('Company'); ?></th>
                             <th class=""><?php echo __('Actions'); ?></th>
                         </tr>
@@ -54,15 +53,6 @@
 								$bestRankYesterday = $this->Layout->rankFlip($bestRankYesterday);
 								
 								// rank -15 Days
-								if(isset($ranklogs_week[$ranklog['Keyword']['ID']])){
-									$rank_week = json_decode($ranklogs_week[$ranklog['Keyword']['ID']],true);
-								}else{
-									$rank_week['google_jp'] = 0;
-									$rank_week['yahoo_jp'] = 0;
-								}
-								$bestRankWeek = $this->Layout->bestRank($rank_week);
-								$bestRankWeek = $this->Layout->rankFlip($bestRankWeek); 
-								
 							?>
                         	
                             <tr style="background:<?php echo $params['color'] ?>">
@@ -107,29 +97,13 @@
 											echo $bestRankToday != 0 ? '<span class="blue-arrow"><i class="fa fa-fw fa-arrow-up"></i></span>' : '<span class="red-arrow"><i class="fa fa-fw fa-arrow-down"></i></span>';
 											echo (intval($bestRankYesterday) - intval($bestRankToday));
 										}else if($bestRankToday==$bestRankYesterday){
-											echo '0';
+											echo '<i class="fa fa-fw fa-minus"></i>' .'0';
 										}
 									?>
 									</span>
 									<?php echo $this->Layout->rankFlip($bestRankYesterday); ?>
                                 </td>
 <!-- -15 Days -->                                
-                                <td>
-                                	<span class="yesterday">
-									<?php
-										if($bestRankToday > $bestRankWeek){
-											echo $bestRankToday != 0 ? '<span class="red-arrow"><i class="fa fa-fw fa-arrow-down"></i></span>' : '<span class="blue-arrow"><i class="fa fa-fw fa-arrow-up"></i></span>';
-											echo (intval($bestRankToday)-intval($bestRankWeek));
-										}else if($bestRankWeek > $bestRankToday){
-											echo $bestRankToday != 0 ? '<span class="blue-arrow"><i class="fa fa-fw fa-arrow-up"></i></span>' : '<span class="red-arrow"><i class="fa fa-fw fa-arrow-down"></i></span>';
-											echo (intval($bestRankWeek) - intval($bestRankToday));
-										}else if($bestRankToday==$bestRankWeek){
-											echo '0';
-										}
-									?>
-									</span>
-									<?php echo $this->Layout->rankFlip($bestRankWeek); ?>
-                                </td>
 <!-- company -->
                                 <td>
                                     <?php echo (isset($ranklog['Keyword']['limit_price_group']) && $ranklog['Keyword']['limit_price_group'] != 0) ? '<span class="label label-warning">グループ上限</span>' : ''; ?>
