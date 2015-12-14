@@ -4,3 +4,18 @@
  * @author: lecaoquochung@gmail.com
  * @created 2015
  * ---------------------------------------------------------------------- */
+.blue-arrow{
+	color:#007AFF;
+}
+
+.red-arrow{color:#ff0000}
+
+.today {
+	font-family: "Times New Roman", Times, Sans-serif;
+	font-size: 150%;
+}
+
+.yesterday {
+	font-family: "Times New Roman", Times, Sans-serif;
+	font-size: 125%;
+}

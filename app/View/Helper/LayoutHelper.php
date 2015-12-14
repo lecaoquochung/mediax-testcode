@@ -227,6 +227,24 @@ class LayoutHelper extends Helper {
 	}
 	
 /*------------------------------------------------------------------------------------------------------------
+ * flip flop 0 & 100
+ * 
+ * input 0 or 100
+ * output 100 or 0
+ * author lecaoquochung@gmail.com
+ * created 201511
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function rankFlip($rank) {
+		if ($rank == 100) {
+			$rank = 0;
+		} elseif ($rank == 0) {
+			$rank = 100;
+		}
+
+		return $rank;
+	}	
+	
+/*------------------------------------------------------------------------------------------------------------
  *  strip hyphen (string)
  * 
  * author lecaoquochung@gmail.com
