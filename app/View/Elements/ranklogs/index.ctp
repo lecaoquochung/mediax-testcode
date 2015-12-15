@@ -101,7 +101,6 @@
 										}
 									?>
 									</span>
-									<?php echo $this->Layout->rankFlip($bestRankYesterday); ?>
                                 </td>
 <!-- -15 Days -->                                
 <!-- company -->
