@@ -8,7 +8,9 @@
 	color:#007AFF;
 }
 
-.red-arrow{color:#ff0000}
+.red-arrow{
+	color:#ff0000
+}
 
 .today {
 	font-family: "Times New Roman", Times, Sans-serif;
@@ -18,4 +20,18 @@
 .yesterday {
 	font-family: "Times New Roman", Times, Sans-serif;
 	font-size: 125%;
+}
+
+.server-used {
+	font-size: 150%;
+}
+
+
+.server-blue {
+	color:#007AFF;
+	font-size: 150%;
+}
+
+.server-red {
+	color:#ff0000
 }

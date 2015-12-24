@@ -7,11 +7,6 @@
 			<?php echo $this -> Form -> create('Server', array('class' => 'KeywordAddForm')); ?>
 			<?php echo $this -> Form -> input('id'); ?>
 			<div class="box-body">
-<!-- code -->
-				<div class="form-group">
-					<label for="InputCode"><?php echo $this -> Html -> tag('span', __('Code')); ?></label>
-					<?php echo $this -> Form -> input('code', array('type' => 'text', 'label' => FALSE, 'placeholder' => __('Enter Code'), 'class' => 'form-control')); ?>
-				</div>
 <!-- name -->
 				<div class="form-group">
 					<label for="InputName"><?php echo $this -> Html -> tag('span', __('Name')); ?></label>
@@ -22,10 +17,10 @@
 					<label for="InputIp"><?php echo $this -> Html -> tag('span', __('IP')); ?></label>
 					<?php echo $this -> Form -> input('ip', array('type' => 'text', 'label' => FALSE, 'placeholder' => __('Enter IP'), 'class' => 'form-control')); ?>
 				</div>
-<!-- api -->
+<!-- storage -->
 				<div class="form-group">
-					<label for="InputApi"><?php echo $this -> Html -> tag('span', __('API')); ?></label>
-					<?php echo $this -> Form -> input('api', array('type' => 'text', 'label' => FALSE, 'placeholder' => __('Enter Api'), 'class' => 'form-control')); ?>
+					<label for="InputStorage"><?php echo $this -> Html -> tag('span', __('Storage')); ?></label>
+					<?php echo $this -> Form -> input('storage', array('type' => 'text', 'label' => FALSE, 'placeholder' => __('Enter Storage'), 'class' => 'form-control')); ?>
 				</div>
 <!-- memo -->
 				<div class="form-group">

@@ -25,7 +25,7 @@
 		'daterangepicker/daterangepicker-bs3.css', 
 		'bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css', 
 		'AdminDDNB.css', 
-		'//cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css', 
+		'//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css', 
 		'custom'
 	));
 	?>
@@ -72,7 +72,7 @@
 			'AdminDDNB/app.js',
 			'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js', 'plugins/daterangepicker/daterangepicker.js', 'plugins/datepicker/bootstrap-datepicker.js',
 			'plugins/jvectormap/jquery-jvectormap-1.2.2.min.js',
-			'plugins/jvectormap/jquery-jvectormap-world-mill-en.js', 'plugins/sparkline/jquery.sparkline.min.js', '//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js',
+			'plugins/jvectormap/jquery-jvectormap-world-mill-en.js', 'plugins/sparkline/jquery.sparkline.min.js', '//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js',
 			'AdminDDNB/api.js',
 		));
 	?>

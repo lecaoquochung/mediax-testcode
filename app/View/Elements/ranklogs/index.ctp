@@ -154,10 +154,14 @@
         $('[data-toggle="tooltip"]').tooltip({placement: 'top'});
 
         // instant search
-        // $('#example').DataTable({
-        // paging: false,
-        // ordering:  false
-        // });
-        // $('#table_id').DataTable();
+        $('#example').DataTable({
+        	select: {
+		        style: 'multi'
+		    },
+	        paging: false,
+	        ordering:  true,
+	        order: []
+        });
+        $('#table_id').DataTable();
     })
 </script>

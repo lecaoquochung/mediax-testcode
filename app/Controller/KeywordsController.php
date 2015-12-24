@@ -31,7 +31,6 @@ class KeywordsController extends AppController {
 		$conds = array();
 		$conds['Keyword.Enabled'] = 1;
 		$conds['Keyword.nocontract'] = 0;
-//		$conds['Keyword.c_logic'] = $c_logic;
 		$conds['OR'] = array( 
 			array('Keyword.rankend' => 0), 
 			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),

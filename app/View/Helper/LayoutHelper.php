@@ -254,6 +254,17 @@ class LayoutHelper extends Helper {
 		$string = str_replace('-', '', $string);
 		
 		return $string;
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * use keyword
+ * 
+ * author lecaoquochung@gmail.com
+ * created 20151218
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function useKeyowrd($keywords, $server_id) {
+		
+		return $use;
 	}	
 
 }
