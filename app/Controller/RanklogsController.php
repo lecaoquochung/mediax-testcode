@@ -72,13 +72,22 @@ class RanklogsController extends AppController {
             'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Engine', 'Keyword.rankend', 'Keyword.Enabled', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.Url', 'Keyword.Strict', 'Keyword.limit_price', 'Keyword.limit_price_group'
         );
 
-        $ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order, 'limit' => Configure::read('Page.max')));
+		$ranklogs = Cache::read('all_ranklogs', 'Ranklog');
+		if (!$ranklogs) {
+			$ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order, 'limit' => Configure::read('Page.max')));
+			Cache::write('all_ranklogs', $ranklogs, 'Ranklog');
+		}		
         $keyword_id = Hash::extract($ranklogs, '{n}.Keyword.ID');
 		
 		// ranlogs -1 day
 		$conds['Ranklog.rankdate'] = date('Y-m-d', strtotime($conds['Ranklog.rankdate'].' -1 day' ));
 		$conds['Keyword.ID'] = $keyword_id;
-		$yesterday_ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => array('Keyword.ID','Ranklog.rank')));
+		
+		$yesterday_ranklogs = Cache::read('yesterday_ranklogs', 'Ranklog');
+		if (!$yesterday_ranklogs) {
+			$yesterday_ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => array('Keyword.ID','Ranklog.rank')));
+			Cache::write('yesterday_ranklogs', $yesterday_ranklogs, 'Ranklog');
+		}		
 		$yesterday_ranklogs = Hash::combine($yesterday_ranklogs,'{n}.Keyword.ID','{n}.Ranklog.rank');
 		
 		// ranlogs -15 day
@@ -86,12 +95,23 @@ class RanklogsController extends AppController {
         // extra 
         $this->loadModel('Extra');
         $this->Extra->recursive = -1;
-        $extras = $this->Extra->find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_id)));
+		
+		$extras = Cache::read('extras', 'Ranklog');
+		if(!$extras){
+			$extras = $this->Extra->find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_id)));
+			Cache::write('extras', $extras, 'Ranklog');
+		}        
+		
+		$users = Cache::read('users', 'Ranklog');
+		if(!$users){
+			$users = $this->Ranklog->Keyword->User->find('list', array('fields' => array('User.id', 'User.company')));
+			Cache::write('users', $users, 'Ranklog');
+		}		
 
         $this->set('ranklogs', $ranklogs);
 		$this->set('yesterday_ranklogs', $yesterday_ranklogs);
         $this->set('extras', $extras);
-        $this->set('user', $this->Ranklog->Keyword->User->find('list', array('fields' => array('User.id', 'User.company'))));
+        $this->set('user', $users);
         $this->set('rankDate', $rankDate);
     }
 
