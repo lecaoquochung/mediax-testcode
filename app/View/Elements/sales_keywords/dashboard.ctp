@@ -13,7 +13,7 @@
                 <!-- <?php echo __('Total') ?>: <code>.box.box-solid.box-warning</code> -->
                 <h3>
                 	<?php echo $this->Layout->MoneyFormat($monthly['sales']); ?>
-                	(<?php echo $this->Layout->MoneyFormat($goal['SalesGoal']['goal']); ?>)
+                	(<?php echo @$this->Layout->MoneyFormat($goal['SalesGoal']['goal']); ?>)
                 </h3>
             </div><!-- /.box-body -->
         </div><!-- /.box -->
@@ -197,31 +197,50 @@
 	google.setOnLoadCallback(drawTrendlines);
 	
 	function drawTrendlines() {
-	      var data = new google.visualization.DataTable();
-	      data.addColumn('number', '<?php echo __('Day') ?>');
-	      data.addColumn('number', '<?php echo __('Sales') ?>');
-	      data.addColumn('number', '<?php echo __('Cost') ?>');
-	      data.addColumn('number', '<?php echo __('Profit') ?>');
+		var data = new google.visualization.DataTable();
+		data.addColumn('number', '<?php echo __('Day') ?>');
+		data.addColumn('number', '<?php echo __('Sales') ?>');
+		data.addColumn('number', '<?php echo __('Cost') ?>');
+		data.addColumn('number', '<?php echo __('Profit') ?>');
+	      
+		data.addRows([
+			<?php foreach ($daily as $key => $value): echo '[' .($key+1) .',' .$value .'], '; endforeach; ?>
+		]);
+		
+		var formatter = new google.visualization.NumberFormat({
+			prefix: '￥',
+			fractionDigits: 0
+		});
+		
+		formatter.format(data,1);
+		formatter.format(data,2);
+		formatter.format(data,3);
 	
-	      data.addRows([
-	      	<?php foreach ($daily as $key => $value): echo '[' .($key+1) .',' .$value .'], '; endforeach; ?>
-	      ]);
+		var options = {
+			hAxis: {
+				title: '<?php echo __('Day'); ?> ',
+				viewWindow: {
+	      			max: 31,
+				},
+			},
+			vAxis: {
+				title: '<?php echo __('Total') ?>',
+				viewWindow: {
+					// max: 10,
+				},
+				gridlines: {
+					count: 15,
+				},
+				format: 'currency',
+			},
+			colors: ['orange', 'red', '#109618'],
+			trendlines: {
+				0: {type: 'exponential', color: '#333', opacity: 1},
+				1: {type: 'linear', color: '#111', opacity: .3}
+			}
+		};
 	
-	      var options = {
-	        hAxis: {
-	          title: '<?php echo __('Day'); ?> '
-	        },
-	        vAxis: {
-	          title: '<?php echo __('Total') ?>'
-	        },
-	        colors: ['orange', 'red', '#109618'],
-	        trendlines: {
-	          0: {type: 'exponential', color: '#333', opacity: 1},
-	          1: {type: 'linear', color: '#111', opacity: .3}
-	        }
-	      };
-	
-	      var chart = new google.visualization.LineChart(document.getElementById('chart_line'));
-	      chart.draw(data, options);
+		var chart = new google.visualization.LineChart(document.getElementById('chart_line'));
+		chart.draw(data, options);
     }
 </script>

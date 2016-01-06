@@ -28,6 +28,7 @@
                             <th class=""><?php echo __('G'); ?></th>
                             <th class=""><?php echo __('Y'); ?></th>
                             <th class=""><?php echo __('G/Y'); ?></th>
+                            <th class=""><?php echo __('-1 Day'); ?></th>
                             <th class=""><?php echo __('Company'); ?></th>
                             <th class=""><?php echo __('Actions'); ?></th>
                         </tr>
@@ -35,6 +36,25 @@
                     <tbody>
                         <?php foreach ($ranklogs as $ranklog): $rank = json_decode($ranklog['Ranklog']['rank'], true); ?>
                         	<?php $params = json_decode($ranklog['Ranklog']['params'],true) ?>
+                        	
+                        	<?php 
+                        		// rank today
+                        		$bestRankToday = $this->Layout->bestRank($rank);
+								$bestRankToday = $this->Layout->rankFlip($bestRankToday);
+                        	
+                        		// rank -1 Day
+								if(isset($yesterday_ranklogs[$ranklog['Keyword']['ID']])){
+									$rank_yesterday = json_decode($yesterday_ranklogs[$ranklog['Keyword']['ID']],true);
+								}else{
+									$rank_yesterday['google_jp'] = 0;
+									$rank_yesterday['yahoo_jp'] = 0;
+								}
+								$bestRankYesterday = $this->Layout->bestRank($rank_yesterday);
+								$bestRankYesterday = $this->Layout->rankFlip($bestRankYesterday);
+								
+								// rank -15 Days
+							?>
+                        	
                             <tr style="background:<?php echo $params['color'] ?>">
                                 <td><?php echo $ranklog['Keyword']['ID']; ?></td>
 <!-- keyword -->
@@ -63,9 +83,26 @@
                                 </td>
 <!-- G/Y -->
                                 <td>
-                                    <?php echo $this->Layout->bestRank($rank); ?>&nbsp;
+                                    <span class="today"><?php echo $this->Layout->bestRank($rank); ?></span>&nbsp;
                                     <span class="arrow_row"><?php echo $params['arrow'] ?></span>
                                 </td>
+<!-- -1 Day -->
+                                <td>
+                                	<span class="yesterday">
+									<?php
+										if($bestRankToday > $bestRankYesterday){
+											echo $bestRankToday != 0 ? '<span class="red-arrow"><i class="fa fa-fw fa-arrow-down"></i></span>' : '<span class="blue-arrow"><i class="fa fa-fw fa-arrow-up"></i></span>';
+											echo (intval($bestRankToday)-intval($bestRankYesterday));
+										}else if($bestRankYesterday > $bestRankToday){
+											echo $bestRankToday != 0 ? '<span class="blue-arrow"><i class="fa fa-fw fa-arrow-up"></i></span>' : '<span class="red-arrow"><i class="fa fa-fw fa-arrow-down"></i></span>';
+											echo (intval($bestRankYesterday) - intval($bestRankToday));
+										}else if($bestRankToday==$bestRankYesterday){
+											echo '<i class="fa fa-fw fa-minus"></i>' .'0';
+										}
+									?>
+									</span>
+                                </td>
+<!-- -15 Days -->                                
 <!-- company -->
                                 <td>
                                     <?php echo (isset($ranklog['Keyword']['limit_price_group']) && $ranklog['Keyword']['limit_price_group'] != 0) ? '<span class="label label-warning">グループ上限</span>' : ''; ?>
@@ -117,10 +154,14 @@
         $('[data-toggle="tooltip"]').tooltip({placement: 'top'});
 
         // instant search
-        // $('#example').DataTable({
-        // paging: false,
-        // ordering:  false
-        // });
-        // $('#table_id').DataTable();
+        $('#example').DataTable({
+        	select: {
+		        style: 'multi'
+		    },
+	        paging: false,
+	        ordering:  true,
+	        order: []
+        });
+        $('#table_id').DataTable();
     })
 </script>

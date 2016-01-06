@@ -53,4 +53,11 @@ class SalesGoal extends AppModel {
 			),
 		),
 	);
+	
+	public function beforeSave($options = array()){
+		if (!empty($this->data['SalesGoal']['target'])) {
+			$this->data['SalesGoal']['target'] = date('Y-m',strtotime($this->data['SalesGoal']['target']));
+		}
+		return true;
+	}
 }

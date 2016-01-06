@@ -29,6 +29,9 @@ class RanklogsController extends AppController {
         $rankDate = date('Y-m-d');
         $conds = array();
         $conds['Ranklog.rankdate'] = $rankDate;
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.service'] = 0;
 
         if ($rankrange == 10) {
             $conds['Ranklog.rank REGEXP'] = '(:[1-9],)|(:[1-9]})|10';
@@ -47,7 +50,7 @@ class RanklogsController extends AppController {
         }
 
         if ($this->request->is('post')) {
-            $rankDate = $this->request->data['Ranklog']['rankDate']['year'] .'-'. $this->request->data['Ranklog']['rankDate']['month'] .'-'. $this->request->data['Ranklog']['rankDate']['day'];
+            $rankDate = $this->request->data['Ranks']['rankDate']['year'] .'-'. $this->request->data['Ranks']['rankDate']['month'] .'-'. $this->request->data['Ranks']['rankDate']['day'];
             if (!empty($this->request->data['Ranklog']['keyword'])) {
                 $users = $this->Rankhistory->Keyword->User->find('list', array('fields' => array('User.id', 'User.id'), 'conditions' => array('User.company LIKE' => '%' . mb_strtolower(trim($this->request->data['Ranklogs']['keyword']), 'UTF-8') . '%')));
                 $conds['OR']['Ranklog.url LIKE'] = '%' . mb_strtolower(trim($this->request->data['Ranklog']['keyword']), 'UTF-8') . '%';
@@ -69,17 +72,46 @@ class RanklogsController extends AppController {
             'Keyword.ID', 'Keyword.UserID', 'Keyword.Keyword', 'Keyword.Engine', 'Keyword.rankend', 'Keyword.Enabled', 'Keyword.nocontract', 'Keyword.Penalty', 'Keyword.Url', 'Keyword.Strict', 'Keyword.limit_price', 'Keyword.limit_price_group'
         );
 
-        $ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order, 'limit' => Configure::read('Page.max')));
+		$ranklogs = Cache::read('all_ranklogs', 'Ranklog');
+		if (!$ranklogs) {
+			$ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => $fields, 'order' => $order, 'limit' => Configure::read('Page.max')));
+			Cache::write('all_ranklogs', $ranklogs, 'Ranklog');
+		}		
         $keyword_id = Hash::extract($ranklogs, '{n}.Keyword.ID');
+		
+		// ranlogs -1 day
+		$conds['Ranklog.rankdate'] = date('Y-m-d', strtotime($conds['Ranklog.rankdate'].' -1 day' ));
+		$conds['Keyword.ID'] = $keyword_id;
+		
+		$yesterday_ranklogs = Cache::read('yesterday_ranklogs', 'Ranklog');
+		if (!$yesterday_ranklogs) {
+			$yesterday_ranklogs = $this->Ranklog->find('all', array('conditions' => $conds, 'fields' => array('Keyword.ID','Ranklog.rank')));
+			Cache::write('yesterday_ranklogs', $yesterday_ranklogs, 'Ranklog');
+		}		
+		$yesterday_ranklogs = Hash::combine($yesterday_ranklogs,'{n}.Keyword.ID','{n}.Ranklog.rank');
+		
+		// ranlogs -15 day
 
-        #Extra
+        // extra 
         $this->loadModel('Extra');
         $this->Extra->recursive = -1;
-        $extras = $this->Extra->find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_id)));
+		
+		$extras = Cache::read('extras', 'Ranklog');
+		if(!$extras){
+			$extras = $this->Extra->find('all', array('fields' => array('Extra.ExtraType', 'Extra.Price', 'Extra.KeyID'), 'conditions' => array('Extra.KeyID' => $keyword_id)));
+			Cache::write('extras', $extras, 'Ranklog');
+		}        
+		
+		$users = Cache::read('users', 'Ranklog');
+		if(!$users){
+			$users = $this->Ranklog->Keyword->User->find('list', array('fields' => array('User.id', 'User.company')));
+			Cache::write('users', $users, 'Ranklog');
+		}		
 
         $this->set('ranklogs', $ranklogs);
+		$this->set('yesterday_ranklogs', $yesterday_ranklogs);
         $this->set('extras', $extras);
-        $this->set('user', $this->Ranklog->Keyword->User->find('list', array('fields' => array('User.id', 'User.company'))));
+        $this->set('user', $users);
         $this->set('rankDate', $rankDate);
     }
 

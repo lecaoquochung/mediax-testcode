@@ -645,3 +645,17 @@ msgid "Seika Goal"
 msgstr "成果"
 msgid "Report"
 msgstr "レポート"
+msgid "-1 Day"
+msgstr "前日比較"
+
+msgid "Storage"
+msgstr "登録キーワード上限"
+
+msgid "used"
+msgstr "利用中"
+
+msgid "free"
+msgstr "追加可能"
+
+msgid "server name"
+msgstr "サーバー名"

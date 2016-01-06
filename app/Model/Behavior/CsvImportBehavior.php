@@ -171,12 +171,12 @@ protected function remove_utf8_bom($text){
 			}
 
 			//afterImport callback
-			$data[$Model->alias]['id'] = $Model->id;
+			// $data[$Model->alias]['id'] = $Model->id;
 			if (method_exists($Model, 'afterImport')) {
 				$data = $Model->afterImport($data);
 			}
 			
-			debug($data);exit;
+			// debug($data);exit;
 			
 			if (!$error) {
 				$this->_notify($Model, 'onImportRow', $data);
@@ -187,7 +187,9 @@ protected function remove_utf8_bom($text){
 
 			$i++;
 		}
-
+		
+		// check error
+		pr($this->errors);die();
 		$success = empty($this->errors);
 		if (!$returnSaved && !$success) {
 			$db->rollback($Model);

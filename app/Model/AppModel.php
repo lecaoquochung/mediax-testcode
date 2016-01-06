@@ -48,7 +48,7 @@ class AppModel extends Model {
 	function hanKaku($check) {
 		$value = array_values($check);
 		$value = $value[0];
-		return preg_match('/^[a-zA-Z0-9ぁ-んァ-ヶ亜-黑ー中「」【】不乳井一級事二 ]+$/u', $value);
+		return preg_match('/^[a-zA-Z0-9ぁ-んァ-ヶ亜-黑ー中「」【】不乳井一級事二久五 ]+$/u', $value);
 	}
 
 }

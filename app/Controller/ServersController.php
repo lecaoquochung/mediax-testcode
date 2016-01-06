@@ -17,15 +17,66 @@ class ServersController extends AppController {
  */
 	public $components = array('Paginator', 'Flash', 'Session');
 
-/**
+/*------------------------------------------------------------------------------------------------------------
  * index method
- *
- * @return void
- */
+ * 
+ * author lecaoquochung@gmail.com
+ * created 2015-12-18
+ * updated
+ *-----------------------------------------------------------------------------------------------------------*/
 	public function index() {
-		$this -> Paginator -> settings = array('limit' => 20, 'order' => array('code' => 'ASC'));
-		$this->Server->recursive = 0;
-		$this->set('servers', $this->Paginator->paginate());
+		$this->Server->recursive = -1;
+		$servers = $this->Server->find('all');
+		
+		$this->loadModel('Keyword');
+		$this->Keyword->recursive = -1;
+		$conds = array();
+        $conds['Keyword.server_id <>'] = NULL;
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.service'] = 0;
+		$conds['OR'] = array( 
+			array('Keyword.rankend' => 0), 
+			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
+		);
+		
+		$fields = array('Keyword.ID', 'Keyword.server_id');
+		
+		$keywords = $this->Keyword->find('list', array('conditions' => $conds, 'fields' => $fields));
+		$use = array_count_values($keywords);
+
+		$this->set(compact('servers', 'keywords','use'));
+	}
+
+/*------------------------------------------------------------------------------------------------------------
+ * index method
+ * 
+ * author lecaoquochung@gmail.com
+ * created 2015-12-18
+ * updated
+ *-----------------------------------------------------------------------------------------------------------*/
+	public function used($id = null) {
+		if (!$this->Server->exists($id)) {
+			throw new NotFoundException(__('Invalid server'));
+		}
+		
+		$this->loadModel('Keyword');
+		$this->Keyword->recursive = -1;
+		
+		$conds = array();
+        $conds['Keyword.server_id'] = $id;
+		$conds['Keyword.Enabled'] = 1;
+		$conds['Keyword.nocontract'] = 0;
+		$conds['Keyword.service'] = 0;
+		$conds['OR'] = array( 
+			array('Keyword.rankend' => 0), 
+			array('Keyword.rankend >=' => date('Ymd', strtotime('-1 month' . date('Ymd')))),
+		);
+		
+		$fields = array();
+		// $fields = array('Keyword.ID', 'Keyword.server_id');
+		
+		$keywords = $this->Keyword->find('all', array('conditions' => $conds, 'fields' => $fields));
 	}
 
 /**
